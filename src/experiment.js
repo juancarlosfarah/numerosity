@@ -45,6 +45,12 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     stimulus: "<p>Page 2<p/>",
   });
 
+  timeline.push({
+    type: HtmlKeyboardResponsePlugin,
+    choices: ['a'],
+    stimulus: "<p>Page 3<p/>",
+  });
+
   // Switch to fullscreen
   timeline.push({
     type: FullscreenPlugin,
