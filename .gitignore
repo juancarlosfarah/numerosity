@@ -39,3 +39,9 @@ database.sqlite
 .jspsych-builder
 packaged/
 experiment/
+
+# ESLint cache
+.eslintcache
+
+# Husky hooks
+.husky/_/
