@@ -9,7 +9,7 @@
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import PreloadPlugin from '@jspsych/plugin-preload';
-import { initJsPsych } from 'jspsych';
+import { JsPsych, initJsPsych } from 'jspsych';
 
 import '../styles/main.scss';
 
@@ -24,10 +24,10 @@ export async function run({
   environment,
   title,
   version,
-}) {
-  const jsPsych = initJsPsych();
+}): Promise<JsPsych> {
+  const jsPsych: JsPsych = initJsPsych();
 
-  const timeline = [];
+  const timeline: JsPsych['timeline'] = [];
 
   // Preload assets
   timeline.push({
