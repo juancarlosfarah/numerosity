@@ -45,3 +45,13 @@ experiment/
 
 # Husky hooks
 .husky/_/
+
+# Cypress artifacts
+cypress/screenshots/
+cypress/videos/
+
+# Cypress cache
+.cache/Cypress
+
+# Cypress logs
+cypress/logs/

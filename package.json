@@ -20,6 +20,7 @@
   "devDependencies": {
     "@eslint/js": "^9.7.0",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "cypress": "^13.13.0",
     "eslint": "^9.7.0",
     "extract-zip": "^2.0.1",
     "gh-pages": "^6.1.1",
