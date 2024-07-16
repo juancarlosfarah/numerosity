@@ -14,9 +14,12 @@ import { JsPsych, initJsPsych } from 'jspsych';
 
 import '../styles/main.scss';
 
+// Type aliases
 type img_description = { num: number; id: number };
 type timeline = JsPsych['timeline'];
 
+// Generate timeline variables following the img_description[] type described above.
+// For each numerosity, "nb_block" images are randomly selected and put in a list ordered by numerosity.
 function generateTimelineVars(
   JsPsych: JsPsych,
   nb_blocks: number,
@@ -32,28 +35,36 @@ function generateTimelineVars(
       timeline_variables.push({ num: num, id: id_list[i] });
     }
   }
-  console.log(timeline_variables);
   return timeline_variables;
 }
 
+//Generate timeline corresponding to half of numerosity task (people or objects).
+// The order of stimuli correspond to the following pattern:
+// There are "nb_blocks" blocks consisting of a random image from each numerosity (5,6,7,8) in random order.
+// Two identical images will never be contained in one experiment.
 function partofexp(
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
   nb_blocks: number = 5,
 ): timeline {
+  // Generate random timeline variables (pick random images for each numerosity).
   const timeline_vars: img_description[] = generateTimelineVars(
     jsPsych,
     nb_blocks,
   );
 
+  // Timeline that will be returned
   const timeline: timeline = {
     timeline: [
+      // Crosshait shown before each image for 500ms.
       {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: '+',
         choices: 'NO_KEYS',
         trial_duration: 500,
       },
+
+      // Image is shown for 250ms
       {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: function () {
@@ -62,6 +73,8 @@ function partofexp(
         choices: 'NO_KEYS',
         trial_duration: 250,
       },
+
+      // Survey to ask how many countables (people/objects) were estimated.
       {
         type: jsPsychSurveyHtmlForm,
         preamble: 'How many ' + cntable + ' were in the virtual room?',
@@ -71,19 +84,23 @@ function partofexp(
     timeline_variables: timeline_vars,
     sample: {
       type: 'custom',
+
+      // Custom sampling function to produce semi-random pattern described in function description.
       fn: function (t: number[]): number[] {
         const blocks: number = t.length / 4;
         let template: number[] = [];
         let intermediate: number[] = [];
         let new_t: number[] = [];
+
+        // Shuffle all indices for timeline variables with same numerosity
         for (let nums: number = 0; nums < 4; nums++) {
           template = [...Array(blocks).keys()].map((x) => x + nums * blocks);
-          console.log(template);
           intermediate = intermediate.concat(
             jsPsych.randomization.shuffle(template),
           );
         }
-        console.log(intermediate);
+
+        // Create and append block of four numerosities by picking one of each (shuffled) numerosity groups in template array.
         for (let i: number = 0; i < blocks; i++) {
           const block: number[] = [];
           block.push(
@@ -92,9 +109,10 @@ function partofexp(
             intermediate[i + 2 * blocks],
             intermediate[i + 3 * blocks],
           );
+
+          // Shuffle order of numerosity in a block and append.
           new_t = new_t.concat(jsPsych.randomization.shuffle(block));
         }
-        console.log(new_t);
         return new_t;
       },
     },
@@ -130,10 +148,8 @@ export async function run(/*{
     fullscreen_mode: true,
   });
 
-  const firsthalf: timeline = partofexp(jsPsych, 'people');
-  const secondhalf: timeline = partofexp(jsPsych, 'objects');
-
-  timeline.push(firsthalf, secondhalf);
+  // Run numerosity task
+  timeline.push(partofexp(jsPsych, 'people'), partofexp(jsPsych, 'objects'));
 
   await jsPsych.run(timeline);
 
