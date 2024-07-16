@@ -12,7 +12,6 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import jsPsychSurveyHtmlForm from '@jspsych/plugin-survey-html-form';
 import { initJsPsych } from 'jspsych';
 import '../styles/main.scss';
-const jsPsych = initJsPsych();
 function generateTimelineVars() {
     const timeline_variables = [];
     for (let num = 5; num <= 8; num++) {
@@ -22,7 +21,7 @@ function generateTimelineVars() {
     }
     return timeline_variables;
 }
-function partofexp(cntable, nb_trials = 20) {
+function partofexp(jsPsych, cntable, nb_trials = 20) {
     const timeline_vars = generateTimelineVars();
     let trials_done = 0;
     const partofexp = {
@@ -36,7 +35,7 @@ function partofexp(cntable, nb_trials = 20) {
             {
                 type: jsPsychHtmlKeyboardResponse,
                 stimulus: function () {
-                    return `<img src='../assets/num_task_imgs/' + ${cntable} + 'num_' + ${jsPsych.timelineVariable('num')} + '_' + ${jsPsych.timelineVariable('id')}>`;
+                    return `<img src='../assets/num_task_imgs/${cntable}num_${jsPsych.timelineVariable('num')}_${jsPsych.timelineVariable('id')}.png'>`;
                 },
                 choices: 'NO_KEYS',
                 trial_duration: 2500,
@@ -58,10 +57,6 @@ function partofexp(cntable, nb_trials = 20) {
             [30, 31, 32, 33, 34, 35, 36, 37, 38, 39],
         ],
         randomize_group_order: true,
-        sample: {
-            type: 'without-repetitions',
-            size: 5,
-        },
         randomize_order: true,
         loop_function: function () {
             return trials_done < nb_trials;
@@ -81,6 +76,7 @@ export async function run( /*{
   title,
   version,
 }*/) {
+    const jsPsych = initJsPsych();
     const timeline = [];
     // Preload assets
     timeline.push({
@@ -92,8 +88,8 @@ export async function run( /*{
         type: FullscreenPlugin,
         fullscreen_mode: true,
     });
-    const firsthalf = partofexp('people');
-    const secondhalf = partofexp('objects');
+    const firsthalf = partofexp(jsPsych, 'people');
+    const secondhalf = partofexp(jsPsych, 'objects');
     timeline.push(firsthalf, secondhalf);
     await jsPsych.run(timeline);
     // Return the jsPsych instance so jsPsych Builder can access the experiment results (remove this

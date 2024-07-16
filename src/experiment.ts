@@ -14,13 +14,11 @@ import { JsPsych, initJsPsych } from 'jspsych';
 
 import '../styles/main.scss';
 
-const jsPsych: JsPsych = initJsPsych();
-
-type img_describtion = { num: number; id: number };
+type img_description = { num: number; id: number };
 type timeline = JsPsych['timeline'];
 
-function generateTimelineVars(): img_describtion[] {
-  const timeline_variables: img_describtion[] = [];
+function generateTimelineVars(): img_description[] {
+  const timeline_variables: img_description[] = [];
 
   for (let num = 5; num <= 8; num++) {
     for (let id = 0; id <= 9; id++) {
@@ -32,6 +30,7 @@ function generateTimelineVars(): img_describtion[] {
 }
 
 function partofexp(
+  jsPsych: JsPsych,
   cntable: 'people' | 'objects',
   nb_trials: number = 20,
 ): {
@@ -52,7 +51,7 @@ function partofexp(
       {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: function () {
-          return `<img src='../assets/num_task_imgs/' + ${cntable} + 'num_' + ${jsPsych.timelineVariable('num')} + '_' + ${jsPsych.timelineVariable('id')}>`;
+          return `<img src='../assets/num_task_imgs/${cntable}num_${jsPsych.timelineVariable('num')}_${jsPsych.timelineVariable('id')}.png'>`;
         },
         choices: 'NO_KEYS',
         trial_duration: 2500,
@@ -74,10 +73,6 @@ function partofexp(
       [30, 31, 32, 33, 34, 35, 36, 37, 38, 39],
     ],
     randomize_group_order: true,
-    sample: {
-      type: 'without-repetitions',
-      size: 5,
-    },
     randomize_order: true,
     loop_function: function (): boolean {
       return trials_done < nb_trials;
@@ -98,6 +93,8 @@ export async function run(/*{
   title,
   version,
 }*/): Promise<JsPsych> {
+  const jsPsych: JsPsych = initJsPsych();
+
   const timeline: timeline = [];
 
   // Preload assets
@@ -112,8 +109,8 @@ export async function run(/*{
     fullscreen_mode: true,
   });
 
-  const firsthalf: timeline = partofexp('people');
-  const secondhalf: timeline = partofexp('objects');
+  const firsthalf: timeline = partofexp(jsPsych, 'people');
+  const secondhalf: timeline = partofexp(jsPsych, 'objects');
 
   timeline.push(firsthalf, secondhalf);
 
