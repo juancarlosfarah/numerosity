@@ -17,30 +17,36 @@ import '../styles/main.scss';
 type img_description = { num: number; id: number };
 type timeline = JsPsych['timeline'];
 
-function generateTimelineVars(): img_description[] {
+function generateTimelineVars(
+  JsPsych: JsPsych,
+  nb_blocks: number,
+): img_description[] {
   const timeline_variables: img_description[] = [];
 
   for (let num = 5; num <= 8; num++) {
-    for (let id = 0; id <= 9; id++) {
-      timeline_variables.push({ num, id });
+    const id_list: number[] = JsPsych.randomization.sampleWithoutReplacement(
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      nb_blocks,
+    );
+    for (let i = 0; i < nb_blocks; i++) {
+      timeline_variables.push({ num: num, id: id_list[i] });
     }
   }
-
+  console.log(timeline_variables);
   return timeline_variables;
 }
 
 function partofexp(
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
-  nb_trials: number = 20,
-): {
-  timeline: timeline;
-} {
-  const timeline_vars = generateTimelineVars();
+  nb_blocks: number = 5,
+): timeline {
+  const timeline_vars: img_description[] = generateTimelineVars(
+    jsPsych,
+    nb_blocks,
+  );
 
-  let trials_done: number = 0;
-
-  const partofexp = {
+  const timeline: timeline = {
     timeline: [
       {
         type: jsPsychHtmlKeyboardResponse,
@@ -51,34 +57,49 @@ function partofexp(
       {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: function () {
-          return `<img src='../assets/num_task_imgs/${cntable}num_${jsPsych.timelineVariable('num')}_${jsPsych.timelineVariable('id')}.png'>`;
+          return `<img src='../assets/num_task_imgs/${cntable}/num_${jsPsych.timelineVariable('num')}_${jsPsych.timelineVariable('id')}.png'>`;
         },
         choices: 'NO_KEYS',
-        trial_duration: 2500,
+        trial_duration: 250,
       },
       {
         type: jsPsychSurveyHtmlForm,
         preamble: 'How many ' + cntable + ' were in the virtual room?',
         html: '<input type="number" />',
-        on_finish: () => {
-          trials_done++;
-        },
       },
     ],
     timeline_variables: timeline_vars,
-    groups: [
-      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-      [10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
-      [10, 21, 22, 23, 24, 25, 26, 27, 28, 29],
-      [30, 31, 32, 33, 34, 35, 36, 37, 38, 39],
-    ],
-    randomize_group_order: true,
-    randomize_order: true,
-    loop_function: function (): boolean {
-      return trials_done < nb_trials;
+    sample: {
+      type: 'custom',
+      fn: function (t: number[]): number[] {
+        const blocks: number = t.length / 4;
+        let template: number[] = [];
+        let intermediate: number[] = [];
+        let new_t: number[] = [];
+        for (let nums: number = 0; nums < 4; nums++) {
+          template = [...Array(blocks).keys()].map((x) => x + nums * blocks);
+          console.log(template);
+          intermediate = intermediate.concat(
+            jsPsych.randomization.shuffle(template),
+          );
+        }
+        console.log(intermediate);
+        for (let i: number = 0; i < blocks; i++) {
+          const block: number[] = [];
+          block.push(
+            intermediate[i],
+            intermediate[i + blocks],
+            intermediate[i + 2 * blocks],
+            intermediate[i + 3 * blocks],
+          );
+          new_t = new_t.concat(jsPsych.randomization.shuffle(block));
+        }
+        console.log(new_t);
+        return new_t;
+      },
     },
   };
-  return partofexp;
+  return timeline;
 }
 
 /**
