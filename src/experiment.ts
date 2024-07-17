@@ -11,6 +11,7 @@ import jsPsychHtmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response'
 import jsPsychinstructions from '@jspsych/plugin-instructions';
 import PreloadPlugin from '@jspsych/plugin-preload';
 import jsPsychSurveyHtmlForm from '@jspsych/plugin-survey-html-form';
+import jsPsychSurveyMultiChoice from '@jspsych/plugin-survey-multi-choice';
 import { JsPsych, initJsPsych } from 'jspsych';
 
 import '../styles/main.scss';
@@ -276,7 +277,6 @@ function generateInstructionPages(
 
 //Timeline of instructions shown depending on countable (people/objects)
 function instructions(
-  jsPsych: JsPsych,
   cntable: 'people' | 'objects',
   lang: 'en' | 'fr' | 'es' | 'ca',
 ): timeline {
@@ -300,6 +300,25 @@ function instructions(
     ],
   };
 }
+
+const instructionQuiz: timeline = (
+  cntable: 'people' | 'objects',
+  lang: 'en' | 'fr' | 'es' | 'ca',
+): timeline => ({
+  type: jsPsychSurveyMultiChoice,
+  questions: [
+    {
+      prompt: 'Question 1:  What should be estimate?',
+      options: [
+        'The size of the virtual room',
+        'The duration of picture presentation',
+        `The number of ${cntable} inside the virtual room`,
+      ],
+      required: true,
+      preamble: 'Check your knowledge before you begin!',
+    },
+  ],
+});
 
 /**
  * This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment
@@ -331,9 +350,11 @@ export async function run(/*{
 
   // Run numerosity task
   timeline.push(
-    instructions(jsPsych, 'people', 'en'),
+    instructions('people', 'en'),
+    instructionQuiz('people', 'en'),
     partofexp(jsPsych, 'people', 'en'),
-    instructions(jsPsych, 'objects', 'en'),
+    instructions('objects', 'en'),
+    instructionQuiz('objects', 'en'),
     partofexp(jsPsych, 'objects', 'en'),
   );
 

@@ -11,6 +11,7 @@ import jsPsychHtmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response'
 import jsPsychinstructions from '@jspsych/plugin-instructions';
 import PreloadPlugin from '@jspsych/plugin-preload';
 import jsPsychSurveyHtmlForm from '@jspsych/plugin-survey-html-form';
+import jsPsychSurveyMultiChoice from '@jspsych/plugin-survey-multi-choice';
 import { initJsPsych } from 'jspsych';
 import '../styles/main.scss';
 function inputInfo(lang) {
@@ -74,8 +75,8 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks = 5) => ({
                 input.setCustomValidity(inputInfo(lang));
                 // Add input event listener
                 input.addEventListener('input', () => {
-                    // If the input value is not empty and is a valid number, clear the custom validity message
-                    if (input.value.trim() === '') {
+                    // If the input value is not empty, clear the custom validity message
+                    if (input.value === '') {
                         input.setCustomValidity(inputInfo(lang));
                     }
                     else {
@@ -211,7 +212,7 @@ function generateInstructionPages(cntable, lang, text, example = false) {
     }
 }
 //Timeline of instructions shown depending on countable (people/objects)
-function instructions(jsPsych, cntable, lang) {
+function instructions(cntable, lang) {
     const text = instructionTexts(cntable, lang);
     return {
         timeline: [
@@ -232,6 +233,21 @@ function instructions(jsPsych, cntable, lang) {
         ],
     };
 }
+const instructionQuiz = (cntable, lang) => ({
+    type: jsPsychSurveyMultiChoice,
+    questions: [
+        {
+            prompt: 'Question 1:  What should be estimate?',
+            options: [
+                'The size of the virtual room',
+                'The duration of picture presentation',
+                `The number of ${cntable} inside the virtual room`,
+            ],
+            required: true,
+            preamble: 'Check your knowledge before you begin!',
+        },
+    ],
+});
 /**
  * This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment
  *
@@ -257,7 +273,7 @@ export async function run( /*{
         fullscreen_mode: true,
     });
     // Run numerosity task
-    timeline.push(instructions(jsPsych, 'people', 'en'), partofexp(jsPsych, 'people', 'en'), instructions(jsPsych, 'objects', 'en'), partofexp(jsPsych, 'objects', 'en'));
+    timeline.push(instructions('people', 'en'), instructionQuiz('people', 'en'), partofexp(jsPsych, 'people', 'en'), instructions('objects', 'en'), instructionQuiz('objects', 'en'), partofexp(jsPsych, 'objects', 'en'));
     await jsPsych.run(timeline);
     // Return the jsPsych instance so jsPsych Builder can access the experiment results (remove this
     // if you handle results yourself, be it here or in `on_finish()`)
