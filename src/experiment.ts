@@ -26,6 +26,22 @@ type instruction_text = {
   btn_end: string;
 };
 
+function inputInfo(lang: 'en' | 'fr' | 'es' | 'ca'): string {
+  switch (lang) {
+    case 'en':
+      return 'Please write a whole number';
+    case 'fr':
+      return 'Veuillez entrer un nombre entier';
+    case 'es':
+      return 'Por favor escribe un número entero';
+    case 'ca':
+      return 'Si us plau, escriviu un número enter';
+    default:
+      console.error(lang + 'is not a valid language parameter.');
+      return '';
+  }
+}
+
 // Generate timeline variables following the img_description[] type described above.
 // For each numerosity, "nb_block" images are randomly selected and put in a list ordered by numerosity.
 function generateTimelineVars(
@@ -53,6 +69,7 @@ function generateTimelineVars(
 const partofexp: timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
+  lang: 'en' | 'fr' | 'es' | 'ca',
   nb_blocks: number = 5,
 ): timeline => ({
   timeline: [
@@ -78,7 +95,14 @@ const partofexp: timeline = (
     {
       type: jsPsychSurveyHtmlForm,
       preamble: 'How many ' + cntable + ' were in the virtual room?',
-      html: '<input type="number" />',
+      html: '<input type="number" id="task_input" required><br>',
+      autofocus: 'task_input',
+      on_load: (): void => {
+        const input: HTMLInputElement = document.getElementById(
+          'task_input',
+        ) as HTMLInputElement;
+        input.setCustomValidity(inputInfo(lang));
+      },
     },
   ],
 
@@ -296,9 +320,9 @@ export async function run(/*{
   // Run numerosity task
   timeline.push(
     instructions(jsPsych, 'people', 'en'),
-    partofexp(jsPsych, 'people'),
+    partofexp(jsPsych, 'people', 'en'),
     instructions(jsPsych, 'objects', 'en'),
-    partofexp(jsPsych, 'objects'),
+    partofexp(jsPsych, 'objects', 'en'),
   );
 
   await jsPsych.run(timeline);

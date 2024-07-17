@@ -13,6 +13,21 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import jsPsychSurveyHtmlForm from '@jspsych/plugin-survey-html-form';
 import { initJsPsych } from 'jspsych';
 import '../styles/main.scss';
+function inputInfo(lang) {
+    switch (lang) {
+        case 'en':
+            return 'Please write a whole number';
+        case 'fr':
+            return 'Veuillez entrer un nombre entier';
+        case 'es':
+            return 'Por favor escribe un número entero';
+        case 'ca':
+            return 'Si us plau, escriviu un número enter';
+        default:
+            console.error(lang + 'is not a valid language parameter.');
+            return '';
+    }
+}
 // Generate timeline variables following the img_description[] type described above.
 // For each numerosity, "nb_block" images are randomly selected and put in a list ordered by numerosity.
 function generateTimelineVars(JsPsych, nb_blocks) {
@@ -29,7 +44,7 @@ function generateTimelineVars(JsPsych, nb_blocks) {
 // The order of stimuli correspond to the following pattern:
 // There are "nb_blocks" blocks consisting of a random image from each numerosity (5,6,7,8) in random order.
 // Two identical images will never be contained in one experiment.
-const partofexp = (jsPsych, cntable, nb_blocks = 5) => ({
+const partofexp = (jsPsych, cntable, lang, nb_blocks = 5) => ({
     timeline: [
         // Crosshair shown before each image for 500ms.
         {
@@ -51,7 +66,12 @@ const partofexp = (jsPsych, cntable, nb_blocks = 5) => ({
         {
             type: jsPsychSurveyHtmlForm,
             preamble: 'How many ' + cntable + ' were in the virtual room?',
-            html: '<input type="number" />',
+            html: '<input type="number" id="task_input" required><br>',
+            autofocus: 'task_input',
+            on_load: () => {
+                const input = document.getElementById('task_input');
+                input.setCustomValidity(inputInfo(lang));
+            },
         },
     ],
     // Generate random timeline variables (pick random images for each numerosity).
@@ -226,7 +246,7 @@ export async function run( /*{
         fullscreen_mode: true,
     });
     // Run numerosity task
-    timeline.push(instructions(jsPsych, 'people', 'en'), partofexp(jsPsych, 'people'), instructions(jsPsych, 'objects', 'en'), partofexp(jsPsych, 'objects'));
+    timeline.push(instructions(jsPsych, 'people', 'en'), partofexp(jsPsych, 'people', 'en'), instructions(jsPsych, 'objects', 'en'), partofexp(jsPsych, 'objects', 'en'));
     await jsPsych.run(timeline);
     // Return the jsPsych instance so jsPsych Builder can access the experiment results (remove this
     // if you handle results yourself, be it here or in `on_finish()`)
