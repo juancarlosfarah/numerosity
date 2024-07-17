@@ -101,7 +101,19 @@ const partofexp: timeline = (
         const input: HTMLInputElement = document.getElementById(
           'task_input',
         ) as HTMLInputElement;
+
+        // Initially set the custom validity message
         input.setCustomValidity(inputInfo(lang));
+
+        // Add input event listener
+        input.addEventListener('input', () => {
+          // If the input value is not empty, clear the custom validity message
+          if (input.value === '') {
+            input.setCustomValidity(inputInfo(lang));
+          } else {
+            input.setCustomValidity('');
+          }
+        });
       },
     },
   ],

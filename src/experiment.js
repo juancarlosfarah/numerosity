@@ -70,7 +70,18 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks = 5) => ({
             autofocus: 'task_input',
             on_load: () => {
                 const input = document.getElementById('task_input');
+                // Initially set the custom validity message
                 input.setCustomValidity(inputInfo(lang));
+                // Add input event listener
+                input.addEventListener('input', () => {
+                    // If the input value is not empty and is a valid number, clear the custom validity message
+                    if (input.value.trim() === '') {
+                        input.setCustomValidity(inputInfo(lang));
+                    }
+                    else {
+                        input.setCustomValidity('');
+                    }
+                });
             },
         },
     ],
