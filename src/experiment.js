@@ -45,7 +45,7 @@ function generateTimelineVars(JsPsych, nb_blocks) {
 // The order of stimuli correspond to the following pattern:
 // There are "nb_blocks" blocks consisting of a random image from each numerosity (5,6,7,8) in random order.
 // Two identical images will never be contained in one experiment.
-const partofexp = (jsPsych, cntable, lang, nb_blocks = 5) => ({
+const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
     timeline: [
         // Crosshair shown before each image for 500ms.
         {
@@ -83,6 +83,11 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks = 5) => ({
                         input.setCustomValidity('');
                     }
                 });
+            },
+            on_finish: function () {
+                progress.completed++;
+                jsPsych.setProgressBar(progress.completed / (8 * nb_blocks));
+                console.log(progress);
             },
         },
     ],
@@ -236,91 +241,124 @@ function instructions(cntable, lang) {
 function quizQuestions(cntable, lang) {
     switch (lang) {
         case 'en':
-            return {
-                questions: [
-                    {
-                        prompt: 'Question 1:  What should be estimate?',
-                        options: [
-                            'The size of the virtual room',
-                            'The duration of picture presentation',
-                            `The number of ${translateCountable(cntable, 'en')} inside the virtual room`,
-                        ],
-                        required: true,
-                    },
-                ],
-                preamble: 'Check your knowledge before you begin!',
-            };
+            return [
+                {
+                    prompt: 'Question 1:  What should be estimate?',
+                    options: [
+                        'The size of the virtual room',
+                        'The duration of picture presentation',
+                        `The number of ${translateCountable(cntable, 'en')} inside the virtual room`,
+                    ],
+                    required: true,
+                },
+            ];
         case 'fr':
-            return {
-                questions: [
-                    {
-                        prompt: 'Question 1: Que devez-vous estimer?',
-                        options: [
-                            'La taille de la pièce',
-                            'La durée de présentation des images',
-                            `Le nombre d'${translateCountable(cntable, 'fr')} présents dans la pièce`,
-                        ],
-                        required: true,
-                    },
-                ],
-                preamble: 'Vérifiez vos connaissances avant de commencer!',
-            };
+            return [
+                {
+                    prompt: 'Question 1: Que devez-vous estimer?',
+                    options: [
+                        'La taille de la pièce',
+                        'La durée de présentation des images',
+                        `Le nombre d'${translateCountable(cntable, 'fr')} présents dans la pièce`,
+                    ],
+                    required: true,
+                },
+            ];
         case 'es':
-            return {
-                questions: [
-                    {
-                        prompt: 'Pregunta 1: ¿Qué debe estimarse?',
-                        options: [
-                            'El tamaño de la sala virtual',
-                            'La duración de la presentación de la imagen',
-                            `El número de ${translateCountable(cntable, 'es')} dentro de la sala virtual`,
-                        ],
-                        required: true,
-                    },
-                ],
-                preamble: '¡Compruebe sus conocimientos antes de empezar!',
-            };
+            return [
+                {
+                    prompt: 'Pregunta 1: ¿Qué debe estimarse?',
+                    options: [
+                        'El tamaño de la sala virtual',
+                        'La duración de la presentación de la imagen',
+                        `El número de ${translateCountable(cntable, 'es')} dentro de la sala virtual`,
+                    ],
+                    required: true,
+                },
+            ];
         case 'ca':
-            return {
-                questions: [
-                    {
-                        prompt: 'Pregunta 1: Què cal estimar?',
-                        options: [
-                            'La mida de la sala virtual',
-                            'La durada de la presentació de la imatge',
-                            `El nombre d'${translateCountable(cntable, 'ca')} dins de la sala virtual`,
-                        ],
-                        required: true,
-                    },
-                ],
-                preamble: 'Comproveu els vostres coneixements abans de començar!',
-            };
+            return [
+                {
+                    prompt: 'Pregunta 1: Què cal estimar?',
+                    options: [
+                        'La mida de la sala virtual',
+                        'La durada de la presentació de la imatge',
+                        `El nombre d'${translateCountable(cntable, 'ca')} dins de la sala virtual`,
+                    ],
+                    required: true,
+                },
+            ];
         default:
             console.error(lang + 'is not a valid language parameter.');
-            return {
-                questions: [
-                    {
-                        prompt: '',
-                        options: [],
-                        required: false,
-                    },
-                ],
-                preamble: '',
-            };
+            return [
+                {
+                    prompt: '',
+                    options: [],
+                    required: false,
+                },
+            ];
     }
 }
-const instructionQuiz = (cntable, lang) => ({
+function translatePreamble(second_half, lang) {
+    if (second_half) {
+        switch (lang) {
+            case 'en':
+                return 'You are in the middle of the experiment!<br>Instructions have changed for the second half.';
+            case 'fr':
+                return 'You are in the middle of the experiment!<br>Instructions have changed for the second half.';
+            case 'es':
+                return 'Estás en medio del experimento!<br>Las instrucciones han cambiado para la segunda parte.';
+            case 'ca':
+                return "Ets al mig de l'experiment!<br>Les instruccions han canviat per a la segona part.";
+            default:
+                console.error(lang + 'is not a valid language parameter.');
+                return '';
+        }
+    }
+    else {
+        switch (lang) {
+            case 'en':
+                return 'Check your knowledge before you begin!';
+            case 'fr':
+                return 'Vérifiez vos connaissances avant de commencer!';
+            case 'es':
+                return '¡Compruebe sus conocimientos antes de empezar!';
+            case 'ca':
+                return 'Comproveu els vostres coneixements abans de començar!';
+            default:
+                console.error(lang + 'is not a valid language parameter.');
+                return '';
+        }
+    }
+}
+const instructionQuiz = (cntable, lang, second_half = false) => ({
     timeline: [
         {
             type: jsPsychSurveyMultiChoice,
-            ...quizQuestions(cntable, lang),
+            questions: quizQuestions(cntable, lang),
+            preamble: translatePreamble(second_half, lang),
         },
     ],
     loop_function: function (data) {
         return (data.values()[0].response.Q0 !==
-            quizQuestions(cntable, lang).questions[0].options[2]);
+            quizQuestions(cntable, lang)[0].options[2]);
     },
 });
+function textProgressBar(lang) {
+    switch (lang) {
+        case 'en':
+            return 'Completion progress';
+        case 'fr':
+            return "Progrès de l'expérience";
+        case 'es':
+            return 'Progreso del experimento';
+        case 'ca':
+            return "Progrés de l'experimentació";
+        default:
+            console.error(lang + 'is not a valid language parameter.');
+            return '';
+    }
+}
 /**
  * This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment
  *
@@ -333,8 +371,15 @@ export async function run( /*{
   title,
   version,
 }*/) {
-    const jsPsych = initJsPsych();
+    const blocks_per_half = 5;
+    const progress = { completed: 0 };
+    const jsPsych = initJsPsych({
+        show_progress_bar: true,
+        auto_update_progress_bar: false,
+        message_progress_bar: textProgressBar('en'),
+    });
     const timeline = [];
+    jsPsych;
     // Preload assets
     timeline.push({
         type: PreloadPlugin,
@@ -346,7 +391,7 @@ export async function run( /*{
         fullscreen_mode: true,
     });
     // Run numerosity task
-    timeline.push(instructions('people', 'en'), instructionQuiz('people', 'en'), partofexp(jsPsych, 'people', 'en'), instructions('objects', 'en'), instructionQuiz('objects', 'en'), partofexp(jsPsych, 'objects', 'en'));
+    timeline.push(instructions('people', 'en'), instructionQuiz('people', 'en'), partofexp(jsPsych, 'people', 'en', blocks_per_half, progress), instructions('objects', 'en'), instructionQuiz('objects', 'en', true), partofexp(jsPsych, 'objects', 'en', blocks_per_half, progress));
     await jsPsych.run(timeline);
     // Return the jsPsych instance so jsPsych Builder can access the experiment results (remove this
     // if you handle results yourself, be it here or in `on_finish()`)
