@@ -13,12 +13,14 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import jsPsychSurveyHtmlForm from '@jspsych/plugin-survey-html-form';
 import jsPsychSurveyMultiChoice from '@jspsych/plugin-survey-multi-choice';
 import { JsPsych, initJsPsych } from 'jspsych';
+import { DataCollection } from 'jspsych/dist/modules/data/DataCollection';
 
 import '../styles/main.scss';
 
 // Type aliases
 type img_description = { num: number; id: number };
 type timeline = JsPsych['timeline'];
+type language = 'en' | 'fr' | 'es' | 'ca';
 type instruction_text = {
   title: string;
   example: string;
@@ -26,8 +28,18 @@ type instruction_text = {
   btn_previous: string;
   btn_end: string;
 };
+type quiz_text = {
+  questions: [
+    {
+      prompt: string;
+      options: string[];
+      required: boolean;
+    },
+  ];
+  preamble: string;
+};
 
-function inputInfo(lang: 'en' | 'fr' | 'es' | 'ca'): string {
+function inputInfo(lang: language): string {
   switch (lang) {
     case 'en':
       return 'Please write a whole number';
@@ -70,7 +82,7 @@ function generateTimelineVars(
 const partofexp: timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
-  lang: 'en' | 'fr' | 'es' | 'ca',
+  lang: language,
   nb_blocks: number = 5,
 ): timeline => ({
   timeline: [
@@ -159,7 +171,7 @@ const partofexp: timeline = (
 
 function translateCountable(
   cntable: 'people' | 'objects',
-  lang: 'en' | 'fr' | 'es' | 'ca',
+  lang: language,
 ): string {
   if (cntable === 'people') {
     switch (lang) {
@@ -197,7 +209,7 @@ function translateCountable(
 
 function instructionTexts(
   cntable: 'people' | 'objects',
-  lang: 'en' | 'fr' | 'es' | 'ca',
+  lang: language,
 ): {
   title: string;
   example: string;
@@ -252,7 +264,7 @@ function instructionTexts(
 
 function generateInstructionPages(
   cntable: 'people' | 'objects',
-  lang: 'en' | 'fr' | 'es' | 'ca',
+  lang: language,
   text: instruction_text,
   example: boolean = false,
 ): string[] {
@@ -276,10 +288,7 @@ function generateInstructionPages(
 }
 
 //Timeline of instructions shown depending on countable (people/objects)
-function instructions(
-  cntable: 'people' | 'objects',
-  lang: 'en' | 'fr' | 'es' | 'ca',
-): timeline {
+function instructions(cntable: 'people' | 'objects', lang: language): timeline {
   const text: instruction_text = instructionTexts(cntable, lang);
   return {
     timeline: [
@@ -301,23 +310,102 @@ function instructions(
   };
 }
 
+function quizQuestions(
+  cntable: 'people' | 'objects',
+  lang: language,
+): quiz_text {
+  switch (lang) {
+    case 'en':
+      return {
+        questions: [
+          {
+            prompt: 'Question 1:  What should be estimate?',
+            options: [
+              'The size of the virtual room',
+              'The duration of picture presentation',
+              `The number of ${translateCountable(cntable, 'en')} inside the virtual room`,
+            ],
+            required: true,
+          },
+        ],
+        preamble: 'Check your knowledge before you begin!',
+      };
+    case 'fr':
+      return {
+        questions: [
+          {
+            prompt: 'Question 1: Que devez-vous estimer?',
+            options: [
+              'La taille de la pièce',
+              'La durée de présentation des images',
+              `Le nombre d'${translateCountable(cntable, 'fr')} présents dans la pièce`,
+            ],
+            required: true,
+          },
+        ],
+        preamble: 'Vérifiez vos connaissances avant de commencer!',
+      };
+    case 'es':
+      return {
+        questions: [
+          {
+            prompt: 'Pregunta 1: ¿Qué debe estimarse?',
+            options: [
+              'El tamaño de la sala virtual',
+              'La duración de la presentación de la imagen',
+              `El número de ${translateCountable(cntable, 'es')} dentro de la sala virtual`,
+            ],
+            required: true,
+          },
+        ],
+        preamble: '¡Compruebe sus conocimientos antes de empezar!',
+      };
+    case 'ca':
+      return {
+        questions: [
+          {
+            prompt: 'Pregunta 1: Què cal estimar?',
+            options: [
+              'La mida de la sala virtual',
+              'La durada de la presentació de la imatge',
+              `El nombre d'${translateCountable(cntable, 'ca')} dins de la sala virtual`,
+            ],
+            required: true,
+          },
+        ],
+        preamble: 'Comproveu els vostres coneixements abans de començar!',
+      };
+    default:
+      console.error(lang + 'is not a valid language parameter.');
+      return {
+        questions: [
+          {
+            prompt: '',
+            options: [],
+            required: false,
+          },
+        ],
+        preamble: '',
+      };
+  }
+}
+
 const instructionQuiz: timeline = (
   cntable: 'people' | 'objects',
-  lang: 'en' | 'fr' | 'es' | 'ca',
+  lang: language,
 ): timeline => ({
-  type: jsPsychSurveyMultiChoice,
-  questions: [
+  timeline: [
     {
-      prompt: 'Question 1:  What should be estimate?',
-      options: [
-        'The size of the virtual room',
-        'The duration of picture presentation',
-        `The number of ${cntable} inside the virtual room`,
-      ],
-      required: true,
-      preamble: 'Check your knowledge before you begin!',
+      type: jsPsychSurveyMultiChoice,
+      ...quizQuestions(cntable, lang),
     },
   ],
+  loop_function: function (data: DataCollection): boolean {
+    return (
+      data.values()[0].response.Q0 !==
+      quizQuestions(cntable, lang).questions[0].options[2]
+    );
+  },
 });
 
 /**

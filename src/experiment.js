@@ -233,20 +233,93 @@ function instructions(cntable, lang) {
         ],
     };
 }
+function quizQuestions(cntable, lang) {
+    switch (lang) {
+        case 'en':
+            return {
+                questions: [
+                    {
+                        prompt: 'Question 1:  What should be estimate?',
+                        options: [
+                            'The size of the virtual room',
+                            'The duration of picture presentation',
+                            `The number of ${translateCountable(cntable, 'en')} inside the virtual room`,
+                        ],
+                        required: true,
+                    },
+                ],
+                preamble: 'Check your knowledge before you begin!',
+            };
+        case 'fr':
+            return {
+                questions: [
+                    {
+                        prompt: 'Question 1: Que devez-vous estimer?',
+                        options: [
+                            'La taille de la pièce',
+                            'La durée de présentation des images',
+                            `Le nombre d'${translateCountable(cntable, 'fr')} présents dans la pièce`,
+                        ],
+                        required: true,
+                    },
+                ],
+                preamble: 'Vérifiez vos connaissances avant de commencer!',
+            };
+        case 'es':
+            return {
+                questions: [
+                    {
+                        prompt: 'Pregunta 1: ¿Qué debe estimarse?',
+                        options: [
+                            'El tamaño de la sala virtual',
+                            'La duración de la presentación de la imagen',
+                            `El número de ${translateCountable(cntable, 'es')} dentro de la sala virtual`,
+                        ],
+                        required: true,
+                    },
+                ],
+                preamble: '¡Compruebe sus conocimientos antes de empezar!',
+            };
+        case 'ca':
+            return {
+                questions: [
+                    {
+                        prompt: 'Pregunta 1: Què cal estimar?',
+                        options: [
+                            'La mida de la sala virtual',
+                            'La durada de la presentació de la imatge',
+                            `El nombre d'${translateCountable(cntable, 'ca')} dins de la sala virtual`,
+                        ],
+                        required: true,
+                    },
+                ],
+                preamble: 'Comproveu els vostres coneixements abans de començar!',
+            };
+        default:
+            console.error(lang + 'is not a valid language parameter.');
+            return {
+                questions: [
+                    {
+                        prompt: '',
+                        options: [],
+                        required: false,
+                    },
+                ],
+                preamble: '',
+            };
+    }
+}
 const instructionQuiz = (cntable, lang) => ({
-    type: jsPsychSurveyMultiChoice,
-    questions: [
+    timeline: [
         {
-            prompt: 'Question 1:  What should be estimate?',
-            options: [
-                'The size of the virtual room',
-                'The duration of picture presentation',
-                `The number of ${cntable} inside the virtual room`,
-            ],
-            required: true,
-            preamble: 'Check your knowledge before you begin!',
+            type: jsPsychSurveyMultiChoice,
+            ...quizQuestions(cntable, lang),
         },
     ],
+    loop_function: function (data) {
+        return (data.values()[0].response.Q0 !==
+            quizQuestions(cntable, lang).questions[0].options[2]);
+    },
 });
 /**
  * This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment
