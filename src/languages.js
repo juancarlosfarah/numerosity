@@ -67,12 +67,7 @@ export function translateCountable(cntable, lang) {
  * @description Generates instruction texts based on the type of countable and language.
  * @param { 'people' | 'objects' } cntable - The type of countable (people or objects).
  * @param {language} lang - The language in which instructions are shown.
- * @returns {Object} - An object containing instruction texts.
- * @returns {string} title - The title of the instructions.
- * @returns {string} example - The example instruction text.
- * @returns {string} btn_next - The text for the next button.
- * @returns {string} btn_previous - The text for the previous button.
- * @returns {string} btn_end - The text for the end button.
+ * @returns {instruction_text} - An object containing instruction texts.
  */
 export function instructionTexts(cntable, lang) {
     switch (lang) {
@@ -171,7 +166,7 @@ export function translatePreamble(second_half, lang) {
  * @description Generates quiz questions based on the type of countable and language.
  * @param { 'people' | 'objects' } cntable - The type of countable (people or objects).
  * @param {language} lang - The language in which the quiz questions are shown.
- * @returns {quiz_Q} - An array of quiz questions.
+ * @returns {quiz_questions} - An array of quiz questions.
  */
 export function quizQuestions(cntable, lang) {
     switch (lang) {
@@ -232,6 +227,43 @@ export function quizQuestions(cntable, lang) {
                     required: false,
                 },
             ];
+    }
+}
+/**
+ * @function translateTip
+ * @description Retrieves tips text based on the specified language.
+ * @param {language} lang - The language code for the tips text.
+ * @returns {tip_text} - An object containing title, description, and button text for tips.
+ */
+export function translateTip(lang) {
+    switch (lang) {
+        case 'en':
+            return {
+                title: 'Some tips',
+                description: 'Please keep your face at around 50cm from your screen during the experiment.',
+                btn_txt: 'I am ready to start',
+            };
+        case 'fr':
+            return {
+                title: 'Quelques conseils',
+                description: "Placez vous à environ 50cm de votre écran pendant l'expérience.",
+                btn_txt: 'Je souhaite commencer',
+            };
+        case 'es':
+            return {
+                title: 'Algunos consejos',
+                description: 'Por favor, mantén la cara a unos 50 cm de la pantalla durante el experimento.',
+                btn_txt: 'Estoy listo para empezar',
+            };
+        case 'ca':
+            return {
+                title: 'Alguns consells',
+                description: "Si us plau, manteniu la cara a uns 50 cm de la pantalla durant l'experiment.",
+                btn_txt: 'Estic llest per començar',
+            };
+        default:
+            console.error(lang + 'is not a valid language parameter.');
+            return { title: '', description: '', btn_txt: '' };
     }
 }
 /**

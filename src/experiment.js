@@ -168,7 +168,6 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
             on_finish: function () {
                 progress.completed++;
                 jsPsych.setProgressBar(progress.completed / (8 * nb_blocks));
-                console.log(jsPsych.data.get());
             },
         },
     ],
