@@ -6,6 +6,7 @@
  * @assets assets/
  */
 // You can import stylesheets (.scss or .css).
+// Import required plugins and modules from jsPsych
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import jsPsychHtmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response';
 import jsPsychinstructions from '@jspsych/plugin-instructions';
@@ -13,8 +14,19 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import jsPsychSurveyHtmlForm from '@jspsych/plugin-survey-html-form';
 import jsPsychSurveyMultiChoice from '@jspsych/plugin-survey-multi-choice';
 import { initJsPsych } from 'jspsych';
+// Import styles and language functions
 import '../styles/main.scss';
 import * as langf from './languages.js';
+/**
+ * @function generateInstructionPages
+ * @description Generate instruction pages based on the type of countable (people/objects), language, and text.
+ * If example is true, it generates the example page with a video.
+ * @param { 'people' | 'objects' } cntable - The type of countable (people or objects)
+ * @param { language } lang - The language in which instructions are shown
+ * @param { instruction_text } text - The text for instructions
+ * @param { boolean } example - Whether to include example video
+ * @returns { string[] } - Array of instruction pages as HTML strings
+ */
 function generateInstructionPages(cntable, lang, text, example = false) {
     if (example === false) {
         const pages = [];
@@ -33,7 +45,14 @@ function generateInstructionPages(cntable, lang, text, example = false) {
         ];
     }
 }
-//Timeline of instructions shown depending on countable (people/objects)
+/**
+ * @function instructions
+ * @description Create instruction timeline based on the type of countable and language.
+ * Combines both text and example (video) instructions.
+ * @param { 'people' | 'objects' } cntable - The type of countable (people or objects)
+ * @param { language } lang - The language in which instructions are shown
+ * @returns { timeline } - Timeline for instructions
+ */
 function instructions(cntable, lang) {
     const text = langf.instructionTexts(cntable, lang);
     return {
@@ -55,6 +74,14 @@ function instructions(cntable, lang) {
         ],
     };
 }
+/**
+ * @function instructionQuiz
+ * @description Instruction quiz timeline with looping functionality until correct answers are given.
+ * @param { 'people' | 'objects' } cntable - The type of countable (people or objects)
+ * @param { language } lang - The language in which quiz is presented
+ * @param { boolean } second_half - Whether it is the second half of the quiz
+ * @returns { timeline } - Timeline for instruction quiz
+ */
 const instructionQuiz = (cntable, lang, second_half = false) => ({
     timeline: [
         {
@@ -68,8 +95,14 @@ const instructionQuiz = (cntable, lang, second_half = false) => ({
             langf.quizQuestions(cntable, lang)[0].options[2]);
     },
 });
-// Generate timeline variables following the img_description[] type described above.
-// For each numerosity, "nb_block" images are randomly selected and put in a list ordered by numerosity.
+/**
+ * @function generateTimelineVars
+ * @description Generate timeline variables for the experiment.
+ * For each numerosity, "nb_block" images are randomly selected and put in a list ordered by numerosity.
+ * @param { JsPsych } JsPsych - The jsPsych instance
+ * @param { number } nb_blocks - Number of blocks per numerosity
+ * @returns { img_description[] } - Array of image descriptions
+ */
 function generateTimelineVars(JsPsych, nb_blocks) {
     const timeline_variables = [];
     for (let num = 5; num <= 8; num++) {
@@ -80,10 +113,19 @@ function generateTimelineVars(JsPsych, nb_blocks) {
     }
     return timeline_variables;
 }
-// Timeline corresponding to half of numerosity task (people or objects).
-// The order of stimuli correspond to the following pattern:
-// There are "nb_blocks" blocks consisting of a random image from each numerosity (5,6,7,8) in random order.
-// Two identical images will never be contained in one experiment.
+/**
+ * @function partofexp
+ * @description Timeline for one half of the numerosity task.
+ * The order of stimuli correspond to the following pattern:
+ * There are "nb_blocks" blocks consisting of a random image from each numerosity (5,6,7,8) in random order.
+ * Two identical images will never be contained in one experiment.
+ * @param { JsPsych } jsPsych - The jsPsych instance
+ * @param { 'people' | 'objects' } cntable - The type of countable (people or objects)
+ * @param { language } lang - The language in which task is presented
+ * @param { number } nb_blocks - Number of blocks per half
+ * @param { { completed: number } } progress - Object tracking the progress
+ * @returns { timeline } - Timeline for one half of the numerosity task
+ */
 const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
     timeline: [
         // Crosshair shown before each image for 500ms.
@@ -106,7 +148,7 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
         {
             type: jsPsychSurveyHtmlForm,
             preamble: 'How many ' + cntable + ' were in the virtual room?',
-            html: '<input type="number" id="task_input" required><br>',
+            html: '<input type="number" id="task_input" required min="0" step="1"><br>',
             autofocus: 'task_input',
             on_load: () => {
                 const input = document.getElementById('task_input');
@@ -126,7 +168,7 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
             on_finish: function () {
                 progress.completed++;
                 jsPsych.setProgressBar(progress.completed / (8 * nb_blocks));
-                console.log(progress);
+                console.log(jsPsych.data.get());
             },
         },
     ],
@@ -158,8 +200,8 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
 });
 /**
  * This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment
- *
- * @type {import("jspsych-builder").RunFunction}
+ * Initializes jsPsych, sets up the timeline, and runs the experiment.
+ * @returns { Promise<JsPsych> } - Promise resolving to the jsPsych instance
  */
 export async function run( /*{
   assetPaths,

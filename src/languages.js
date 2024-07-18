@@ -1,3 +1,9 @@
+/**
+ * @function textProgressBar
+ * @description Returns the text for the progress bar based on the selected language.
+ * @param {language} lang - The language in which the progress bar text is shown.
+ * @returns {string} - The progress bar text in the specified language.
+ */
 export function textProgressBar(lang) {
     switch (lang) {
         case 'en':
@@ -13,6 +19,13 @@ export function textProgressBar(lang) {
             return '';
     }
 }
+/**
+ * @function translateCountable
+ * @description Translates 'people' or 'objects' based on the selected language.
+ * @param { 'people' | 'objects' } cntable - The type of countable (people or objects).
+ * @param {language} lang - The language in which the countable text is shown.
+ * @returns {string} - The translated countable text.
+ */
 export function translateCountable(cntable, lang) {
     if (cntable === 'people') {
         switch (lang) {
@@ -49,6 +62,18 @@ export function translateCountable(cntable, lang) {
         return '';
     }
 }
+/**
+ * @function instructionTexts
+ * @description Generates instruction texts based on the type of countable and language.
+ * @param { 'people' | 'objects' } cntable - The type of countable (people or objects).
+ * @param {language} lang - The language in which instructions are shown.
+ * @returns {Object} - An object containing instruction texts.
+ * @returns {string} title - The title of the instructions.
+ * @returns {string} example - The example instruction text.
+ * @returns {string} btn_next - The text for the next button.
+ * @returns {string} btn_previous - The text for the previous button.
+ * @returns {string} btn_end - The text for the end button.
+ */
 export function instructionTexts(cntable, lang) {
     switch (lang) {
         case 'en':
@@ -94,17 +119,32 @@ export function instructionTexts(cntable, lang) {
             };
     }
 }
+/**
+ * @function translatePreamble
+ * @description Translates the preamble text based on whether it is the second half of the experiment and the selected language.
+ * @param {boolean} second_half - Whether it is the second half of the experiment.
+ * @param {language} lang - The language in which the preamble text is shown.
+ * @returns {string} - The translated preamble text.
+ */
 export function translatePreamble(second_half, lang) {
+    const en_preamble = 'Check your knowledge before you begin!';
+    const fr_preamble = 'Vérifiez vos connaissances avant de commencer!';
+    const es_preamble = '¡Compruebe sus conocimientos antes de empezar!';
+    const ca_preamble = 'Comproveu els vostres coneixements abans de començar!';
     if (second_half) {
         switch (lang) {
             case 'en':
-                return 'You are in the middle of the experiment!<br>Instructions have changed for the second half.';
+                return ('You are in the middle of the experiment!<br>Instructions have changed for the second half.' +
+                    en_preamble);
             case 'fr':
-                return 'You are in the middle of the experiment!<br>Instructions have changed for the second half.';
+                return ("Vous êtes au milieu de l'expérience!<br>Instructions have changed for the second half." +
+                    fr_preamble);
             case 'es':
-                return 'Estás en medio del experimento!<br>Las instrucciones han cambiado para la segunda parte.';
+                return ('Estás en medio del experimento!<br>Las instrucciones han cambiado para la segunda parte.' +
+                    es_preamble);
             case 'ca':
-                return "Ets al mig de l'experiment!<br>Les instruccions han canviat per a la segona part.";
+                return ("Ets al mig de l'experiment!<br>Les instruccions han canviat per a la segona part." +
+                    ca_preamble);
             default:
                 console.error(lang + 'is not a valid language parameter.');
                 return '';
@@ -113,19 +153,26 @@ export function translatePreamble(second_half, lang) {
     else {
         switch (lang) {
             case 'en':
-                return 'Check your knowledge before you begin!';
+                return en_preamble;
             case 'fr':
-                return 'Vérifiez vos connaissances avant de commencer!';
+                return fr_preamble;
             case 'es':
-                return '¡Compruebe sus conocimientos antes de empezar!';
+                return es_preamble;
             case 'ca':
-                return 'Comproveu els vostres coneixements abans de començar!';
+                return ca_preamble;
             default:
                 console.error(lang + 'is not a valid language parameter.');
                 return '';
         }
     }
 }
+/**
+ * @function quizQuestions
+ * @description Generates quiz questions based on the type of countable and language.
+ * @param { 'people' | 'objects' } cntable - The type of countable (people or objects).
+ * @param {language} lang - The language in which the quiz questions are shown.
+ * @returns {quiz_Q} - An array of quiz questions.
+ */
 export function quizQuestions(cntable, lang) {
     switch (lang) {
         case 'en':
@@ -187,6 +234,12 @@ export function quizQuestions(cntable, lang) {
             ];
     }
 }
+/**
+ * @function inputInfo
+ * @description Retrieves input information text based on the specified language.
+ * @param {language} lang - The language code for the input information.
+ * @returns {string} - The input information text.
+ */
 export function inputInfo(lang) {
     switch (lang) {
         case 'en':
