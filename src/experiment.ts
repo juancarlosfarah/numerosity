@@ -143,11 +143,47 @@ const instructionQuiz: timeline = (
       preamble: langf.translatePreamble(second_half, lang),
     },
   ],
-  loop_function: function (data: DataCollection): boolean {
+});
+
+const returnPage: timeline = (
+  jsPsych: JsPsych,
+  cntable: 'people' | 'objects',
+  lang: language,
+): timeline => ({
+  timeline: [
+    {
+      type: HtmlButtonResponsePlugin,
+      stimulus: `<p>${langf.translateRepeat(lang)}</p>`,
+      choices: [langf.translateRepeat(lang)],
+    },
+  ],
+  conditional_function: function (): boolean {
     return (
-      data.values()[0].response.Q0 !==
+      jsPsych.data.getLastTimelineData().values()[0].response.Q0 !==
       langf.quizQuestions(cntable, lang)[0].options[2]
     );
+  },
+});
+
+const groupInstructions: timeline = (
+  jsPsych: JsPsych,
+  cntable: 'people' | 'objects',
+  lang: language,
+  second_half: boolean = false,
+): timeline => ({
+  timeline: [
+    instructions(cntable, lang),
+    instructionQuiz(cntable, lang, second_half),
+    returnPage(jsPsych, cntable, lang),
+  ],
+  loop_function: function (data: DataCollection): boolean {
+    return (
+      data.last(2).values()[1].response.Q0 !==
+      langf.quizQuestions(cntable, lang)[0].options[2]
+    );
+  },
+  on_finish: (): void => {
+    jsPsych.getDisplayElement().innerHTML = '';
   },
 });
 
@@ -165,8 +201,8 @@ function tipScreen(lang: language): timeline {
         type: HtmlButtonResponsePlugin,
         stimulus:
           tiptext.title +
-          `<br><img src="../assets/instruction_media/tip.png"><br>` +
-          tiptext.description,
+          `<br><img src="../assets/instruction_media/tip.png"><br>`,
+        prompt: tiptext.description,
         choices: [tiptext.btn_txt],
       },
     ],
@@ -347,12 +383,11 @@ export async function run(/*{
 
   // Run numerosity task
   timeline.push(
-    instructions('people', 'en'),
-    instructionQuiz('people', 'en'),
+    groupInstructions(jsPsych, 'people', 'en'),
     tipScreen('en'),
     partofexp(jsPsych, 'people', 'en', blocks_per_half, progress),
     instructions('objects', 'en'),
-    instructionQuiz('objects', 'en', true),
+    groupInstructions(jsPsych, 'objects', 'en', true),
     tipScreen('en'),
     partofexp(jsPsych, 'objects', 'en', blocks_per_half, progress),
   );

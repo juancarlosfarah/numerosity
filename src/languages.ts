@@ -293,6 +293,22 @@ export function quizQuestions(
   }
 }
 
+export function translateRepeat(lang: language): string {
+  switch (lang) {
+    case 'en':
+      return 'Click here to read the instructions again';
+    case 'fr':
+      return 'Cliquez ici pour lire les instructions à nouveau';
+    case 'es':
+      return 'Haga clic aquí para volver a leer las instrucciones';
+    case 'ca':
+      return 'Feu clic aquí per tornar a llegir les instruccions';
+    default:
+      console.error(lang + 'is not a valid language parameter.');
+      return '';
+  }
+}
+
 /**
  * @function translateTip
  * @description Retrieves tips text based on the specified language.
