@@ -8,7 +8,9 @@
 // You can import stylesheets (.scss or .css).
 // Import required plugins and modules from jsPsych
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
+import HtmlButtonResponsePlugin from '@jspsych/plugin-html-button-response';
 import jsPsychHtmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response';
+import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import jsPsychinstructions from '@jspsych/plugin-instructions';
 import PreloadPlugin from '@jspsych/plugin-preload';
 import JsResize from '@jspsych/plugin-resize';
@@ -31,6 +33,11 @@ type instruction_text = {
   btn_next: string;
   btn_previous: string;
   btn_end: string;
+};
+type tip_text = {
+  title: string;
+  description: string;
+  btn_txt: string;
 };
 
 const resize: timeline = (lang: language): timeline => ({
@@ -136,6 +143,22 @@ const instructionQuiz: timeline = (
     );
   },
 });
+
+function tipScreen(lang: language): timeline {
+  const tiptext: tip_text = langf.translateTip(lang);
+  return {
+    timeline: [
+      {
+        type: HtmlButtonResponsePlugin,
+        stimulus:
+          tiptext.title +
+          '<br><img src="../assets/instruction_media/tip.png"><br>' +
+          tiptext.description,
+        choices: [tiptext.btn_txt],
+      },
+    ],
+  };
+}
 
 /**
  * @function generateTimelineVars
@@ -313,9 +336,11 @@ export async function run(/*{
   timeline.push(
     instructions('people', 'en'),
     instructionQuiz('people', 'en'),
+    tipScreen('en'),
     partofexp(jsPsych, 'people', 'en', blocks_per_half, progress),
     instructions('objects', 'en'),
     instructionQuiz('objects', 'en', true),
+    tipScreen('en'),
     partofexp(jsPsych, 'objects', 'en', blocks_per_half, progress),
   );
 

@@ -8,6 +8,7 @@
 // You can import stylesheets (.scss or .css).
 // Import required plugins and modules from jsPsych
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
+import HtmlButtonResponsePlugin from '@jspsych/plugin-html-button-response';
 import jsPsychHtmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response';
 import jsPsychinstructions from '@jspsych/plugin-instructions';
 import PreloadPlugin from '@jspsych/plugin-preload';
@@ -106,6 +107,20 @@ const instructionQuiz = (cntable, lang, second_half = false) => ({
             langf.quizQuestions(cntable, lang)[0].options[2]);
     },
 });
+function tipScreen(lang) {
+    const tiptext = langf.translateTip(lang);
+    return {
+        timeline: [
+            {
+                type: HtmlButtonResponsePlugin,
+                stimulus: tiptext.title +
+                    '<br><img src="../assets/instruction_media/tip.png"><br>' +
+                    tiptext.description,
+                choices: [tiptext.btn_txt],
+            },
+        ],
+    };
+}
 /**
  * @function generateTimelineVars
  * @description Generate timeline variables for the experiment.
@@ -241,7 +256,7 @@ export async function run( /*{
     });
     timeline.push(resize('en'));
     // Run numerosity task
-    timeline.push(instructions('people', 'en'), instructionQuiz('people', 'en'), partofexp(jsPsych, 'people', 'en', blocks_per_half, progress), instructions('objects', 'en'), instructionQuiz('objects', 'en', true), partofexp(jsPsych, 'objects', 'en', blocks_per_half, progress));
+    timeline.push(instructions('people', 'en'), instructionQuiz('people', 'en'), tipScreen('en'), partofexp(jsPsych, 'people', 'en', blocks_per_half, progress), instructions('objects', 'en'), instructionQuiz('objects', 'en', true), tipScreen('en'), partofexp(jsPsych, 'objects', 'en', blocks_per_half, progress));
     await jsPsych.run(timeline);
     // Return the jsPsych instance so jsPsych Builder can access the experiment results (remove this
     // if you handle results yourself, be it here or in `on_finish()`)
