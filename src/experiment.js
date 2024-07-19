@@ -11,12 +11,23 @@ import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import jsPsychHtmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response';
 import jsPsychinstructions from '@jspsych/plugin-instructions';
 import PreloadPlugin from '@jspsych/plugin-preload';
+import JsResize from '@jspsych/plugin-resize';
 import jsPsychSurveyHtmlForm from '@jspsych/plugin-survey-html-form';
 import jsPsychSurveyMultiChoice from '@jspsych/plugin-survey-multi-choice';
 import { initJsPsych } from 'jspsych';
 // Import styles and language functions
 import '../styles/main.scss';
 import * as langf from './languages.js';
+const resize = (lang) => ({
+    timeline: [
+        {
+            type: JsResize,
+            item_width: 3 + 3 / 8,
+            item_height: 2 + 1 / 8,
+            prompt: `<p>${langf.translateCalibration(lang)}</p>`,
+        },
+    ],
+});
 /**
  * @function generateInstructionPages
  * @description Generate instruction pages based on the type of countable (people/objects), language, and text.
@@ -228,6 +239,7 @@ export async function run( /*{
         type: FullscreenPlugin,
         fullscreen_mode: true,
     });
+    timeline.push(resize('en'));
     // Run numerosity task
     timeline.push(instructions('people', 'en'), instructionQuiz('people', 'en'), partofexp(jsPsych, 'people', 'en', blocks_per_half, progress), instructions('objects', 'en'), instructionQuiz('objects', 'en', true), partofexp(jsPsych, 'objects', 'en', blocks_per_half, progress));
     await jsPsych.run(timeline);

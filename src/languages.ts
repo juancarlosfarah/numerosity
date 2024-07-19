@@ -1,3 +1,4 @@
+// Type aliases for better code readability
 type language = 'en' | 'fr' | 'es' | 'ca';
 
 type quiz_questions = {
@@ -19,6 +20,22 @@ type tip_text = {
   description: string;
   btn_txt: string;
 };
+
+export function translateCalibration(lang: language): string {
+  switch (lang) {
+    case 'en':
+      return 'Click and drag the lower right corner of the box until the box is the same size as a credit card held up to the screen.';
+    case 'fr':
+      return "Cliquez et faites glisser le coin inférieur droit de la boîte jusqu'à ce que la boîte ait la même taille qu'une carte de crédit tenue devant l'écran.";
+    case 'es':
+      return 'Haga clic y arrastre la esquina inferior derecha del cuadro hasta que tenga el mismo tamaño que una tarjeta de crédito sostenida en la pantalla.';
+    case 'ca':
+      return "Feu clic i arrossegueu l'extrem inferior dret del quadre fins que el quadre tingui la mateixa mida que una targeta de crèdit que es mostra a la pantalla.";
+    default:
+      console.error(lang + 'is not a valid language parameter.');
+      return '';
+  }
+}
 
 /**
  * @function textProgressBar

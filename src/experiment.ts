@@ -11,6 +11,7 @@ import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import jsPsychHtmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response';
 import jsPsychinstructions from '@jspsych/plugin-instructions';
 import PreloadPlugin from '@jspsych/plugin-preload';
+import JsResize from '@jspsych/plugin-resize';
 import jsPsychSurveyHtmlForm from '@jspsych/plugin-survey-html-form';
 import jsPsychSurveyMultiChoice from '@jspsych/plugin-survey-multi-choice';
 import { JsPsych, initJsPsych } from 'jspsych';
@@ -31,6 +32,17 @@ type instruction_text = {
   btn_previous: string;
   btn_end: string;
 };
+
+const resize: timeline = (lang: language): timeline => ({
+  timeline: [
+    {
+      type: JsResize,
+      item_width: 3 + 3 / 8,
+      item_height: 2 + 1 / 8,
+      prompt: `<p>${langf.translateCalibration(lang)}</p>`,
+    },
+  ],
+});
 
 /**
  * @function generateInstructionPages
@@ -294,6 +306,8 @@ export async function run(/*{
     type: FullscreenPlugin,
     fullscreen_mode: true,
   });
+
+  timeline.push(resize('en'));
 
   // Run numerosity task
   timeline.push(
