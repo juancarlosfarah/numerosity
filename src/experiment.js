@@ -19,15 +19,23 @@ import { initJsPsych } from 'jspsych';
 // Import styles and language functions
 import '../styles/main.scss';
 import * as langf from './languages.js';
-const resize = (lang) => ({
+const resize = (jsPsych, lang) => ({
     timeline: [
         {
             type: JsResize,
-            item_width: 3 + 3 / 8,
-            item_height: 2 + 1 / 8,
+            item_width: 8.56,
+            item_height: 5.398,
             prompt: `<p>${langf.translateCalibration(lang)}</p>`,
+            starting_size: 323.52755906,
         },
     ],
+    on_finish: function () {
+        const style = document.createElement('style');
+        style.innerHTML = `img, vid {
+      width: ${jsPsych.data.get().last(1).values()[0].scale_factor * 1680}px;
+      height: auto}`;
+        document.head.appendChild(style);
+    },
 });
 /**
  * @function generateInstructionPages
@@ -53,7 +61,7 @@ function generateInstructionPages(cntable, lang, text, example = false) {
             text.title +
                 '<br>' +
                 text.example +
-                `<br><video muted autoplay loop preload="auto"><source type="video/mp4" src="../assets/instruction_media/${cntable}/example_vid.mp4" ></source></video>`,
+                `<br><video muted autoplay loop preload="auto" src="../assets/instruction_media/${cntable}/example_vid.mp4"><source type="video/mp4"></source></video>`,
         ];
     }
 }
@@ -107,6 +115,12 @@ const instructionQuiz = (cntable, lang, second_half = false) => ({
             langf.quizQuestions(cntable, lang)[0].options[2]);
     },
 });
+/**
+ * @function tipScreen
+ * @description Generates a timeline object for displaying a tip screen based on the specified language.
+ * @param {language} lang - The language code for the tips text.
+ * @returns {timeline} - An object representing the timeline for the tip screen.
+ */
 function tipScreen(lang) {
     const tiptext = langf.translateTip(lang);
     return {
@@ -114,7 +128,7 @@ function tipScreen(lang) {
             {
                 type: HtmlButtonResponsePlugin,
                 stimulus: tiptext.title +
-                    '<br><img src="../assets/instruction_media/tip.png"><br>' +
+                    `<br><img src="../assets/instruction_media/tip.png"><br>` +
                     tiptext.description,
                 choices: [tiptext.btn_txt],
             },
@@ -254,7 +268,7 @@ export async function run( /*{
         type: FullscreenPlugin,
         fullscreen_mode: true,
     });
-    timeline.push(resize('en'));
+    timeline.push(resize(jsPsych, 'en'));
     // Run numerosity task
     timeline.push(instructions('people', 'en'), instructionQuiz('people', 'en'), tipScreen('en'), partofexp(jsPsych, 'people', 'en', blocks_per_half, progress), instructions('objects', 'en'), instructionQuiz('objects', 'en', true), tipScreen('en'), partofexp(jsPsych, 'objects', 'en', blocks_per_half, progress));
     await jsPsych.run(timeline);
