@@ -72,25 +72,19 @@ function generateInstructionPages(
   cntable: 'people' | 'objects',
   lang: language,
   text: instruction_text,
-  example: boolean = false,
 ): string[] {
-  if (example === false) {
-    const pages: string[] = [];
-    for (let page_nb: number = 1; page_nb < 6; page_nb++) {
-      pages.push(
-        text.title +
-          `<br><img src='../assets/instruction_media/${cntable}/${lang}/instruction_${page_nb}.png'></img>`,
-      );
-    }
-    return pages;
-  } else {
-    return [
-      text.title +
-        '<br>' +
-        text.example +
-        `<br><video muted autoplay loop preload="auto" src="../assets/instruction_media/${cntable}/example_vid.mp4"><source type="video/mp4"></source></video>`,
-    ];
+  const pages: string[] = [];
+  for (let page_nb: number = 1; page_nb < 6; page_nb++) {
+    pages.push(
+      `$<b>${text.title}</b><br><img src='../assets/instruction_media/${cntable}/${lang}/instruction_${page_nb}.png'></img>`,
+    );
   }
+  pages.push(
+    `$<b>${text.title}</b><br>` +
+      text.example +
+      `<br><video muted autoplay loop preload="auto" src="../assets/instruction_media/${cntable}/example_vid.mp4"><source type="video/mp4"></source></video>`,
+  );
+  return pages;
 }
 
 /**
@@ -112,13 +106,6 @@ function instructions(cntable: 'people' | 'objects', lang: language): timeline {
         button_label_previous: text.btn_previous,
         show_clickable_nav: true,
       },
-      {
-        type: jsPsychinstructions,
-        pages: generateInstructionPages(cntable, lang, text, true),
-        button_label_next: text.btn_end,
-        button_label_previous: text.btn_previous,
-        show_clickable_nav: true,
-      },
     ],
   };
 }
@@ -132,6 +119,7 @@ function instructions(cntable: 'people' | 'objects', lang: language): timeline {
  * @returns { timeline } - Timeline for instruction quiz
  */
 const instructionQuiz: timeline = (
+  jsPsych: JsPsych,
   cntable: 'people' | 'objects',
   lang: language,
   second_half: boolean = false,
@@ -140,11 +128,29 @@ const instructionQuiz: timeline = (
     {
       type: jsPsychSurveyMultiChoice,
       questions: langf.quizQuestions(cntable, lang),
-      preamble: langf.translatePreamble(second_half, lang),
+      preamble: `<b>${langf.translatePreamble(second_half, lang)}</b><br><button id="quiz_repeat_btn" style="cursor: pointer;">${langf.translateRepeat(lang)}</button>`,
     },
   ],
+  on_load: () => {
+    document
+      .getElementById('quiz_repeat_btn')!
+      .addEventListener('click', () => {
+        jsPsych.finishTrial({
+          response: { Q0: 'read_again' },
+        });
+      });
+  },
 });
 
+/**
+ * @function returnPage
+ * @description Generates a timeline object for displaying a return page based on the specified language and countable type.
+ * The return page is conditional based on the user's previous response.
+ * @param {JsPsych} jsPsych - The jsPsych instance.
+ * @param {'people' | 'objects'} cntable - The type of countable (people or objects).
+ * @param {language} lang - The language code for the return page text.
+ * @returns {timeline} - An object representing the timeline for the return page.
+ */
 const returnPage: timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
@@ -153,18 +159,30 @@ const returnPage: timeline = (
   timeline: [
     {
       type: HtmlButtonResponsePlugin,
-      stimulus: `<p>${langf.translateRepeat(lang)}</p>`,
+      stimulus: `<p><b>${langf.translateRepeat(lang)}</b></p>`,
       choices: [langf.translateRepeat(lang)],
     },
   ],
   conditional_function: function (): boolean {
     return (
       jsPsych.data.getLastTimelineData().values()[0].response.Q0 !==
-      langf.quizQuestions(cntable, lang)[0].options[2]
+        'read_again' &&
+      jsPsych.data.getLastTimelineData().values()[0].response.Q0 !==
+        langf.quizQuestions(cntable, lang)[0].options[2]
     );
   },
 });
 
+/**
+ * @function groupInstructions
+ * @description Generates a timeline object for displaying group instructions including the instruction text,
+ * instruction quiz, and return page based on the specified language, countable type, and experiment phase.
+ * @param {JsPsych} jsPsych - The jsPsych instance.
+ * @param {'people' | 'objects'} cntable - The type of countable (people or objects).
+ * @param {language} lang - The language code for the instruction texts.
+ * @param {boolean} [second_half=false] - Indicates if it is the second half of the experiment.
+ * @returns {timeline} - An object representing the timeline for the group instructions.
+ */
 const groupInstructions: timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
@@ -173,7 +191,7 @@ const groupInstructions: timeline = (
 ): timeline => ({
   timeline: [
     instructions(cntable, lang),
-    instructionQuiz(cntable, lang, second_half),
+    instructionQuiz(jsPsych, cntable, lang, second_half),
     returnPage(jsPsych, cntable, lang),
   ],
   loop_function: function (data: DataCollection): boolean {
@@ -199,9 +217,7 @@ function tipScreen(lang: language): timeline {
     timeline: [
       {
         type: HtmlButtonResponsePlugin,
-        stimulus:
-          tiptext.title +
-          `<br><img src="../assets/instruction_media/tip.png"><br>`,
+        stimulus: `<b>${tiptext.title}</b><br><img src="../assets/instruction_media/tip.png"><br>`,
         prompt: tiptext.description,
         choices: [tiptext.btn_txt],
       },
