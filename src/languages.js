@@ -1,3 +1,18 @@
+export function translateQuitBtn(lang) {
+    switch (lang) {
+        case 'en':
+            return 'Quit';
+        case 'fr':
+            return 'Quitter';
+        case 'es':
+            return 'Salir';
+        case 'ca':
+            return 'Sortir';
+        default:
+            console.error(lang + 'is not a valid language parameter.');
+            return '';
+    }
+}
 export function translateCalibration(lang) {
     switch (lang) {
         case 'en':

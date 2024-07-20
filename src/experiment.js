@@ -29,6 +29,16 @@ const resize = (jsPsych, lang) => ({
             starting_size: 323.52755906,
         },
     ],
+    on_load: function () {
+        const quit_btn = document.createElement('button');
+        quit_btn.setAttribute('type', 'button');
+        quit_btn.setAttribute('style', 'color: #fff; background-color: #1d2124; border-color: #171a1d;');
+        quit_btn.setAttribute('onclick', 'alert("end")');
+        quit_btn.appendChild(document.createTextNode(langf.translateQuitBtn(lang)));
+        document
+            .getElementById('jspsych-progressbar-container')
+            .appendChild(quit_btn);
+    },
     on_finish: function () {
         const style = document.createElement('style');
         style.innerHTML = `img, vid {

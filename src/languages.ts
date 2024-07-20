@@ -21,6 +21,22 @@ type tip_text = {
   btn_txt: string;
 };
 
+export function translateQuitBtn(lang: language): string {
+  switch (lang) {
+    case 'en':
+      return 'Quit';
+    case 'fr':
+      return 'Quitter';
+    case 'es':
+      return 'Salir';
+    case 'ca':
+      return 'Sortir';
+    default:
+      console.error(lang + 'is not a valid language parameter.');
+      return '';
+  }
+}
+
 export function translateCalibration(lang: language): string {
   switch (lang) {
     case 'en':
