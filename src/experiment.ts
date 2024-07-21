@@ -147,10 +147,10 @@ const instructionQuiz: timeline = (
       preamble: `<b>${langf.translatePreamble(second_half, lang)}</b><br><button id="quiz_repeat_btn" style="cursor: pointer;">${langf.translateRepeat(lang)}</button>`,
     },
   ],
-  on_load: () => {
+  on_load: (): void => {
     document
       .getElementById('quiz_repeat_btn')!
-      .addEventListener('click', () => {
+      .addEventListener('click', (): void => {
         jsPsych.finishTrial({
           response: { Q0: 'read_again' },
         });
@@ -260,7 +260,7 @@ function generateTimelineVars(
       [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
       nb_blocks,
     );
-    for (let i = 0; i < nb_blocks; i++) {
+    for (let i: number = 0; i < nb_blocks; i++) {
       timeline_variables.push({ num: num, id: id_list[i] });
     }
   }
@@ -321,7 +321,7 @@ const partofexp: timeline = (
         input.setCustomValidity(langf.inputInfo(lang));
 
         // Add input event listener
-        input.addEventListener('input', () => {
+        input.addEventListener('input', (): void => {
           // If the input value is not empty, clear the custom validity message
           if (input.value === '') {
             input.setCustomValidity(langf.inputInfo(lang));
@@ -351,7 +351,9 @@ const partofexp: timeline = (
 
       // Shuffle all indices for timeline variables with same numerosity
       for (let nums: number = 0; nums < 4; nums++) {
-        template = [...Array(blocks).keys()].map((x) => x + nums * blocks);
+        template = [...Array(blocks).keys()].map(
+          (x): number => x + nums * blocks,
+        );
         intermediate = intermediate.concat(
           jsPsych.randomization.shuffle(template),
         );
@@ -374,6 +376,27 @@ const partofexp: timeline = (
     },
   },
 });
+
+function generateQuitSurvey(jsPsych: JsPsych, lang: language): timeline {
+  const survey_text = langf.quitSurveyText(lang);
+  return {
+    timeline: [
+      {
+        type: jsPsychSurveyMultiChoice,
+        preamble:
+          survey_text.preamble +
+          `<button id="survey_close_btn" style="cursor: pointer;">${langf.translateRepeat(lang)}</button>`,
+        questions: survey_text.questions,
+        button_label: survey_text.btn_end,
+      },
+    ],
+    on_load: (): void => {
+      document
+        .getElementById('survey_close_btn')!
+        .addEventListener('click', (): void => {});
+    },
+  };
+}
 
 /**
  * This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment
@@ -423,6 +446,8 @@ export async function run(/*{
     tipScreen('en'),
     partofexp(jsPsych, 'objects', 'en', blocks_per_half, progress),
   );
+
+  timeline.push(generateQuitSurvey(jsPsych, 'en'));
 
   await jsPsych.run(timeline);
 

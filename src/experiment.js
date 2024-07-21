@@ -284,6 +284,25 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
         },
     },
 });
+function generateQuitSurvey(jsPsych, lang) {
+    const survey_text = langf.quitSurveyText(lang);
+    return {
+        timeline: [
+            {
+                type: jsPsychSurveyMultiChoice,
+                preamble: survey_text.preamble +
+                    `<button id="survey_close_btn" style="cursor: pointer;">${langf.translateRepeat(lang)}</button>`,
+                questions: survey_text.questions,
+                button_label: survey_text.btn_end,
+            },
+        ],
+        on_load: () => {
+            document
+                .getElementById('survey_close_btn')
+                .addEventListener('click', () => { });
+        },
+    };
+}
 /**
  * This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment
  * Initializes jsPsych, sets up the timeline, and runs the experiment.
@@ -318,6 +337,7 @@ export async function run( /*{
     timeline.push(resize(jsPsych, 'en'));
     // Run numerosity task
     timeline.push(groupInstructions(jsPsych, 'people', 'en'), tipScreen('en'), partofexp(jsPsych, 'people', 'en', blocks_per_half, progress), instructions('objects', 'en'), groupInstructions(jsPsych, 'objects', 'en', true), tipScreen('en'), partofexp(jsPsych, 'objects', 'en', blocks_per_half, progress));
+    timeline.push(generateQuitSurvey(jsPsych, 'en'));
     await jsPsych.run(timeline);
     // Return the jsPsych instance so jsPsych Builder can access the experiment results (remove this
     // if you handle results yourself, be it here or in `on_finish()`)
