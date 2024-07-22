@@ -33,7 +33,7 @@ const resize = (jsPsych, lang) => ({
         const quit_btn = document.createElement('button');
         quit_btn.setAttribute('type', 'button');
         quit_btn.setAttribute('style', 'color: #fff; background-color: #1d2124; border-color: #171a1d;');
-        quit_btn.setAttribute('onclick', 'alert("end")');
+        quit_btn.addEventListener('click', () => jsPsych.run(generateQuitSurvey(jsPsych, lang)));
         quit_btn.appendChild(document.createTextNode(langf.translateQuitBtn(lang)));
         document
             .getElementById('jspsych-progressbar-container')
@@ -60,9 +60,9 @@ const resize = (jsPsych, lang) => ({
 function generateInstructionPages(cntable, lang, text) {
     const pages = [];
     for (let page_nb = 1; page_nb < 6; page_nb++) {
-        pages.push(`$<b>${text.title}</b><br><img src='../assets/instruction_media/${cntable}/${lang}/instruction_${page_nb}.png'></img>`);
+        pages.push(`<b>${text.title}</b><br><img src='../assets/instruction_media/${cntable}/${lang}/instruction_${page_nb}.png'></img>`);
     }
-    pages.push(`$<b>${text.title}</b><br>` +
+    pages.push(`<b>${text.title}</b><br>` +
         text.example +
         `<br><video muted autoplay loop preload="auto" src="../assets/instruction_media/${cntable}/example_vid.mp4"><source type="video/mp4"></source></video>`);
     return pages;
@@ -286,22 +286,29 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
 });
 function generateQuitSurvey(jsPsych, lang) {
     const survey_text = langf.quitSurveyText(lang);
-    return {
-        timeline: [
-            {
-                type: jsPsychSurveyMultiChoice,
-                preamble: survey_text.preamble +
-                    `<button id="survey_close_btn" style="cursor: pointer;">${langf.translateRepeat(lang)}</button>`,
-                questions: survey_text.questions,
-                button_label: survey_text.btn_end,
+    return [
+        {
+            timeline: [
+                {
+                    type: jsPsychSurveyMultiChoice,
+                    preamble: survey_text.preamble +
+                        `<button id="survey_close_btn" style="cursor: pointer;">${langf.translateRepeat(lang)}</button>`,
+                    questions: survey_text.questions,
+                    button_label: survey_text.btn_end,
+                    on_load: () => {
+                        document
+                            .getElementById('survey_close_btn')
+                            .addEventListener('click', () => {
+                            jsPsych.endExperiment();
+                        });
+                    },
+                },
+            ],
+            on_finish: () => {
+                jsPsych.endExperiment();
             },
-        ],
-        on_load: () => {
-            document
-                .getElementById('survey_close_btn')
-                .addEventListener('click', () => { });
         },
-    };
+    ];
 }
 /**
  * This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment
@@ -337,7 +344,6 @@ export async function run( /*{
     timeline.push(resize(jsPsych, 'en'));
     // Run numerosity task
     timeline.push(groupInstructions(jsPsych, 'people', 'en'), tipScreen('en'), partofexp(jsPsych, 'people', 'en', blocks_per_half, progress), instructions('objects', 'en'), groupInstructions(jsPsych, 'objects', 'en', true), tipScreen('en'), partofexp(jsPsych, 'objects', 'en', blocks_per_half, progress));
-    timeline.push(generateQuitSurvey(jsPsych, 'en'));
     await jsPsych.run(timeline);
     // Return the jsPsych instance so jsPsych Builder can access the experiment results (remove this
     // if you handle results yourself, be it here or in `on_finish()`)

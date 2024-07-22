@@ -57,7 +57,10 @@ const resize: timeline = (jsPsych: JsPsych, lang: language): timeline => ({
       'color: #fff; background-color: #1d2124; border-color: #171a1d;',
     );
 
-    quit_btn.setAttribute('onclick', 'alert("end")');
+    quit_btn.addEventListener(
+      'click',
+      (): Promise<void> => jsPsych.run(generateQuitSurvey(jsPsych, lang)),
+    );
 
     quit_btn.appendChild(document.createTextNode(langf.translateQuitBtn(lang)));
 
@@ -92,11 +95,11 @@ function generateInstructionPages(
   const pages: string[] = [];
   for (let page_nb: number = 1; page_nb < 6; page_nb++) {
     pages.push(
-      `$<b>${text.title}</b><br><img src='../assets/instruction_media/${cntable}/${lang}/instruction_${page_nb}.png'></img>`,
+      `<b>${text.title}</b><br><img src='../assets/instruction_media/${cntable}/${lang}/instruction_${page_nb}.png'></img>`,
     );
   }
   pages.push(
-    `$<b>${text.title}</b><br>` +
+    `<b>${text.title}</b><br>` +
       text.example +
       `<br><video muted autoplay loop preload="auto" src="../assets/instruction_media/${cntable}/example_vid.mp4"><source type="video/mp4"></source></video>`,
   );
@@ -377,25 +380,32 @@ const partofexp: timeline = (
   },
 });
 
-function generateQuitSurvey(jsPsych: JsPsych, lang: language): timeline {
+function generateQuitSurvey(jsPsych: JsPsych, lang: language): timeline[] {
   const survey_text = langf.quitSurveyText(lang);
-  return {
-    timeline: [
-      {
-        type: jsPsychSurveyMultiChoice,
-        preamble:
-          survey_text.preamble +
-          `<button id="survey_close_btn" style="cursor: pointer;">${langf.translateRepeat(lang)}</button>`,
-        questions: survey_text.questions,
-        button_label: survey_text.btn_end,
+  return [
+    {
+      timeline: [
+        {
+          type: jsPsychSurveyMultiChoice,
+          preamble:
+            survey_text.preamble +
+            `<button id="survey_close_btn" style="cursor: pointer;">${langf.translateRepeat(lang)}</button>`,
+          questions: survey_text.questions,
+          button_label: survey_text.btn_end,
+          on_load: (): void => {
+            document
+              .getElementById('survey_close_btn')!
+              .addEventListener('click', (): void => {
+                jsPsych.endExperiment();
+              });
+          },
+        },
+      ],
+      on_finish: (): void => {
+        jsPsych.endExperiment();
       },
-    ],
-    on_load: (): void => {
-      document
-        .getElementById('survey_close_btn')!
-        .addEventListener('click', (): void => {});
     },
-  };
+  ];
 }
 
 /**
@@ -446,8 +456,6 @@ export async function run(/*{
     tipScreen('en'),
     partofexp(jsPsych, 'objects', 'en', blocks_per_half, progress),
   );
-
-  timeline.push(generateQuitSurvey(jsPsych, 'en'));
 
   await jsPsych.run(timeline);
 
