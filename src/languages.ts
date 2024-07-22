@@ -404,7 +404,8 @@ export function inputInfo(lang: language): string {
  */
 export function quitSurveyText(lang: language): {
   preamble: string;
-  questions: quiz_questions;
+  prompt: string;
+  options: string[];
   input_info: string;
   btn_close: string;
   btn_end: string;
@@ -413,40 +414,30 @@ export function quitSurveyText(lang: language): {
     case 'en':
       return {
         preamble: 'Experiment is in progress.<br> Do you really want to quit?',
-        questions: [
-          {
-            prompt: 'Please select below the reason for your cancellation:',
-            options: [
-              'The experiment takes too much time',
-              'The task is too complicated',
-              'The experiment is boring',
-              'I am too tired to continue',
-              'I am not satisfied with my answers',
-              'Other',
-            ],
-            required: true,
-          },
+        prompt: 'Please select below the reason for your cancellation:',
+        options: [
+          'The experiment takes too much time',
+          'The task is too complicated',
+          'The experiment is boring',
+          'I am too tired to continue',
+          'I am not satisfied with my answers',
+          'Other',
         ],
         input_info: 'Please select a reason',
-        btn_close: 'Cancel the experiment',
-        btn_end: 'Close',
+        btn_close: 'Close',
+        btn_end: 'Cancel the experiment',
       };
     case 'fr':
       return {
         preamble: 'Expérience en cours.<br> Voulez-vous vraiment arrêter?',
-        questions: [
-          {
-            prompt: 'Veuillez choisir ci-dessous la raison de votre arrêt:',
-            options: [
-              "L'expérience prend trop de temps",
-              'La tâche est trop compliquée',
-              "L'expérience est ennuyeuse",
-              'Je suis trop fatigué(e) pour continuer',
-              'Je ne suis pas satisfait(e) de mes réponses',
-              'Autre',
-            ],
-            required: true,
-          },
+        prompt: 'Veuillez choisir ci-dessous la raison de votre arrêt:',
+        options: [
+          "L'expérience prend trop de temps",
+          'La tâche est trop compliquée',
+          "L'expérience est ennuyeuse",
+          'Je suis trop fatigué(e) pour continuer',
+          'Je ne suis pas satisfait(e) de mes réponses',
+          'Autre',
         ],
         input_info: 'Veuillez sélectionner une raison',
         btn_close: 'Fermer',
@@ -455,19 +446,14 @@ export function quitSurveyText(lang: language): {
     case 'es':
       return {
         preamble: 'Experimento en curso.<br> ¿De verdad quieres dejarlo?',
-        questions: [
-          {
-            prompt: 'Elija a continuación el motivo de su aborto:',
-            options: [
-              'El experimento lleva demasiado tiempo',
-              'La tarea es demasiado complicada',
-              'El experimento es aburrido',
-              'Estoy demasiado cansado para continuar',
-              'No estoy satisfecho con mis respuestas',
-              'Otro',
-            ],
-            required: true,
-          },
+        prompt: 'Elija a continuación el motivo de su aborto:',
+        options: [
+          'El experimento lleva demasiado tiempo',
+          'La tarea es demasiado complicada',
+          'El experimento es aburrido',
+          'Estoy demasiado cansado para continuar',
+          'No estoy satisfecho con mis respuestas',
+          'Otro',
         ],
         input_info: 'Seleccione un motivo',
         btn_close: 'Cerrar',
@@ -476,18 +462,13 @@ export function quitSurveyText(lang: language): {
     case 'ca':
       return {
         preamble: 'Experiment en curs.<br> De veritat vols deixar-ho?',
-        questions: [
-          {
-            prompt: 'Trieu a continuació el motiu del vostre avortament:',
-            options: [
-              "L'experiment porta massa temps",
-              'La tasca és massa complicada',
-              'Estic massa cansat per continuar',
-              'No estic satisfet amb les meves respostes',
-              'Un altre',
-            ],
-            required: true,
-          },
+        prompt: 'Trieu a continuació el motiu del vostre avortament:',
+        options: [
+          "L'experiment porta massa temps",
+          'La tasca és massa complicada',
+          'Estic massa cansat per continuar',
+          'No estic satisfet amb les meves respostes',
+          'Un altre',
         ],
         input_info: 'Seleccioneu un motiu',
         btn_close: 'Tancar',
@@ -497,7 +478,8 @@ export function quitSurveyText(lang: language): {
       console.error(lang + 'is not a valid language parameter.');
       return {
         preamble: '',
-        questions: [{ prompt: '', options: [], required: false }],
+        prompt: '',
+        options: [],
         input_info: '',
         btn_close: '',
         btn_end: '',

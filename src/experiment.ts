@@ -57,10 +57,7 @@ const resize: timeline = (jsPsych: JsPsych, lang: language): timeline => ({
       'color: #fff; background-color: #1d2124; border-color: #171a1d;',
     );
 
-    quit_btn.addEventListener(
-      'click',
-      (): Promise<void> => jsPsych.run(generateQuitSurvey(jsPsych, lang)),
-    );
+    quit_btn.addEventListener('click', () => quitBtnAction(jsPsych, lang));
 
     quit_btn.appendChild(document.createTextNode(langf.translateQuitBtn(lang)));
 
@@ -380,32 +377,64 @@ const partofexp: timeline = (
   },
 });
 
-function generateQuitSurvey(jsPsych: JsPsych, lang: language): timeline[] {
-  const survey_text = langf.quitSurveyText(lang);
-  return [
-    {
-      timeline: [
-        {
-          type: jsPsychSurveyMultiChoice,
-          preamble:
-            survey_text.preamble +
-            `<button id="survey_close_btn" style="cursor: pointer;">${langf.translateRepeat(lang)}</button>`,
-          questions: survey_text.questions,
-          button_label: survey_text.btn_end,
-          on_load: (): void => {
-            document
-              .getElementById('survey_close_btn')!
-              .addEventListener('click', (): void => {
-                jsPsych.endExperiment();
-              });
-          },
-        },
-      ],
-      on_finish: (): void => {
-        jsPsych.endExperiment();
-      },
-    },
-  ];
+function generateQuitSurvey(lang: language): string {
+  const quit_survey_text = langf.quitSurveyText(lang);
+  let html_input: string = `
+    <div class="quit-survey-content">
+        <label>
+          <h2 align="left" style="color: white;"><b>${quit_survey_text.preamble}</b></h2>
+        </label>
+        <button type="button" class="btn" id="quit_close_btn">${quit_survey_text.btn_close}</button>
+      <br>
+      <form id="quit_form">
+        <div>
+          <label><b>${quit_survey_text.prompt}</b></label>
+        </div>`;
+
+  quit_survey_text.options.forEach((option, index) => {
+    html_input += `
+        <div>
+          <input type="radio" name="quit_option" value="${index}" id="option_${index}" required>
+          <label for="option_${index}">${option}</label>
+        </div>`;
+  });
+
+  html_input += `
+        <div align="center">
+          <input type="submit" id="quit_end_btn" value="${quit_survey_text.btn_end}">
+        </div>
+      </form>
+    </div>`;
+
+  return html_input;
+}
+
+function quitBtnAction(jsPsych: JsPsych, lang: language): void {
+  const panel: HTMLElement = document.createElement('div');
+  panel.setAttribute('id', 'quit_overlay');
+  panel.classList.add('quit-survey-panel');
+  panel.innerHTML = generateQuitSurvey(lang);
+  document.body.appendChild(panel);
+
+  document.getElementById('quit_close_btn')!.addEventListener('click', () => {
+    document.body.removeChild(panel);
+  });
+
+  document.getElementById('quit_form')!.addEventListener('submit', (event) => {
+    event.preventDefault();
+    // Save the selected value to jsPsych data
+    jsPsych.data.get().push({
+      trial_type: 'quit-survey',
+      quit_reason: (
+        document.querySelector(
+          'input[name="quit_option"]:checked',
+        ) as HTMLInputElement
+      ).value,
+    });
+    document.body.removeChild(panel);
+    // End the experiment
+    jsPsych.endExperiment();
+  });
 }
 
 /**
@@ -431,7 +460,6 @@ export async function run(/*{
   const timeline: timeline = [];
 
   jsPsych;
-
   // Preload assets
   timeline.push({
     type: PreloadPlugin,
@@ -442,6 +470,8 @@ export async function run(/*{
   timeline.push({
     type: FullscreenPlugin,
     fullscreen_mode: true,
+    message: '',
+    button_label: 'Fullscreen',
   });
 
   timeline.push(resize(jsPsych, 'en'));

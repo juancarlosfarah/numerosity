@@ -1,6 +1,17 @@
+@import '~jspsych/css/jspsych.css';
 @import 'jspsych.css';
 
 img,
 video {
   height: auto;
+}
+
+.quit-survey-panel {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background: black;
+  display: flex;
+  justify-content: center;
+  backdrop-filter: blur(5px);
 }
