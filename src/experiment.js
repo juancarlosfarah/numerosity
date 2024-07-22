@@ -54,7 +54,6 @@ const resize = (jsPsych, lang) => ({
  * @param { 'people' | 'objects' } cntable - The type of countable (people or objects)
  * @param { language } lang - The language in which instructions are shown
  * @param { instruction_text } text - The text for instructions
- * @param { boolean } example - Whether to include example video
  * @returns { string[] } - Array of instruction pages as HTML strings
  */
 function generateInstructionPages(cntable, lang, text) {
@@ -284,20 +283,33 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
         },
     },
 });
-function generateQuitSurvey(lang) {
-    const quit_survey_text = langf.quitSurveyText(lang);
+/**
+ * @function generateQuitSurvey
+ * @description Generates the HTML string for the quit survey form based on the provided texts.
+ * This includes the preamble, prompt, options, input information, and buttons for quitting or closing the survey.
+ * @param {
+ *   preamble: string,
+ *   prompt: string,
+ *   options: string[],
+ *   input_info: string,
+ *   btn_close: string,
+ *   btn_end: string
+ * } texts - The text for the preamble, prompt, options, input information, and buttons.
+ * @returns { string } - The HTML string for the quit survey form.
+ */
+function generateQuitSurvey(texts) {
     let html_input = `
     <div class="quit-survey-content">
         <label>
-          <h2 align="left" style="color: white;"><b>${quit_survey_text.preamble}</b></h2>
+          <h2 align="left" style="color: white;"><b>${texts.preamble}</b></h2>
         </label>
-        <button type="button" class="btn" id="quit_close_btn">${quit_survey_text.btn_close}</button>
+        <button type="button" class="btn" id="quit_close_btn">${texts.btn_close}</button>
       <br>
       <form id="quit_form">
         <div>
-          <label><b>${quit_survey_text.prompt}</b></label>
+          <label><b>${texts.prompt}</b></label>
         </div>`;
-    quit_survey_text.options.forEach((option, index) => {
+    texts.options.forEach((option, index) => {
         html_input += `
         <div>
           <input type="radio" name="quit_option" value="${index}" id="option_${index}" required>
@@ -306,31 +318,51 @@ function generateQuitSurvey(lang) {
     });
     html_input += `
         <div align="center">
-          <input type="submit" id="quit_end_btn" value="${quit_survey_text.btn_end}">
+          <input type="submit" id="quit_end_btn" value="${texts.btn_end}">
         </div>
       </form>
     </div>`;
     return html_input;
 }
+/**
+ * @function quitBtnAction
+ * @description Creates and displays the quit survey form when the quit button is clicked.
+ * This includes handling form submission, validation, and the close button action.
+ * @param { JsPsych } jsPsych - The JsPsych instance.
+ * @param { 'en' | 'fr' | 'es' | 'ca' } lang - The language in which the quit survey text should be displayed.
+ */
 function quitBtnAction(jsPsych, lang) {
     const panel = document.createElement('div');
+    const quit_survey_text = langf.quitSurveyText(lang);
     panel.setAttribute('id', 'quit_overlay');
     panel.classList.add('quit-survey-panel');
-    panel.innerHTML = generateQuitSurvey(lang);
+    panel.innerHTML = generateQuitSurvey(quit_survey_text);
     document.body.appendChild(panel);
+    const form = document.getElementById('quit_form');
+    const options = form.querySelectorAll('input[name="quit_option"]');
+    options.forEach((option) => {
+        option.addEventListener('invalid', () => {
+            option.setCustomValidity(langf.quitSurveyText(lang).input_info);
+        });
+    });
     document.getElementById('quit_close_btn').addEventListener('click', () => {
         document.body.removeChild(panel);
     });
-    document.getElementById('quit_form').addEventListener('submit', (event) => {
-        event.preventDefault();
-        // Save the selected value to jsPsych data
-        jsPsych.data.get().push({
-            trial_type: 'quit-survey',
-            quit_reason: document.querySelector('input[name="quit_option"]:checked').value,
-        });
-        document.body.removeChild(panel);
-        // End the experiment
-        jsPsych.endExperiment();
+    document.getElementById('quit_end_btn').addEventListener('click', () => {
+        const selected_option = document.querySelector('input[name="quit_option"]:checked');
+        if (selected_option) {
+            options.forEach((option) => {
+                option.setCustomValidity('');
+            });
+            // Save the selected value to jsPsych data
+            jsPsych.data.get().push({
+                trial_type: 'quit-survey',
+                quit_reason: selected_option.value,
+            });
+            document.body.removeChild(panel);
+            // End the experiment
+            jsPsych.endExperiment();
+        }
     });
 }
 /**

@@ -1,3 +1,9 @@
+/**
+ * @function translateQuitBtn
+ * @description Returns the text for the quit button based on the selected language.
+ * @param {language} lang - The language in which the quit button text is shown.
+ * @returns {string} - The quit button text in the specified language.
+ */
 export function translateQuitBtn(lang) {
     switch (lang) {
         case 'en':
@@ -13,6 +19,12 @@ export function translateQuitBtn(lang) {
             return '';
     }
 }
+/**
+ * @function translateCalibration
+ * @description Returns the calibration instruction text based on the selected language.
+ * @param {language} lang - The language in which the calibration instruction text is shown.
+ * @returns {string} - The calibration instruction text in the specified language.
+ */
 export function translateCalibration(lang) {
     switch (lang) {
         case 'en':
@@ -259,6 +271,12 @@ export function quizQuestions(cntable, lang) {
             ];
     }
 }
+/**
+ * @function translateRepeat
+ * @description Returns the text for the repeat instructions button based on the selected language.
+ * @param {language} lang - The language in which the repeat button text is shown.
+ * @returns {string} - The repeat button text in the specified language.
+ */
 export function translateRepeat(lang) {
     switch (lang) {
         case 'en':
