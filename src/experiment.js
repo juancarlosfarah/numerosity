@@ -220,6 +220,9 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
             stimulus: '+',
             choices: 'NO_KEYS',
             trial_duration: 500,
+            on_start: () => {
+                document.body.style.cursor = 'none';
+            },
         },
         // Image is shown for 250ms
         {
@@ -229,6 +232,9 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
             },
             choices: 'NO_KEYS',
             trial_duration: 250,
+            on_finish: () => {
+                document.body.style.cursor = 'auto';
+            },
         },
         // Survey to ask how many countables (people/objects) were estimated.
         {

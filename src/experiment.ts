@@ -306,6 +306,9 @@ const partofexp: timeline = (
       stimulus: '+',
       choices: 'NO_KEYS',
       trial_duration: 500,
+      on_start: (): void => {
+        document.body.style.cursor = 'none';
+      },
     },
 
     // Image is shown for 250ms
@@ -316,6 +319,9 @@ const partofexp: timeline = (
       },
       choices: 'NO_KEYS',
       trial_duration: 250,
+      on_finish: (): void => {
+        document.body.style.cursor = 'auto';
+      },
     },
 
     // Survey to ask how many countables (people/objects) were estimated.
