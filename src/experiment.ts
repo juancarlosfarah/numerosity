@@ -327,7 +327,7 @@ const partofexp: timeline = (
     {
       type: jsPsychSurveyHtmlForm,
       preamble: 'How many ' + cntable + ' were in the virtual room?',
-      html: '<input type="number" id="task-input" required min="0" step="1"><br>',
+      html: '<input type="number" name="num-input" id="task-input" required min="0" step="1"><br>',
       autofocus: 'task-input',
       on_load: (): void => {
         const input: HTMLInputElement = document.getElementById(
