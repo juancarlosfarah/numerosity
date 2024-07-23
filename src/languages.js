@@ -119,7 +119,6 @@ export function instructionTexts(cntable, lang) {
                 example: `Here is an example of the task. As you can see, the picture is displayed for a very short time. You have to estimate the number of ${translateCountable(cntable, 'en')} that were displayed. Do not worry, estimation errors are expected.`,
                 btn_next: 'Next',
                 btn_previous: 'Previous',
-                btn_end: 'I understand the instructions<br/>and I am ready to start',
             };
         case 'fr':
             return {
@@ -127,7 +126,6 @@ export function instructionTexts(cntable, lang) {
                 example: `Voici un exemple montrant le déroulement de la tâche. Comme vous pouvez le voir, l'image s'affiche durant un très court instant. Vous devez estimer le nombre d'${translateCountable(cntable, 'fr')} qui étaient affichées. Ne vous inquiétez pas, des erreurs d'estimation sont attendues.`,
                 btn_next: 'Suivant',
                 btn_previous: 'Précédent',
-                btn_end: "J'ai compris les instructions<br/>et je souhaite commencer",
             };
         case 'es':
             return {
@@ -135,7 +133,6 @@ export function instructionTexts(cntable, lang) {
                 example: `He aquí un ejemplo de la tarea. Como puede ver, la imagen se muestra durante muy poco tiempo. Tienes que estimar el número de ${translateCountable(cntable, 'es')} que se mostraron. No se preocupe, se esperan errores de estimación.`,
                 btn_next: 'Siguiente',
                 btn_previous: 'Anterior',
-                btn_end: 'Comprendo las instrucciones<br/>y estoy listo para empezar',
             };
         case 'ca':
             return {
@@ -143,7 +140,6 @@ export function instructionTexts(cntable, lang) {
                 example: `Vet aquí un exemple de la tasca. Com podeu veure, la imatge es mostra durant molt poc temps. Heu d'estimar el nombre de ${translateCountable(cntable, 'ca')} que es van mostrar. No us preocupeu, s'esperen errors d'estimació.`,
                 btn_next: 'Següent',
                 btn_previous: 'Anterior',
-                btn_end: 'Comprenc les instruccions<br/>i estic a punt per començar',
             };
         default:
             console.error(lang + 'is not a valid language parameter.');
@@ -152,7 +148,6 @@ export function instructionTexts(cntable, lang) {
                 example: '',
                 btn_next: '',
                 btn_previous: '',
-                btn_end: '',
             };
     }
 }

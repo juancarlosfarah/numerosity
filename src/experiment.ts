@@ -34,7 +34,6 @@ type instruction_text = {
   example: string;
   btn_next: string;
   btn_previous: string;
-  btn_end: string;
 };
 
 type tip_text = {
