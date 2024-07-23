@@ -59,11 +59,11 @@ const resize = (jsPsych, lang) => ({
 function generateInstructionPages(cntable, lang, text) {
     const pages = [];
     for (let page_nb = 1; page_nb < 6; page_nb++) {
-        pages.push(`<b>${text.title}</b><br><img src='../assets/instruction_media/${cntable}/${lang}/instruction_${page_nb}.png'></img>`);
+        pages.push(`<b>${text.title}</b><br><img src='../assets/instruction-media/${cntable}/${lang}/instruction-${page_nb}.png'></img>`);
     }
     pages.push(`<b>${text.title}</b><br>` +
         text.example +
-        `<br><video muted autoplay loop preload="auto" src="../assets/instruction_media/${cntable}/example_vid.mp4"><source type="video/mp4"></source></video>`);
+        `<br><video muted autoplay loop preload="auto" src="../assets/instruction-media/${cntable}/example-vid.mp4"><source type="video/mp4"></source></video>`);
     return pages;
 }
 /**
@@ -101,15 +101,15 @@ const instructionQuiz = (jsPsych, cntable, lang, second_half = false) => ({
         {
             type: jsPsychSurveyMultiChoice,
             questions: langf.quizQuestions(cntable, lang),
-            preamble: `<b>${langf.translatePreamble(second_half, lang)}</b><br><button id="quiz_repeat_btn" style="cursor: pointer;">${langf.translateRepeat(lang)}</button>`,
+            preamble: `<b>${langf.translatePreamble(second_half, lang)}</b><br><button id="quiz-repeat-btn" style="cursor: pointer;">${langf.translateRepeat(lang)}</button>`,
         },
     ],
     on_load: () => {
         document
-            .getElementById('quiz_repeat_btn')
+            .getElementById('quiz-repeat-btn')
             .addEventListener('click', () => {
             jsPsych.finishTrial({
-                response: { Q0: 'read_again' },
+                response: { Q0: 'read-again' },
             });
         });
     },
@@ -133,7 +133,7 @@ const returnPage = (jsPsych, cntable, lang) => ({
     ],
     conditional_function: function () {
         return (jsPsych.data.getLastTimelineData().values()[0].response.Q0 !==
-            'read_again' &&
+            'read-again' &&
             jsPsych.data.getLastTimelineData().values()[0].response.Q0 !==
                 langf.quizQuestions(cntable, lang)[0].options[2]);
     },
@@ -174,7 +174,7 @@ function tipScreen(lang) {
         timeline: [
             {
                 type: HtmlButtonResponsePlugin,
-                stimulus: `<b>${tiptext.title}</b><br><img src="../assets/instruction_media/tip.png"><br>`,
+                stimulus: `<b>${tiptext.title}</b><br><img src="../assets/instruction-media/tip.png"><br>`,
                 prompt: tiptext.description,
                 choices: [tiptext.btn_txt],
             },
@@ -228,7 +228,7 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
         {
             type: jsPsychHtmlKeyboardResponse,
             stimulus: function () {
-                return `<img src='../assets/num_task_imgs/${cntable}/num_${jsPsych.timelineVariable('num')}_${jsPsych.timelineVariable('id')}.png'>`;
+                return `<img src='../assets/num-task-imgs/${cntable}/num-${jsPsych.timelineVariable('num')}-${jsPsych.timelineVariable('id')}.png'>`;
             },
             choices: 'NO_KEYS',
             trial_duration: 250,
@@ -240,10 +240,10 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
         {
             type: jsPsychSurveyHtmlForm,
             preamble: 'How many ' + cntable + ' were in the virtual room?',
-            html: '<input type="number" id="task_input" required min="0" step="1"><br>',
-            autofocus: 'task_input',
+            html: '<input type="number" id="task-input" required min="0" step="1"><br>',
+            autofocus: 'task-input',
             on_load: () => {
-                const input = document.getElementById('task_input');
+                const input = document.getElementById('task-input');
                 // Initially set the custom validity message
                 input.setCustomValidity(langf.inputInfo(lang));
                 // Add input event listener
@@ -309,22 +309,22 @@ function generateQuitSurvey(texts) {
         <label>
           <h2 align="left" style="color: white;"><b>${texts.preamble}</b></h2>
         </label>
-        <button type="button" class="btn" id="quit_close_btn">${texts.btn_close}</button>
+        <button type="button" class="btn" id="quit-close-btn">${texts.btn_close}</button>
       <br>
-      <form id="quit_form">
+      <form id="quit-form">
         <div>
           <label><b>${texts.prompt}</b></label>
         </div>`;
     texts.options.forEach((option, index) => {
         html_input += `
         <div>
-          <input type="radio" name="quit_option" value="${index}" id="option_${index}" required>
-          <label for="option_${index}">${option}</label>
+          <input type="radio" name="quit-option" value="${index}" id="option-${index}" required>
+          <label for="option-${index}">${option}</label>
         </div>`;
     });
     html_input += `
         <div align="center">
-          <input type="submit" id="quit_end_btn" value="${texts.btn_end}">
+          <input type="submit" id="quit-end-btn" value="${texts.btn_end}">
         </div>
       </form>
     </div>`;
@@ -340,22 +340,22 @@ function generateQuitSurvey(texts) {
 function quitBtnAction(jsPsych, lang) {
     const panel = document.createElement('div');
     const quit_survey_text = langf.quitSurveyText(lang);
-    panel.setAttribute('id', 'quit_overlay');
+    panel.setAttribute('id', 'quit-overlay');
     panel.classList.add('quit-survey-panel');
     panel.innerHTML = generateQuitSurvey(quit_survey_text);
     document.body.appendChild(panel);
-    const form = document.getElementById('quit_form');
-    const options = form.querySelectorAll('input[name="quit_option"]');
+    const form = document.getElementById('quit-form');
+    const options = form.querySelectorAll('input[name="quit-option"]');
     options.forEach((option) => {
         option.addEventListener('invalid', () => {
             option.setCustomValidity(langf.quitSurveyText(lang).input_info);
         });
     });
-    document.getElementById('quit_close_btn').addEventListener('click', () => {
+    document.getElementById('quit-close-btn').addEventListener('click', () => {
         document.body.removeChild(panel);
     });
-    document.getElementById('quit_end_btn').addEventListener('click', () => {
-        const selected_option = document.querySelector('input[name="quit_option"]:checked');
+    document.getElementById('quit-end-btn').addEventListener('click', () => {
+        const selected_option = document.querySelector('input[name="quit-option"]:checked');
         if (selected_option) {
             options.forEach((option) => {
                 option.setCustomValidity('');
@@ -390,7 +390,7 @@ export async function run( /*{
         auto_update_progress_bar: false,
         message_progress_bar: langf.textProgressBar('en'),
         on_finish: () => {
-            jsPsych.data.get().localSave('csv', 'experiment_data.csv');
+            jsPsych.data.get().localSave('json', 'experiment-data.json');
         },
     });
     const timeline = [];
