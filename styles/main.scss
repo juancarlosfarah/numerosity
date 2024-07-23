@@ -5,6 +5,14 @@ img,
 video {
   height: auto;
 }
+video {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+#jspsych-progressbar-container {
+  position: relative;
+}
 
 .quit-survey-panel {
   position: fixed;

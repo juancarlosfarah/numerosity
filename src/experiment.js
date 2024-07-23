@@ -32,7 +32,7 @@ const resize = (jsPsych, lang) => ({
     on_load: function () {
         const quit_btn = document.createElement('button');
         quit_btn.setAttribute('type', 'button');
-        quit_btn.setAttribute('style', 'color: #fff; background-color: #1d2124; border-color: #171a1d;');
+        quit_btn.setAttribute('style', 'color: #fff; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)');
         quit_btn.addEventListener('click', () => quitBtnAction(jsPsych, lang));
         quit_btn.appendChild(document.createTextNode(langf.translateQuitBtn(lang)));
         document
