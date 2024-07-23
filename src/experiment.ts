@@ -541,7 +541,6 @@ export async function run(/*{
     groupInstructions(jsPsych, 'people', 'en'),
     tipScreen('en'),
     partofexp(jsPsych, 'people', 'en', blocks_per_half, progress),
-    instructions('objects', 'en'),
     groupInstructions(jsPsych, 'objects', 'en', true),
     tipScreen('en'),
     partofexp(jsPsych, 'objects', 'en', blocks_per_half, progress),

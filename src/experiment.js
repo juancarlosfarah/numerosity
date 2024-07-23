@@ -409,7 +409,7 @@ export async function run( /*{
     });
     timeline.push(resize(jsPsych, 'en'));
     // Run numerosity task
-    timeline.push(groupInstructions(jsPsych, 'people', 'en'), tipScreen('en'), partofexp(jsPsych, 'people', 'en', blocks_per_half, progress), instructions('objects', 'en'), groupInstructions(jsPsych, 'objects', 'en', true), tipScreen('en'), partofexp(jsPsych, 'objects', 'en', blocks_per_half, progress));
+    timeline.push(groupInstructions(jsPsych, 'people', 'en'), tipScreen('en'), partofexp(jsPsych, 'people', 'en', blocks_per_half, progress), groupInstructions(jsPsych, 'objects', 'en', true), tipScreen('en'), partofexp(jsPsych, 'objects', 'en', blocks_per_half, progress));
     await jsPsych.run(timeline);
     // Return the jsPsych instance so jsPsych Builder can access the experiment results (remove this
     // if you handle results yourself, be it here or in `on_finish()`)
