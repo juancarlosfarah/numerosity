@@ -19,6 +19,13 @@ import { initJsPsych } from 'jspsych';
 // Import styles and language functions
 import '../styles/main.scss';
 import * as langf from './languages.js';
+/**
+ * @function resize
+ * @description Generates the resize timeline for the experiment with calibration and quit button.
+ * @param {JsPsych} jsPsych - The jsPsych instance.
+ * @param {language} lang - The language code for translation.
+ * @returns {timeline} - The timeline object for resizing.
+ */
 const resize = (jsPsych, lang) => ({
     timeline: [
         {
@@ -61,9 +68,7 @@ function generateInstructionPages(cntable, lang, text) {
     for (let page_nb = 1; page_nb < 6; page_nb++) {
         pages.push(`<b>${text.title}</b><br><img src='../assets/instruction-media/${cntable}/${lang}/instruction-${page_nb}.png'></img>`);
     }
-    pages.push(`<b>${text.title}</b><br>` +
-        text.example +
-        `<br><video muted autoplay loop preload="auto" src="../assets/instruction-media/${cntable}/example-vid.mp4"><source type="video/mp4"></source></video>`);
+    pages.push(`<b>${text.title}</b><br>${text.example}<br><video muted autoplay loop preload="auto" src="../assets/instruction-media/${cntable}/example-vid.mp4"><source type="video/mp4"></source></video>`);
     return pages;
 }
 /**
@@ -239,7 +244,7 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
         // Survey to ask how many countables (people/objects) were estimated.
         {
             type: jsPsychSurveyHtmlForm,
-            preamble: 'How many ' + cntable + ' were in the virtual room?',
+            preamble: `How many ${cntable} were in the virtual room?`,
             html: '<input type="number" name="num-input" id="task-input" required min="0" step="1"><br>',
             autofocus: 'task-input',
             on_load: () => {
@@ -291,44 +296,28 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
 });
 /**
  * @function generateQuitSurvey
- * @description Generates the HTML string for the quit survey form based on the provided texts.
- * This includes the preamble, prompt, options, input information, and buttons for quitting or closing the survey.
- * @param {
- *   preamble: string,
- *   prompt: string,
- *   options: string[],
- *   input_info: string,
- *   btn_close: string,
- *   btn_end: string
- * } texts - The text for the preamble, prompt, options, input information, and buttons.
- * @returns { string } - The HTML string for the quit survey form.
+ * @description Generates the HTML for the quit survey with options and a form.
+ * @param {quit_survey_text} texts - The text object containing survey details.
+ * @returns {string} - The HTML string for the quit survey.
  */
 function generateQuitSurvey(texts) {
-    let html_input = `
-    <div class="quit-survey-content">
-        <label>
-          <h2 align="left" style="color: white;"><b>${texts.preamble}</b></h2>
-        </label>
-        <button type="button" class="btn" id="quit-close-btn">${texts.btn_close}</button>
-      <br>
-      <form id="quit-form">
-        <div>
-          <label><b>${texts.prompt}</b></label>
-        </div>`;
-    texts.options.forEach((option, index) => {
-        html_input += `
-        <div>
-          <input type="radio" name="quit-option" value="${index}" id="option-${index}" required>
-          <label for="option-${index}">${option}</label>
-        </div>`;
-    });
-    html_input += `
-        <div align="center">
-          <input type="submit" id="quit-end-btn" value="${texts.btn_end}">
-        </div>
-      </form>
-    </div>`;
-    return html_input;
+    return `
+  <div class="quit-survey-content">
+    <label>
+      <h2 align="left"><b>${texts.preamble}</b></h2>
+    </label>
+    <button id="quit-close-btn">${texts.btn_close}</button>
+    <br>
+    <form id="quit-form">
+      <div>
+        <label><b>${texts.prompt}</b></label>
+      </div>
+      ${texts.options.map((option, index) => `<div><input type="radio" name="quit-option" value="${index}" id="option-${index}" required><label for="option-${index}">${option}</label></div>`).join('')}
+      <div align="center">
+        <input type="submit" id="quit-end-btn" value="${texts.btn_end}">
+      </div>
+    </form>
+  </div>`;
 }
 /**
  * @function quitBtnAction
