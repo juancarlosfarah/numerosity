@@ -488,6 +488,7 @@ function quitBtnAction(jsPsych: JsPsych, lang: language): void {
         quit_reason: (selected_option as HTMLInputElement).value,
       });
       document.body.removeChild(panel);
+
       // End the experiment
       jsPsych.endExperiment();
     }
@@ -513,6 +514,9 @@ export async function run(/*{
     show_progress_bar: true,
     auto_update_progress_bar: false,
     message_progress_bar: langf.textProgressBar('en'),
+    on_finish: (): void => {
+      jsPsych.data.get().localSave('csv', 'experiment_data.csv');
+    },
   });
   const timeline: timeline = [];
 

@@ -389,6 +389,9 @@ export async function run( /*{
         show_progress_bar: true,
         auto_update_progress_bar: false,
         message_progress_bar: langf.textProgressBar('en'),
+        on_finish: () => {
+            jsPsych.data.get().localSave('csv', 'experiment_data.csv');
+        },
     });
     const timeline = [];
     jsPsych;
