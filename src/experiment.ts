@@ -73,7 +73,7 @@ const resize: timeline = (jsPsych: JsPsych, lang: language): timeline => ({
     quit_btn.setAttribute('type', 'button');
     quit_btn.setAttribute(
       'style',
-      'color: #fff; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)',
+      'color: #fff; border-radius: 4px; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)',
     );
 
     quit_btn.addEventListener('click', () => quitBtnAction(jsPsych, lang));
@@ -160,7 +160,7 @@ const instructionQuiz: timeline = (
     {
       type: jsPsychSurveyMultiChoice,
       questions: langf.quizQuestions(cntable, lang),
-      preamble: `<b>${langf.translatePreamble(second_half, lang)}</b><br><button id="quiz-repeat-btn" style="cursor: pointer;">${langf.translateRepeat(lang)}</button>`,
+      preamble: `<b>${langf.translatePreamble(second_half, lang)}</b><br><br><button id="quiz-repeat-btn" class="jspsych-btn" style="cursor: pointer;">${langf.translateRepeat(lang)}</button>`,
     },
   ],
   on_load: (): void => {
@@ -410,7 +410,7 @@ function generateQuitSurvey(texts: quit_survey_text): string {
   <div class="quit-survey-content">
     <div style="position: relative;">
       <h2 style="vertical-align: middle;"><b>${texts.preamble}</b></h2>
-      <button id="quit-close-btn">${texts.btn_close}</button>
+      <button id="quit-close-btn" class="jspsych-btn">${texts.btn_close}</button>
     </div>
     <br>
     <form id="quit-form">
@@ -419,7 +419,7 @@ function generateQuitSurvey(texts: quit_survey_text): string {
       </div>
       ${texts.options.map((option, index) => `<div><input type="radio" name="quit-option" value="${index}" id="option-${index}" required><label for="option-${index}">${option}</label></div>`).join('')}
       <div align="center">
-        <input type="submit" id="quit-end-btn" value="${texts.btn_end}">
+        <input type="submit" class="jspsych-btn" id="quit-end-btn" value="${texts.btn_end}">
       </div>
     </form>
   </div>`;

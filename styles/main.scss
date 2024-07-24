@@ -10,17 +10,12 @@ video {
   margin: 0 auto;
 }
 
-button:hover,
-input:hover {
-  cursor: pointer;
-}
-
-#task-input:hover {
-  cursor: auto;
-}
-
 #jspsych-progressbar-container {
   position: relative;
+}
+
+button:hover {
+  cursor: pointer;
 }
 
 .quit-survey-panel {
