@@ -303,10 +303,10 @@ const partofexp = (jsPsych, cntable, lang, nb_blocks, progress) => ({
 function generateQuitSurvey(texts) {
     return `
   <div class="quit-survey-content">
-    <label>
-      <h2 align="left"><b>${texts.preamble}</b></h2>
-    </label>
-    <button id="quit-close-btn">${texts.btn_close}</button>
+    <div style="position: relative;">
+      <h2 style="vertical-align: middle;"><b>${texts.preamble}</b></h2>
+      <button id="quit-close-btn">${texts.btn_close}</button>
+    </div>
     <br>
     <form id="quit-form">
       <div>

@@ -10,6 +10,15 @@ video {
   margin: 0 auto;
 }
 
+button:hover,
+input:hover {
+  cursor: pointer;
+}
+
+#task-input:hover {
+  cursor: auto;
+}
+
 #jspsych-progressbar-container {
   position: relative;
 }
@@ -22,4 +31,10 @@ video {
   display: flex;
   justify-content: center;
   backdrop-filter: blur(5px);
+}
+
+#quit-close-btn {
+  right: 0;
+  position: absolute;
+  top: 50%;
 }
