@@ -1,0 +1,40 @@
+{
+  "quitBtn": "Quitter",
+  "calibration": "Cliquez et faites glisser le coin inférieur droit de la boîte jusqu'à ce que la boîte ait la même taille qu'une carte de crédit tenue devant l'écran.",
+  "progressBar": "Progrès de l'expérience",
+  "resizeBtn": "Continuer",
+  "countablePeople": "personnes",
+  "countableObjects": "objets",
+  "instructionTitle": "Instructions: ce que vous devez faire",
+  "instructionExample": "Voici un exemple montrant le déroulement de la tâche. Comme vous pouvez le voir, l'image s'affiche durant un très court instant. Vous devez estimer le nombre de {{cntable}} qui étaient affichées. Ne vous inquiétez pas, des erreurs d'estimation sont attendues.",
+  "instructionBtnNext": "Suivant",
+  "instructionBtnPrevious": "Précédent",
+  "quizPreamblesHalf": [
+    "Vérifiez vos connaissances avant de commencer!",
+    "Vous êtes au milieu de l'expérience!<br>Instructions have changed for the second half. Vérifiez vos connaissances avant de commencer!"
+  ],
+  "quizQuestionPrompt": "Question 1: Que devez-vous estimer?",
+  "quizQuestionOptions": [
+    "La taille de la pièce",
+    "La durée de présentation des images",
+    "Le nombre de {{cntable}} présents dans la pièce"
+  ],
+  "inputInfo": "Veuillez entrer un nombre entier",
+  "repeatInstructions": "Cliquez ici pour lire les instructions à nouveau",
+  "tipTitle": "Quelques conseils",
+  "tipDescription": "Placez vous à environ 50cm de votre écran pendant l'expérience.",
+  "tipBtnTxt": "Je souhaite commencer",
+  "quitSurveyPreamble": "Expérience en cours.<br> Voulez-vous vraiment arrêter?",
+  "quitSurveyPrompt": "Veuillez choisir ci-dessous la raison de votre arrêt:",
+  "quitSurveyOptions": [
+    "L'expérience prend trop de temps",
+    "La tâche est trop compliquée",
+    "L'expérience est ennuyeuse",
+    "Je suis trop fatigué(e) pour continuer",
+    "Je ne suis pas satisfait(e) de mes réponses",
+    "Autre"
+  ],
+  "quitSurveyInputInfo": "Veuillez sélectionner une raison",
+  "quitSurveyBtnClose": "Fermer",
+  "quitSurveyBtnEnd": "Arrêter l'expérience"
+}

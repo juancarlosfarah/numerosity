@@ -15,6 +15,7 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import JsResize from '@jspsych/plugin-resize';
 import jsPsychSurveyHtmlForm from '@jspsych/plugin-survey-html-form';
 import jsPsychSurveyMultiChoice from '@jspsych/plugin-survey-multi-choice';
+import i18next from 'i18next';
 import { JsPsych, initJsPsych } from 'jspsych';
 import { DataCollection } from 'jspsych/dist/modules/data/DataCollection';
 
@@ -27,45 +28,21 @@ type img_description = { num: number; id: number };
 
 type timeline = JsPsych['timeline'];
 
-type language = 'en' | 'fr' | 'es' | 'ca';
-
-type instruction_text = {
-  title: string;
-  example: string;
-  btn_next: string;
-  btn_previous: string;
-};
-
-type tip_text = {
-  title: string;
-  description: string;
-  btn_txt: string;
-};
-
-type quit_survey_text = {
-  preamble: string;
-  prompt: string;
-  options: string[];
-  input_info: string;
-  btn_close: string;
-  btn_end: string;
-};
-
 /**
  * @function resize
  * @description Generates the resize timeline for the experiment with calibration and quit button.
  * @param {JsPsych} jsPsych - The jsPsych instance.
- * @param {language} lang - The language code for translation.
  * @returns {timeline} - The timeline object for resizing.
  */
-const resize: timeline = (jsPsych: JsPsych, lang: language): timeline => ({
+const resize: timeline = (jsPsych: JsPsych): timeline => ({
   timeline: [
     {
       type: JsResize,
       item_width: 8.56,
       item_height: 5.398,
-      prompt: `<p>${langf.translateCalibration(lang)}</p>`,
+      prompt: `<p>${i18next.t('calibration')}</p>`,
       starting_size: 323.52755906,
+      button_label: i18next.t('resizeBtn'),
     },
   ],
   on_load: function (): void {
@@ -76,9 +53,9 @@ const resize: timeline = (jsPsych: JsPsych, lang: language): timeline => ({
       'color: #fff; border-radius: 4px; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)',
     );
 
-    quit_btn.addEventListener('click', () => quitBtnAction(jsPsych, lang));
+    quit_btn.addEventListener('click', () => quitBtnAction(jsPsych));
 
-    quit_btn.appendChild(document.createTextNode(langf.translateQuitBtn(lang)));
+    quit_btn.appendChild(document.createTextNode(i18next.t('quitBtn')));
 
     document
       .getElementById('jspsych-progressbar-container')!
@@ -95,47 +72,39 @@ const resize: timeline = (jsPsych: JsPsych, lang: language): timeline => ({
 
 /**
  * @function generateInstructionPages
- * @description Generate instruction pages based on the type of countable (people/objects), language, and text.
+ * @description Generate instruction pages based on the type of countable (people/objects).
  * If example is true, it generates the example page with a video.
  * @param { 'people' | 'objects' } cntable - The type of countable (people or objects)
- * @param { language } lang - The language in which instructions are shown
- * @param { instruction_text } text - The text for instructions
  * @returns { string[] } - Array of instruction pages as HTML strings
  */
-function generateInstructionPages(
-  cntable: 'people' | 'objects',
-  lang: language,
-  text: instruction_text,
-): string[] {
+function generateInstructionPages(cntable: 'people' | 'objects'): string[] {
   const pages: string[] = [];
   for (let page_nb: number = 1; page_nb < 6; page_nb++) {
     pages.push(
-      `<b>${text.title}</b><br><img src='../assets/instruction-media/${cntable}/${lang}/instruction-${page_nb}.png'></img>`,
+      `<b>${i18next.t('instructionTitle')}</b><br><img src='../assets/instruction-media/${cntable}/${i18next.language}/instruction-${page_nb}.png'></img>`,
     );
   }
   pages.push(
-    `<b>${text.title}</b><br>${text.example}<br><video muted autoplay loop preload="auto" src="../assets/instruction-media/${cntable}/example-vid.mp4"><source type="video/mp4"></source></video>`,
+    `<b>${i18next.t('instructionTitle')}</b><br>${i18next.t('instructionExample', { cntable: langf.translateCountable(cntable) })}<br><video muted autoplay loop preload="auto" src="../assets/instruction-media/${cntable}/example-vid.mp4"><source type="video/mp4"></source></video>`,
   );
   return pages;
 }
 
 /**
  * @function instructions
- * @description Create instruction timeline based on the type of countable and language.
+ * @description Create instruction timeline based on the type of countable.
  * Combines both text and example (video) instructions.
  * @param { 'people' | 'objects' } cntable - The type of countable (people or objects)
- * @param { language } lang - The language in which instructions are shown
  * @returns { timeline } - Timeline for instructions
  */
-function instructions(cntable: 'people' | 'objects', lang: language): timeline {
-  const text: instruction_text = langf.instructionTexts(cntable, lang);
+function instructions(cntable: 'people' | 'objects'): timeline {
   return {
     timeline: [
       {
         type: jsPsychinstructions,
-        pages: generateInstructionPages(cntable, lang, text),
-        button_label_next: text.btn_next,
-        button_label_previous: text.btn_previous,
+        pages: generateInstructionPages(cntable),
+        button_label_next: i18next.t('instructionBtnNext'),
+        button_label_previous: i18next.t('instructionBtnPrevious'),
         show_clickable_nav: true,
       },
     ],
@@ -146,21 +115,19 @@ function instructions(cntable: 'people' | 'objects', lang: language): timeline {
  * @function instructionQuiz
  * @description Instruction quiz timeline with looping functionality until correct answers are given.
  * @param { 'people' | 'objects' } cntable - The type of countable (people or objects)
- * @param { language } lang - The language in which quiz is presented
  * @param { boolean } second_half - Whether it is the second half of the quiz
  * @returns { timeline } - Timeline for instruction quiz
  */
 const instructionQuiz: timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
-  lang: language,
   second_half: boolean = false,
 ): timeline => ({
   timeline: [
     {
       type: jsPsychSurveyMultiChoice,
-      questions: langf.quizQuestions(cntable, lang),
-      preamble: `<b>${langf.translatePreamble(second_half, lang)}</b><br><br><button id="quiz-repeat-btn" class="jspsych-btn" style="cursor: pointer;">${langf.translateRepeat(lang)}</button>`,
+      questions: langf.quizQuestions(cntable),
+      preamble: `<b>${i18next.t('quizPreamblesHalf', { returnObjects: true })[Number(second_half)]}</b><br><br><button id="quiz-repeat-btn" class="jspsych-btn" style="cursor: pointer;">${i18next.t('repeatInstructions')}</button>`,
     },
   ],
   on_load: (): void => {
@@ -176,23 +143,21 @@ const instructionQuiz: timeline = (
 
 /**
  * @function returnPage
- * @description Generates a timeline object for displaying a return page based on the specified language and countable type.
+ * @description Generates a timeline object for displaying a return page based on the specified countable type.
  * The return page is conditional based on the user's previous response.
  * @param {JsPsych} jsPsych - The jsPsych instance.
  * @param {'people' | 'objects'} cntable - The type of countable (people or objects).
- * @param {language} lang - The language code for the return page text.
  * @returns {timeline} - An object representing the timeline for the return page.
  */
 const returnPage: timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
-  lang: language,
 ): timeline => ({
   timeline: [
     {
       type: HtmlButtonResponsePlugin,
-      stimulus: `<p><b>${langf.translateRepeat(lang)}</b></p>`,
-      choices: [langf.translateRepeat(lang)],
+      stimulus: `<p><b>${i18next.t('repeatInstructions')}</b></p>`,
+      choices: [i18next.t('repeatInstructions')],
     },
   ],
   conditional_function: function (): boolean {
@@ -200,7 +165,7 @@ const returnPage: timeline = (
       jsPsych.data.getLastTimelineData().values()[0].response.Q0 !==
         'read-again' &&
       jsPsych.data.getLastTimelineData().values()[0].response.Q0 !==
-        langf.quizQuestions(cntable, lang)[0].options[2]
+        langf.quizQuestions(cntable)[0].options[2]
     );
   },
 });
@@ -208,28 +173,26 @@ const returnPage: timeline = (
 /**
  * @function groupInstructions
  * @description Generates a timeline object for displaying group instructions including the instruction text,
- * instruction quiz, and return page based on the specified language, countable type, and experiment phase.
+ * instruction quiz, and return page based on the countable type and experiment phase.
  * @param {JsPsych} jsPsych - The jsPsych instance.
  * @param {'people' | 'objects'} cntable - The type of countable (people or objects).
- * @param {language} lang - The language code for the instruction texts.
  * @param {boolean} [second_half=false] - Indicates if it is the second half of the experiment.
  * @returns {timeline} - An object representing the timeline for the group instructions.
  */
 const groupInstructions: timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
-  lang: language,
   second_half: boolean = false,
 ): timeline => ({
   timeline: [
-    instructions(cntable, lang),
-    instructionQuiz(jsPsych, cntable, lang, second_half),
-    returnPage(jsPsych, cntable, lang),
+    instructions(cntable),
+    instructionQuiz(jsPsych, cntable, second_half),
+    returnPage(jsPsych, cntable),
   ],
   loop_function: function (data: DataCollection): boolean {
     return (
       data.last(2).values()[1].response.Q0 !==
-      langf.quizQuestions(cntable, lang)[0].options[2]
+      langf.quizQuestions(cntable)[0].options[2]
     );
   },
   on_finish: (): void => {
@@ -239,19 +202,17 @@ const groupInstructions: timeline = (
 
 /**
  * @function tipScreen
- * @description Generates a timeline object for displaying a tip screen based on the specified language.
- * @param {language} lang - The language code for the tips text.
+ * @description Generates a timeline object for displaying a tip screen.
  * @returns {timeline} - An object representing the timeline for the tip screen.
  */
-function tipScreen(lang: language): timeline {
-  const tiptext: tip_text = langf.translateTip(lang);
+function tipScreen(): timeline {
   return {
     timeline: [
       {
         type: HtmlButtonResponsePlugin,
-        stimulus: `<b>${tiptext.title}</b><br><img src="../assets/instruction-media/tip.png"><br>`,
-        prompt: tiptext.description,
-        choices: [tiptext.btn_txt],
+        stimulus: `<b>${i18next.t('tipTitle')}</b><br><img src="../assets/instruction-media/tip.png"><br>`,
+        prompt: i18next.t('tipDescription'),
+        choices: [i18next.t('tipBtnTxt')],
       },
     ],
   };
@@ -291,7 +252,6 @@ function generateTimelineVars(
  * Two identical images will never be contained in one experiment.
  * @param { JsPsych } jsPsych - The jsPsych instance
  * @param { 'people' | 'objects' } cntable - The type of countable (people or objects)
- * @param { language } lang - The language in which task is presented
  * @param { number } nb_blocks - Number of blocks per half
  * @param { { completed: number } } progress - Object tracking the progress
  * @returns { timeline } - Timeline for one half of the numerosity task
@@ -299,7 +259,6 @@ function generateTimelineVars(
 const partofexp: timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
-  lang: language,
   nb_blocks: number,
   progress: { completed: number },
 ): timeline => ({
@@ -340,13 +299,13 @@ const partofexp: timeline = (
         ) as HTMLInputElement;
 
         // Initially set the custom validity message
-        input.setCustomValidity(langf.inputInfo(lang));
+        input.setCustomValidity(i18next.t('inputInfo'));
 
         // Add input event listener
         input.addEventListener('input', (): void => {
           // If the input value is not empty, clear the custom validity message
           if (input.value === '') {
-            input.setCustomValidity(langf.inputInfo(lang));
+            input.setCustomValidity(i18next.t('inputInfo'));
           } else {
             input.setCustomValidity('');
           }
@@ -405,21 +364,26 @@ const partofexp: timeline = (
  * @param {quit_survey_text} texts - The text object containing survey details.
  * @returns {string} - The HTML string for the quit survey.
  */
-function generateQuitSurvey(texts: quit_survey_text): string {
+function generateQuitSurvey(): string {
   return `
   <div class="quit-survey-content">
     <div style="position: relative;">
-      <h2 style="vertical-align: middle;"><b>${texts.preamble}</b></h2>
-      <button id="quit-close-btn" class="jspsych-btn">${texts.btn_close}</button>
+      <h2 style="vertical-align: middle;"><b>${i18next.t('quitSurveyPreamble')}</b></h2>
+      <button id="quit-close-btn" class="jspsych-btn">${i18next.t('quitSurveyBtnClose')}</button>
     </div>
     <br>
     <form id="quit-form">
       <div>
-        <label><b>${texts.prompt}</b></label>
+        <label><b>${i18next.t('quitSurveyPrompt')}</b></label>
       </div>
-      ${texts.options.map((option, index) => `<div><input type="radio" name="quit-option" value="${index}" id="option-${index}" required><label for="option-${index}">${option}</label></div>`).join('')}
+      ${(i18next.t('quitSurveyOptions', { returnObjects: true }) as string[])
+        .map(
+          (option, index) =>
+            `<div><input type="radio" name="quit-option" value="${index}" id="option-${index}" required><label for="option-${index}">${option}</label></div>`,
+        )
+        .join('')}
       <div align="center">
-        <input type="submit" class="jspsych-btn" id="quit-end-btn" value="${texts.btn_end}">
+        <input type="submit" class="jspsych-btn" id="quit-end-btn" value="${i18next.t('quitSurveyBtnEnd')}">
       </div>
     </form>
   </div>`;
@@ -430,15 +394,13 @@ function generateQuitSurvey(texts: quit_survey_text): string {
  * @description Creates and displays the quit survey form when the quit button is clicked.
  * This includes handling form submission, validation, and the close button action.
  * @param { JsPsych } jsPsych - The JsPsych instance.
- * @param { 'en' | 'fr' | 'es' | 'ca' } lang - The language in which the quit survey text should be displayed.
  */
-function quitBtnAction(jsPsych: JsPsych, lang: language): void {
+function quitBtnAction(jsPsych: JsPsych): void {
   const panel: HTMLElement = document.createElement('div');
-  const quit_survey_text: quit_survey_text = langf.quitSurveyText(lang);
 
   panel.setAttribute('id', 'quit-overlay');
   panel.classList.add('quit-survey-panel');
-  panel.innerHTML = generateQuitSurvey(quit_survey_text);
+  panel.innerHTML = generateQuitSurvey();
   document.body.appendChild(panel);
 
   const form: HTMLFormElement = document.getElementById(
@@ -450,7 +412,7 @@ function quitBtnAction(jsPsych: JsPsych, lang: language): void {
   ) as NodeListOf<HTMLInputElement>;
   options.forEach((option) => {
     option.addEventListener('invalid', () => {
-      option.setCustomValidity(langf.quitSurveyText(lang).input_info);
+      option.setCustomValidity(i18next.t('quitSurveyInputInfo'));
     });
   });
 
@@ -498,7 +460,7 @@ export async function run(/*{
   const jsPsych: JsPsych = initJsPsych({
     show_progress_bar: true,
     auto_update_progress_bar: false,
-    message_progress_bar: langf.textProgressBar('en'),
+    message_progress_bar: i18next.t('progressBar'),
     on_finish: (): void => {
       jsPsych.data.get().localSave('json', 'experiment-data.json');
     },
@@ -520,18 +482,18 @@ export async function run(/*{
     button_label: 'Fullscreen',
   });
 
-  timeline.push(resize(jsPsych, 'en'));
+  timeline.push(resize(jsPsych));
 
   // Run numerosity task
   timeline.push(
-    groupInstructions(jsPsych, 'people', 'en'),
-    tipScreen('en'),
-    partofexp(jsPsych, 'people', 'en', blocks_per_half, progress),
-    groupInstructions(jsPsych, 'objects', 'en', true),
-    tipScreen('en'),
-    partofexp(jsPsych, 'objects', 'en', blocks_per_half, progress),
+    groupInstructions(jsPsych, 'people'),
+    tipScreen(),
+    partofexp(jsPsych, 'people', blocks_per_half, progress),
+    groupInstructions(jsPsych, 'objects', true),
+    tipScreen(),
+    partofexp(jsPsych, 'objects', blocks_per_half, progress),
   );
-
+  console.log(i18next.language);
   await jsPsych.run(timeline);
 
   // Return the jsPsych instance so jsPsych Builder can access the experiment results (remove this

@@ -1,0 +1,40 @@
+{
+  "quitBtn": "Quit",
+  "calibration": "Click and drag the lower right corner of the box until the box is the same size as a credit card held up to the screen.",
+  "progressBar": "Completion progress",
+  "resizeBtn": "Continue",
+  "countablePeople": "people",
+  "countableObjects": "objects",
+  "instructionTitle": "Instructions: what you have to do",
+  "instructionExample": "Here is an example of the task. As you can see, the picture is displayed for a very short time. You have to estimate the number of {{cntable}} that were displayed. Do not worry, estimation errors are expected.",
+  "instructionBtnNext": "Next",
+  "instructionBtnPrevious": "Previous",
+  "quizPreamblesHalf": [
+    "Check your knowledge before you begin!",
+    "You are in the middle of the experiment!<br>Instructions have changed for the second half. Check your knowledge before you begin!"
+  ],
+  "quizQuestionPrompt": "Question 1: What should be estimate?",
+  "quizQuestionOptions": [
+    "The size of the virtual room",
+    "The duration of picture presentation",
+    "The number of {{cntable}} inside the virtual room"
+  ],
+  "inputInfo": "Please write a whole number",
+  "repeatInstructions": "Click here to read the instructions again",
+  "tipTitle": "Some tips",
+  "tipDescription": "Please keep your face at around 50cm from your screen during the experiment.",
+  "tipBtnTxt": "I am ready to start",
+  "quitSurveyPreamble": "Experiment is in progress.<br> Do you really want to quit?",
+  "quitSurveyPrompt": "Please select below the reason for your cancellation:",
+  "quitSurveyOptions": [
+    "The experiment takes too much time",
+    "The task is too complicated",
+    "The experiment is boring",
+    "I am too tired to continue",
+    "I am not satisfied with my answers",
+    "Other"
+  ],
+  "quitSurveyInputInfo": "Please select a reason",
+  "quitSurveyBtnClose": "Close",
+  "quitSurveyBtnEnd": "Cancel the experiment"
+}

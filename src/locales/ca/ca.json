@@ -1,0 +1,40 @@
+{
+  "quitBtn": "Sortir",
+  "calibration": "Feu clic i arrossegueu l'extrem inferior dret del quadre fins que el quadre tingui la mateixa mida que una targeta de crèdit que es mostra a la pantalla.",
+  "progressBar": "Progrés de l'experimentació",
+  "resizeBtn": "Continuar",
+  "countablePeople": "persones",
+  "countableObjects": "objectes",
+  "instructionTitle": "Instruccions: el que has de fer",
+  "instructionExample": "Vet aquí un exemple de la tasca. Com podeu veure, la imatge es mostra durant molt poc temps. Heu d'estimar el nombre de {{cntable}} que es van mostrar. No us preocupeu, s'esperen errors d'estimació.",
+  "instructionBtnNext": "Següent",
+  "instructionBtnPrevious": "Anterior",
+  "quizPreamblesHalf": [
+    "Comproveu els vostres coneixements abans de començar!",
+    "Ets al mig de l'experiment!<br>Les instruccions han canviat per a la segona part. Comproveu els vostres coneixements abans de començar!"
+  ],
+  "quizQuestionPrompt": "Pregunta 1: Què cal estimar?",
+  "quizQuestionOptions": [
+    "La mida de la sala virtual",
+    "La durada de la presentació de la imatge",
+    "El nombre de {{cntable}} dins de la sala virtual"
+  ],
+  "inputInfo": "Si us plau escriviu un número enter",
+  "repeatInstructions": "Feu clic aquí per llegir les instruccions novament",
+  "tipTitle": "Alguns consells",
+  "tipDescription": "Mantingueu la cara a uns 50 cm de la pantalla durant l'experiment.",
+  "tipBtnTxt": "Estic llest per començar",
+  "quitSurveyPreamble": "Experiment en curs.<br> Realment voleu sortir?",
+  "quitSurveyPrompt": "Seleccioneu a continuació el motiu de la vostra cancel·lació:",
+  "quitSurveyOptions": [
+    "L'experiment dura massa temps",
+    "La tasca és massa complicada",
+    "L'experiment és avorrit",
+    "Estic massa cansat per continuar",
+    "No estic satisfet amb les meves respostes",
+    "Altres"
+  ],
+  "quitSurveyInputInfo": "Si us plau, seleccioneu un motiu",
+  "quitSurveyBtnClose": "Tancar",
+  "quitSurveyBtnEnd": "Cancel·lar l'experiment"
+}
