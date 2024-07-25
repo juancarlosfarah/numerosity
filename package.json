@@ -19,12 +19,12 @@
     "@jspsych/plugin-preload": "^1.1.2",
     "@jspsych/plugin-resize": "^2.0.0",
     "@jspsych/plugin-survey-html-form": "^1.0.3",
-    "@jspsych/plugin-survey-multi-choice": "^2.0.0",
-    "jspsych": "^7.3.1"
+    "@jspsych/plugin-survey-multi-choice": "^2.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.7.0",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/seedrandom": "^3.0.8",
     "@unly/universal-language-detector": "^2.0.3",
     "cypress": "^13.13.0",
     "eslint": "^9.7.0",
@@ -33,6 +33,7 @@
     "globals": "^15.8.0",
     "husky": "^9.0.11",
     "i18next": "^23.12.2",
+    "jspsych": "^8.0.1",
     "jspsych-builder": "^4.4.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.3.2",

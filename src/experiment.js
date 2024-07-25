@@ -17,6 +17,7 @@ import jsPsychSurveyHtmlForm from '@jspsych/plugin-survey-html-form';
 import jsPsychSurveyMultiChoice from '@jspsych/plugin-survey-multi-choice';
 import i18next from 'i18next';
 import { initJsPsych } from 'jspsych';
+//import { DataCollection } from 'jspsych/src/modules/data/DataCollection';
 // Import styles and language functions
 import '../styles/main.scss';
 import * as langf from './languages.js';
@@ -224,7 +225,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, progress) => ({
         {
             type: jsPsychHtmlKeyboardResponse,
             stimulus: function () {
-                return `<img src='../assets/num-task-imgs/${cntable}/num-${jsPsych.timelineVariable('num')}-${jsPsych.timelineVariable('id')}.png'>`;
+                return `<img src='../assets/num-task-imgs/${cntable}/num-${jsPsych.evaluateTimelineVariable('num')}-${jsPsych.evaluateTimelineVariable('id')}.png'>`;
             },
             choices: 'NO_KEYS',
             trial_duration: 250,
@@ -255,7 +256,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, progress) => ({
             },
             on_finish: function () {
                 progress.completed++;
-                jsPsych.setProgressBar(progress.completed / (8 * nb_blocks));
+                jsPsych.progressBar.progress = progress.completed / (8 * nb_blocks);
             },
         },
     ],
@@ -350,7 +351,7 @@ function quitBtnAction(jsPsych) {
             });
             document.body.removeChild(panel);
             // End the experiment
-            jsPsych.endExperiment();
+            jsPsych.abortExperiment();
         }
     });
 }
