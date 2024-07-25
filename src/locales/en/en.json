@@ -1,4 +1,5 @@
 {
+  "fullscreen": "Fullscreen",
   "quitBtn": "Quit",
   "calibration": "Click and drag the lower right corner of the box until the box is the same size as a credit card held up to the screen.",
   "progressBar": "Completion progress",
@@ -36,5 +37,7 @@
   ],
   "quitSurveyInputInfo": "Please select a reason",
   "quitSurveyBtnClose": "Close",
-  "quitSurveyBtnEnd": "Cancel the experiment"
+  "quitSurveyBtnEnd": "Cancel the experiment",
+  "abortedMessage": "Experiment aborted!<br><br>You aborted the experience prematurely.",
+  "endMessage": "Thank you!<br><br>You have completed the experiment!"
 }

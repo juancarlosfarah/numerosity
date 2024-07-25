@@ -321,7 +321,7 @@ function generateQuitSurvey() {
 function quitBtnAction(jsPsych) {
     const panel = document.createElement('div');
     panel.setAttribute('id', 'quit-overlay');
-    panel.classList.add('quit-survey-panel');
+    panel.classList.add('custom-overlay');
     panel.innerHTML = generateQuitSurvey();
     document.body.appendChild(panel);
     const form = document.getElementById('quit-form');
@@ -333,6 +333,9 @@ function quitBtnAction(jsPsych) {
     });
     document.getElementById('quit-close-btn').addEventListener('click', () => {
         document.body.removeChild(panel);
+    });
+    form.addEventListener('submit', (event) => {
+        event.preventDefault(); // Prevent the default form submission behavior
     });
     document.getElementById('quit-end-btn').addEventListener('click', () => {
         const selected_option = document.querySelector('input[name="quit-option"]:checked');
@@ -350,6 +353,20 @@ function quitBtnAction(jsPsych) {
             jsPsych.endExperiment();
         }
     });
+}
+/**
+ * @function showEndScreen
+ * @description Creates and displays an end screen overlay with a given message. If the document is in fullscreen mode, it exits fullscreen.
+ * @param {string} message - The message to be displayed on the end screen.
+ */
+function showEndScreen(message) {
+    const screen = document.createElement('div');
+    screen.classList.add('custom-overlay');
+    screen.innerHTML = `<h2 style="text-align: center; top: 50%;">${message}</h2>`;
+    document.body.appendChild(screen);
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    }
 }
 /**
  * This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment
@@ -385,13 +402,18 @@ export async function run( /*{
         type: FullscreenPlugin,
         fullscreen_mode: true,
         message: '',
-        button_label: 'Fullscreen',
+        button_label: i18next.t('fullscreen'),
     });
     timeline.push(resize(jsPsych));
     // Run numerosity task
     timeline.push(groupInstructions(jsPsych, 'people'), tipScreen(), partofexp(jsPsych, 'people', blocks_per_half, progress), groupInstructions(jsPsych, 'objects', true), tipScreen(), partofexp(jsPsych, 'objects', blocks_per_half, progress));
-    console.log(i18next.language);
     await jsPsych.run(timeline);
+    if (jsPsych.data.get().last(2).values()[0].trial_type === 'quit-survey') {
+        showEndScreen(i18next.t('abortedMessage'));
+    }
+    else {
+        showEndScreen(i18next.t('endMessage'));
+    }
     // Return the jsPsych instance so jsPsych Builder can access the experiment results (remove this
     // if you handle results yourself, be it here or in `on_finish()`)
     return jsPsych;

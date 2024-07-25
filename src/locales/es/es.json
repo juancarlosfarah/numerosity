@@ -1,4 +1,5 @@
 {
+  "fullscreen": "Pantalla completa",
   "quitBtn": "Salir",
   "calibration": "Haga clic y arrastre la esquina inferior derecha del cuadro hasta que tenga el mismo tamaño que una tarjeta de crédito sostenida en la pantalla.",
   "progressBar": "Progreso del experimento",
@@ -36,5 +37,7 @@
   ],
   "quitSurveyInputInfo": "Seleccione un motivo",
   "quitSurveyBtnClose": "Cerrar",
-  "quitSurveyBtnEnd": "Abortar el experimento"
+  "quitSurveyBtnEnd": "Abortar el experimento",
+  "abortedMessage": "¡Experimento abortado!<br><br>Abortó la experiencia prematuramente.",
+  "endMessage": "¡Gracias!<br><br>¡Has completado el experimento!"
 }

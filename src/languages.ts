@@ -29,11 +29,11 @@ export function initLang(
     window.location.search,
   );
   const lang_url: string | null = urlParams.get('lang');
-  console.log(lang_url);
+
   if (lang_url) {
     lang = lang_url;
   }
-  console.log(lang);
+
   return lang;
 }
 

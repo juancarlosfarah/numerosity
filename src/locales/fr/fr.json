@@ -1,4 +1,5 @@
 {
+  "fullscreen": "Plein écran",
   "quitBtn": "Quitter",
   "calibration": "Cliquez et faites glisser le coin inférieur droit de la boîte jusqu'à ce que la boîte ait la même taille qu'une carte de crédit tenue devant l'écran.",
   "progressBar": "Progrès de l'expérience",
@@ -36,5 +37,7 @@
   ],
   "quitSurveyInputInfo": "Veuillez sélectionner une raison",
   "quitSurveyBtnClose": "Fermer",
-  "quitSurveyBtnEnd": "Arrêter l'expérience"
+  "quitSurveyBtnEnd": "Arrêter l'expérience",
+  "abortedMessage": "Expérience arrêtée !<br><br>Vous avez interrompu l'expérience prématurément.",
+  "endMessage": "Merci!<br><br>Vous êtes arrivé.e à la fin de l'expérience!"
 }

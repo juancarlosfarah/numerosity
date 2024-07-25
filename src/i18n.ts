@@ -10,7 +10,7 @@ import fr from './locales/fr/fr.json';
 const fallback_lang: string = 'en';
 
 const lang: string = initLang(['en', 'fr', 'es', 'ca'], fallback_lang);
-console.log(lang);
+
 // Initialize i18next
 i18next.init(
   {

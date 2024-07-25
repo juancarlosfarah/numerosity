@@ -7,7 +7,6 @@ import es from './locales/es/es.json';
 import fr from './locales/fr/fr.json';
 const fallback_lang = 'en';
 const lang = initLang(['en', 'fr', 'es', 'ca'], fallback_lang);
-console.log(lang);
 // Initialize i18next
 i18next.init({
     lng: lang, // default language

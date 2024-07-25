@@ -34,7 +34,9 @@ type timeline = JsPsych['timeline'];
  * @param {JsPsych} jsPsych - The jsPsych instance.
  * @returns {timeline} - The timeline object for resizing.
  */
-const resize: timeline = (jsPsych: JsPsych): timeline => ({
+const resize: (jsPsych: JsPsych) => timeline = (
+  jsPsych: JsPsych,
+): timeline => ({
   timeline: [
     {
       type: JsResize,
@@ -118,7 +120,11 @@ function instructions(cntable: 'people' | 'objects'): timeline {
  * @param { boolean } second_half - Whether it is the second half of the quiz
  * @returns { timeline } - Timeline for instruction quiz
  */
-const instructionQuiz: timeline = (
+const instructionQuiz: (
+  jsPsych: JsPsych,
+  cntable: 'people' | 'objects',
+  second_half?: boolean,
+) => timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
   second_half: boolean = false,
@@ -149,7 +155,10 @@ const instructionQuiz: timeline = (
  * @param {'people' | 'objects'} cntable - The type of countable (people or objects).
  * @returns {timeline} - An object representing the timeline for the return page.
  */
-const returnPage: timeline = (
+const returnPage: (
+  jsPsych: JsPsych,
+  cntable: 'people' | 'objects',
+) => timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
 ): timeline => ({
@@ -179,7 +188,11 @@ const returnPage: timeline = (
  * @param {boolean} [second_half=false] - Indicates if it is the second half of the experiment.
  * @returns {timeline} - An object representing the timeline for the group instructions.
  */
-const groupInstructions: timeline = (
+const groupInstructions: (
+  jsPsych: JsPsych,
+  cntable: 'people' | 'objects',
+  second_half?: boolean,
+) => timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
   second_half: boolean = false,
@@ -256,7 +269,12 @@ function generateTimelineVars(
  * @param { { completed: number } } progress - Object tracking the progress
  * @returns { timeline } - Timeline for one half of the numerosity task
  */
-const partofexp: timeline = (
+const partofexp: (
+  jsPsych: JsPsych,
+  cntable: 'people' | 'objects',
+  nb_blocks: number,
+  progress: { completed: number },
+) => timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
   nb_blocks: number,
@@ -399,7 +417,7 @@ function quitBtnAction(jsPsych: JsPsych): void {
   const panel: HTMLElement = document.createElement('div');
 
   panel.setAttribute('id', 'quit-overlay');
-  panel.classList.add('quit-survey-panel');
+  panel.classList.add('custom-overlay');
   panel.innerHTML = generateQuitSurvey();
   document.body.appendChild(panel);
 
@@ -420,6 +438,10 @@ function quitBtnAction(jsPsych: JsPsych): void {
     document.body.removeChild(panel);
   });
 
+  form.addEventListener('submit', (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+  });
+
   document.getElementById('quit-end-btn')!.addEventListener('click', () => {
     const selected_option: HTMLElement = document.querySelector(
       'input[name="quit-option"]:checked',
@@ -434,12 +456,29 @@ function quitBtnAction(jsPsych: JsPsych): void {
         trial_type: 'quit-survey',
         quit_reason: (selected_option as HTMLInputElement).value,
       });
+
       document.body.removeChild(panel);
 
       // End the experiment
       jsPsych.endExperiment();
     }
   });
+}
+
+/**
+ * @function showEndScreen
+ * @description Creates and displays an end screen overlay with a given message. If the document is in fullscreen mode, it exits fullscreen.
+ * @param {string} message - The message to be displayed on the end screen.
+ */
+function showEndScreen(message: string): void {
+  const screen: HTMLElement = document.createElement('div');
+
+  screen.classList.add('custom-overlay');
+  screen.innerHTML = `<h2 style="text-align: center; top: 50%;">${message}</h2>`;
+  document.body.appendChild(screen);
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  }
 }
 
 /**
@@ -479,7 +518,7 @@ export async function run(/*{
     type: FullscreenPlugin,
     fullscreen_mode: true,
     message: '',
-    button_label: 'Fullscreen',
+    button_label: i18next.t('fullscreen'),
   });
 
   timeline.push(resize(jsPsych));
@@ -493,8 +532,14 @@ export async function run(/*{
     tipScreen(),
     partofexp(jsPsych, 'objects', blocks_per_half, progress),
   );
-  console.log(i18next.language);
+
   await jsPsych.run(timeline);
+
+  if (jsPsych.data.get().last(2).values()[0].trial_type === 'quit-survey') {
+    showEndScreen(i18next.t('abortedMessage'));
+  } else {
+    showEndScreen(i18next.t('endMessage'));
+  }
 
   // Return the jsPsych instance so jsPsych Builder can access the experiment results (remove this
   // if you handle results yourself, be it here or in `on_finish()`)
