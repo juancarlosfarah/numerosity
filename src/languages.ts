@@ -16,6 +16,13 @@ class InvalidLanguageError extends Error {
   }
 }
 
+/**
+ * @function initLang
+ * @description Initializes and returns the language to be used in the application. It first attempts to detect the user's language, then checks for a language parameter in the URL, and finally falls back to a default language if necessary.
+ * @param {string[]} supported_langs - An array of supported language codes.
+ * @param {string} fallback_lang - The default language code to use if no valid language is detected.
+ * @returns {string} - The determined language code to be used in the application.
+ */
 export function initLang(
   supported_langs: string[],
   fallback_lang: string,
@@ -32,6 +39,10 @@ export function initLang(
 
   if (lang_url) {
     lang = lang_url;
+  }
+
+  if (!supported_langs.includes(lang)) {
+    lang = fallback_lang;
   }
 
   return lang;

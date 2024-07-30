@@ -28,6 +28,21 @@ type img_description = { num: number; id: number };
 
 type timeline = JsPsych['timeline'];
 
+function generatePreloadStrings(): string[] {
+  const cntables: string[] = ['people', 'objects'];
+  const path_list: string[] = [];
+  for (let i: number = 0; i < 2; i++) {
+    for (let num: number = 5; num < 9; num++) {
+      for (let id: number = 0; id < 10; id++) {
+        path_list.push(
+          `../assets/num-task-imgs/${cntables[i]}/num-${num}-${id}.png`,
+        );
+      }
+    }
+  }
+  return path_list;
+}
+
 /**
  * @function resize
  * @description Generates the resize timeline for the experiment with calibration and quit button.
@@ -322,11 +337,9 @@ const partofexp: (
         // Add input event listener
         input.addEventListener('input', (): void => {
           // If the input value is not empty, clear the custom validity message
-          if (input.value === '') {
-            input.setCustomValidity(i18next.t('inputInfo'));
-          } else {
-            input.setCustomValidity('');
-          }
+          input.setCustomValidity(
+            input.value === '' ? i18next.t('inputInfo') : '',
+          );
         });
       },
       on_finish: function (): void {
@@ -510,7 +523,7 @@ export async function run(/*{
   // Preload assets
   timeline.push({
     type: PreloadPlugin,
-    auto_preload: true,
+    images: generatePreloadStrings(),
   });
 
   // Switch to fullscreen

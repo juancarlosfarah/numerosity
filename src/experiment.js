@@ -21,6 +21,18 @@ import { initJsPsych } from 'jspsych';
 // Import styles and language functions
 import '../styles/main.scss';
 import * as langf from './languages.js';
+function generatePreloadStrings() {
+    const cntables = ['people', 'objects'];
+    const path_list = [];
+    for (let i = 0; i < 2; i++) {
+        for (let num = 5; num < 9; num++) {
+            for (let id = 0; id < 10; id++) {
+                path_list.push(`../assets/num-task-imgs/${cntables[i]}/num-${num}-${id}.png`);
+            }
+        }
+    }
+    return path_list;
+}
 /**
  * @function resize
  * @description Generates the resize timeline for the experiment with calibration and quit button.
@@ -246,12 +258,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, progress) => ({
                 // Add input event listener
                 input.addEventListener('input', () => {
                     // If the input value is not empty, clear the custom validity message
-                    if (input.value === '') {
-                        input.setCustomValidity(i18next.t('inputInfo'));
-                    }
-                    else {
-                        input.setCustomValidity('');
-                    }
+                    input.setCustomValidity(input.value === '' ? i18next.t('inputInfo') : '');
                 });
             },
             on_finish: function () {
@@ -396,7 +403,7 @@ export async function run( /*{
     // Preload assets
     timeline.push({
         type: PreloadPlugin,
-        auto_preload: true,
+        images: generatePreloadStrings(),
     });
     // Switch to fullscreen
     timeline.push({
