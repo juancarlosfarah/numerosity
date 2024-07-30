@@ -1,0 +1,43 @@
+{
+  "fullscreen": "Vollbild",
+  "quitBtn": "Abbrechen",
+  "calibration": "Klicken und ziehen Sie die untere rechte Ecke des Feldes, bis das Feld die Größe einer an den Bildschirm gehaltenen Kreditkarte hat.",
+  "progressBar": "Fortschritt",
+  "resizeBtn": "Fortfahren",
+  "countablePeople": "Personen",
+  "countableObjects": "Objekte",
+  "instructionTitle": "Anleitung: Was Sie tun müssen",
+  "instructionExample": "Hier ein Beispiel für eine Aufgabe. Wie Sie sehen können, wird das Bild nur für eine sehr kurze Zeit angezeigt. Sie müssen die Anzahl der {{cntable}} schätzen, die angezeigt wurden. Keine Sorge, Schätzfehler werden erwartet.",
+  "instructionBtnNext": "Weiter",
+  "instructionBtnPrevious": "Zurück",
+  "quizPreamblesHalf": [
+    "Überprüfen Sie Ihr Wissen, bevor Sie beginnen",
+    "Sie befinden sich in der Mitte des Experiments!<br>Die Anweisungen haben sich für die zweite Hälfte geändert. Überprüfen Sie Ihr Wissen, bevor Sie beginnen!"
+  ],
+  "quizQuestionPrompt": "Frage 1: Was soll geschätzt werden?",
+  "quizQuestionOptions": [
+    "Die Größe des virtuellen Raums",
+    "Die Dauer der Präsentation des Bildes",
+    "Die Anzahl der {{cntable}} innerhalb des virtuellen Raumes"
+  ],
+  "inputInfo": "Bitte schreiben Sie eine ganze Zahl",
+  "repeatInstructions": "Klicken Sie hier, um die Anleitung noch einmal zu lesen",
+  "tipTitle": "Einige Tipps",
+  "tipDescription": "Bitte halten Sie Ihr Gesicht während des Experiments etwa 50 cm vom Bildschirm entfernt.",
+  "tipBtnTxt": "Ich bin bereit zu beginnen",
+  "quitSurveyPreamble": "Das Experiment ist im Gange.<br> Wollen Sie wirklich aufhören?",
+  "quitSurveyPrompt": "Bitte wählen Sie unten den Grund für Ihren Abbruch aus:",
+  "quitSurveyOptions": [
+    "Das Experiment nimmt zu viel Zeit in Anspruch",
+    "Die Aufgabe ist zu kompliziert",
+    "Das Experiment ist langweilig",
+    "Ich bin zu müde, um weiterzumachen",
+    "Ich bin mit meinen Antworten nicht zufrieden",
+    "Andere"
+  ],
+  "quitSurveyInputInfo": "Bitte wählen Sie einen Grund aus",
+  "quitSurveyBtnClose": "Schließen",
+  "quitSurveyBtnEnd": "Experiment abbrechen",
+  "abortedMessage": "Experiment abgebrochen!<br><br>Sie haben das Experiment frühzeitig abgebrochen.",
+  "endMessage": "Vielen Dank!<br><br>Sie haben das Experiment abgeschlossen!"
+}

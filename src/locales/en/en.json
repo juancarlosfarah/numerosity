@@ -14,7 +14,7 @@
     "Check your knowledge before you begin!",
     "You are in the middle of the experiment!<br>Instructions have changed for the second half. Check your knowledge before you begin!"
   ],
-  "quizQuestionPrompt": "Question 1: What should be estimate?",
+  "quizQuestionPrompt": "Question 1: What should be estimated?",
   "quizQuestionOptions": [
     "The size of the virtual room",
     "The duration of picture presentation",
