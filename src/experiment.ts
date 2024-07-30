@@ -28,18 +28,25 @@ type img_description = { num: number; id: number };
 
 type timeline = JsPsych['timeline'];
 
+/**
+ * @function generatePreloadStrings
+ * @description Generates a list of file paths for preloading images used in a numerical task.
+ * @returns {string[]} - An array of file paths to be preloaded.
+ */
 function generatePreloadStrings(): string[] {
   const cntables: string[] = ['people', 'objects'];
   const path_list: string[] = [];
-  for (let i: number = 0; i < 2; i++) {
-    for (let num: number = 5; num < 9; num++) {
-      for (let id: number = 0; id < 10; id++) {
+
+  for (const cntable of cntables) {
+    for (let num = 5; num < 9; num++) {
+      for (let id = 0; id < 10; id++) {
         path_list.push(
-          `../assets/num-task-imgs/${cntables[i]}/num-${num}-${id}.png`,
+          `../assets/num-task-imgs/${cntable}/num-${num}-${id}.png`,
         );
       }
     }
   }
+
   return path_list;
 }
 

@@ -21,13 +21,18 @@ import { initJsPsych } from 'jspsych';
 // Import styles and language functions
 import '../styles/main.scss';
 import * as langf from './languages.js';
+/**
+ * @function generatePreloadStrings
+ * @description Generates a list of file paths for preloading images used in a numerical task.
+ * @returns {string[]} - An array of file paths to be preloaded.
+ */
 function generatePreloadStrings() {
     const cntables = ['people', 'objects'];
     const path_list = [];
-    for (let i = 0; i < 2; i++) {
+    for (const cntable of cntables) {
         for (let num = 5; num < 9; num++) {
             for (let id = 0; id < 10; id++) {
-                path_list.push(`../assets/num-task-imgs/${cntables[i]}/num-${num}-${id}.png`);
+                path_list.push(`../assets/num-task-imgs/${cntable}/num-${num}-${id}.png`);
             }
         }
     }
