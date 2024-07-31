@@ -22,7 +22,6 @@ import { generatePreloadStrings, resize } from './setup';
 
 // Type aliases for better code readability
 type img_description = { num: number; id: number };
-
 type timeline = JsPsych['timeline'];
 
 /**
@@ -60,19 +59,16 @@ function generateTimelineVars(
  * @param { JsPsych } jsPsych - The jsPsych instance
  * @param { 'people' | 'objects' } cntable - The type of countable (people or objects)
  * @param { number } nb_blocks - Number of blocks per half
- * @param { { completed: number } } progress - Object tracking the progress
  * @returns { timeline } - Timeline for one half of the numerosity task
  */
 const partofexp: (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
   nb_blocks: number,
-  progress: { completed: number },
 ) => timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
   nb_blocks: number,
-  progress: { completed: number },
 ): timeline => ({
   timeline: [
     // Crosshair shown before each image for 500ms.
@@ -122,8 +118,7 @@ const partofexp: (
         });
       },
       on_finish: function (): void {
-        progress.completed++;
-        jsPsych.progressBar!.progress = progress.completed / (8 * nb_blocks);
+        jsPsych.progressBar!.progress += 1 / (8 * nb_blocks);
       },
     },
   ],
@@ -176,7 +171,6 @@ const partofexp: (
  */
 export async function run(): Promise<JsPsych> {
   const blocks_per_half: number = 5;
-  const progress: { completed: number } = { completed: 0 };
 
   const jsPsych: JsPsych = initJsPsych({
     show_progress_bar: true,
@@ -209,10 +203,10 @@ export async function run(): Promise<JsPsych> {
   timeline.push(
     groupInstructions(jsPsych, 'people'),
     tipScreen(),
-    partofexp(jsPsych, 'people', blocks_per_half, progress),
+    partofexp(jsPsych, 'people', blocks_per_half),
     groupInstructions(jsPsych, 'objects', true),
     tipScreen(),
-    partofexp(jsPsych, 'objects', blocks_per_half, progress),
+    partofexp(jsPsych, 'objects', blocks_per_half),
   );
 
   await jsPsych.run(timeline);

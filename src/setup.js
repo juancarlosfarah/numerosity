@@ -31,8 +31,9 @@ export const resize = (jsPsych) => ({
             item_width: 8.56,
             item_height: 5.398,
             prompt: `<p>${i18next.t('calibration')}</p>`,
-            starting_size: 323.52755906,
+            starting_size: 383,
             button_label: i18next.t('resizeBtn'),
+            pixels_per_unit: 37.795275591,
         },
     ],
     on_load: function () {
@@ -48,7 +49,7 @@ export const resize = (jsPsych) => ({
     on_finish: function () {
         const style = document.createElement('style');
         style.innerHTML = `img, vid {
-        width: ${jsPsych.data.get().last(1).values()[0].scale_factor * 1680}px;
+        width: ${jsPsych.data.get().last(1).values()[0].scale_factor * 559.37007874}px;
         height: auto}`;
         document.head.appendChild(style);
     },

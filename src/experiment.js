@@ -45,10 +45,9 @@ function generateTimelineVars(JsPsych, nb_blocks) {
  * @param { JsPsych } jsPsych - The jsPsych instance
  * @param { 'people' | 'objects' } cntable - The type of countable (people or objects)
  * @param { number } nb_blocks - Number of blocks per half
- * @param { { completed: number } } progress - Object tracking the progress
  * @returns { timeline } - Timeline for one half of the numerosity task
  */
-const partofexp = (jsPsych, cntable, nb_blocks, progress) => ({
+const partofexp = (jsPsych, cntable, nb_blocks) => ({
     timeline: [
         // Crosshair shown before each image for 500ms.
         {
@@ -89,8 +88,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, progress) => ({
                 });
             },
             on_finish: function () {
-                progress.completed++;
-                jsPsych.progressBar.progress = progress.completed / (8 * nb_blocks);
+                jsPsych.progressBar.progress += 1 / (8 * nb_blocks);
             },
         },
     ],
@@ -128,7 +126,6 @@ const partofexp = (jsPsych, cntable, nb_blocks, progress) => ({
  */
 export async function run() {
     const blocks_per_half = 5;
-    const progress = { completed: 0 };
     const jsPsych = initJsPsych({
         show_progress_bar: true,
         auto_update_progress_bar: false,
@@ -153,7 +150,7 @@ export async function run() {
     });
     timeline.push(resize(jsPsych));
     // Run numerosity task
-    timeline.push(groupInstructions(jsPsych, 'people'), tipScreen(), partofexp(jsPsych, 'people', blocks_per_half, progress), groupInstructions(jsPsych, 'objects', true), tipScreen(), partofexp(jsPsych, 'objects', blocks_per_half, progress));
+    timeline.push(groupInstructions(jsPsych, 'people'), tipScreen(), partofexp(jsPsych, 'people', blocks_per_half), groupInstructions(jsPsych, 'objects', true), tipScreen(), partofexp(jsPsych, 'objects', blocks_per_half));
     await jsPsych.run(timeline);
     if (jsPsych.data.get().last(2).values()[0].trial_type === 'quit-survey') {
         showEndScreen(i18next.t('abortedMessage'));
