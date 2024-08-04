@@ -10,6 +10,14 @@
   "instructionExample": "He aquí un ejemplo de la tarea. Como puede ver, la imagen se muestra durante muy poco tiempo. Tienes que estimar el número de {{cntable}} que se mostraron. No se preocupe, se esperan errores de estimación.",
   "instructionBtnNext": "Siguiente",
   "instructionBtnPrevious": "Anterior",
+  "instructionTexts": [
+    "<b>Paso 1:<br>Aparece una cruz blanca en el centro de la pantalla.<br>Mírala y mantén la conentración.</b>",
+    "<b>Paso 2:<br>Poco después, la imagen de una habitación con varias {{cntable}} dentro se mosrará muy rápidamente en el centro de la pantalla, como un flash.</b>",
+    "<b>Paso 3:<br>A continuación, la imagen desaparecerá rápidamente y se le pedirá que estime el número de {{cntable}} que aparecían.</b><br><br><u>NOTA:</u> no podrás contar el número de {{cntable}}, ya que va muy rápido. Da sólo una estimación.",
+    "<b>Estos tres pasos se repetirán varias veces a lo largo del experimento.</b>",
+    "<b>RECORDATORIO: no podrás contar el número de {{cntable}}, no te preocupes es normal ya que las {{cntable}} aparecen como un flash rápido. Da sólo una estimación.</b>"
+  ],
+  "instructionScreenExample": "¿Cuántas {{cntable}} había en la foto?",
   "quizPreamblesHalf": [
     "¡Compruebe sus conocimientos antes de empezar!",
     "¡Estás en medio del experimento!<br>Las instrucciones han cambiado para la segunda parte. ¡Compruebe sus conocimientos antes de empezar!"

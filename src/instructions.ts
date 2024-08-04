@@ -19,10 +19,31 @@ type timeline = JsPsych['timeline'];
  * @returns { string[] } - Array of instruction pages as HTML strings
  */
 function generateInstructionPages(cntable: 'people' | 'objects'): string[] {
+  const instruction_imgs: string[] = [
+    `
+    <div class="inst-monitor" style="background-image: url('../assets/instruction-media/monitor-crosshair.png');">
+    </div>`,
+    `
+    <div class="inst-monitor" style="background-image: url('../assets/instruction-media/monitor-crosshair.png');">
+      <div class="inst-screen">
+        <img src="../assets/instruction-media/screen-${cntable}.png">
+      </div>
+    </div>`,
+    ``,
+    ``,
+  ];
   const pages: string[] = [];
   for (let page_nb: number = 1; page_nb < 6; page_nb++) {
     pages.push(
-      `<b>${i18next.t('instructionTitle')}</b><br><img src='../assets/instruction-media/${cntable}/${i18next.language}/instruction-${page_nb}.png'></img>`,
+      `<b>${i18next.t('instructionTitle')}</b><br>
+      <div class="inst-container">
+            <div class="inst-monitor" style="background-image: url('../assets/instruction-media/monitor-crosshair.png');">
+                <div class="inst-screen">
+                    <img src="../assets/instruction-media/screen-objects.png">
+                </div>
+            </div>
+            <p><b>${i18next.t('instructionTexts', { returnObjects: true })[0]}</b></p>
+        </div>`,
     );
   }
   pages.push(

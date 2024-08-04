@@ -10,6 +10,14 @@
   "instructionExample": "Vet aquí un exemple de la tasca. Com podeu veure, la imatge es mostra durant molt poc temps. Heu d'estimar el nombre de {{cntable}} que es van mostrar. No us preocupeu, s'esperen errors d'estimació.",
   "instructionBtnNext": "Següent",
   "instructionBtnPrevious": "Anterior",
+  "instructionTexts": [
+    "<b>Pas 1:<br>Apareix una creu blanca al centre de la pantalla. Mira-<br>la i mantingues la concentració.</b>",
+    "<b>Pas 2:<br>Poc despreés, la  imatge d'una habitació amb diverses {{cntable}} dins es mostrarà molt ràpidament al centre de la pantalla, com un flaix.</b>",
+    "<b>Pas 3:<br>A continuació, la imatge desapareixerà ràpidament i se us demanarà que estimi el nombre de {{cntable}} que apareixien.<br><br><u>NOTA:</u> no podreu comptar el nombre de persones, ja que va molt ràpid.<br>Dóna només una estimació.</b>",
+    "<b>Aquests tres passos es repetiran diverses vegades al llarg de lexperiment.</b>",
+    "<b>RECORDATORI: no podrás comptar el nombre de {{cntable}}, no et preocupis és nomal ja que les {{cntable}} apareixen com un flaix ràpid. Dóna només una estimació.</b>"
+  ],
+  "instructionScreenExample": "Quantes {{cntable}} hi habia a la foto?",
   "quizPreamblesHalf": [
     "Comproveu els vostres coneixements abans de començar!",
     "Ets al mig de l'experiment!<br>Les instruccions han canviat per a la segona part. Comproveu els vostres coneixements abans de començar!"

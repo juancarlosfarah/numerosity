@@ -32,3 +32,30 @@ button:hover {
   position: absolute;
   top: 50%;
 }
+
+.inst-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inst-monitor {
+  position: relative;
+  width: 33%;
+  height: 33%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inst-screen img {
+  width: 94%;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  transform: translateY(-5.25%);
+}

@@ -47,10 +47,11 @@ export const resize = (jsPsych) => ({
             .appendChild(quit_btn);
     },
     on_finish: function () {
+        const width_px = jsPsych.data.get().last(1).values()[0].scale_factor * 559.37007874;
         const style = document.createElement('style');
-        style.innerHTML = `img, vid {
-        width: ${jsPsych.data.get().last(1).values()[0].scale_factor * 559.37007874}px;
-        height: auto}`;
+        style.innerHTML = `img, vid, .inst-container {
+        width: ${width_px}px; 
+        height: ${(9 * width_px) / 16}px;}`;
         document.head.appendChild(style);
     },
 });

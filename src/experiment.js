@@ -149,6 +149,20 @@ export async function run() {
         button_label: i18next.t('fullscreen'),
     });
     timeline.push(resize(jsPsych));
+    timeline.push({
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: `
+            <div class="inst-container">
+            <div class="inst-monitor" style="background-image: url('../assets/instruction-media/monitor-crosshair.png');">
+                <div class="inst-screen">
+                    <img src="../assets/instruction-media/screen-objects.png">
+                </div>
+            </div>
+            <p><b>${i18next.t('instructionTexts', { returnObjects: true })[0]}</b></p>
+        </div>
+`,
+        choices: 'n',
+    });
     // Run numerosity task
     timeline.push(groupInstructions(jsPsych, 'people'), tipScreen(), partofexp(jsPsych, 'people', blocks_per_half), groupInstructions(jsPsych, 'objects', true), tipScreen(), partofexp(jsPsych, 'objects', blocks_per_half));
     await jsPsych.run(timeline);
