@@ -12,6 +12,27 @@ import * as langf from './languages.js';
 type timeline = JsPsych['timeline'];
 
 /**
+ * @function generateInputExample
+ * @description Generates an HTML string for an example input screen used in the instructions.
+ * @param {'people' | 'objects'} cntable - The type of countable (people or objects).
+ * @param {number} scale - The scale factor for the example screen.
+ * @returns {string} - An HTML string representing the example input screen.
+ */
+const generateInputExample: (
+  cntable: 'people' | 'objects',
+  scale: number,
+) => string = (cntable: 'people' | 'objects', scale: number) =>
+  `
+    <div class="inst-monitor" style="background-image: url('../assets/instruction-media/monitor-crosshair.png');">
+      <div class="inst-screen input-example" style="background-color: black; transform: scale(${scale}) translateY(-25%);">
+        <p style="cursor: default;">${i18next.t('instructionScreenExample', { cntable: langf.translateCountable(cntable) })}</p>
+        <input type="number" style="cursor: default;" readonly>
+        <br><br>
+        <button class="jspsych-btn" style="pointer-events: none;" readonly>${i18next.t('estimateSubmitBtn')}</button>
+      </div>
+    </div>`;
+
+/**
  * @function generateInstructionPages
  * @description Generate instruction pages based on the type of countable (people/objects).
  * If example is true, it generates the example page with a video.
@@ -29,25 +50,39 @@ function generateInstructionPages(cntable: 'people' | 'objects'): string[] {
         <img src="../assets/instruction-media/screen-${cntable}.png">
       </div>
     </div>`,
-    ``,
-    ``,
+    generateInputExample(cntable, 0.2),
   ];
+
   const pages: string[] = [];
-  for (let page_nb: number = 1; page_nb < 6; page_nb++) {
+  for (let page_nb: number = 0; page_nb < 3; page_nb++) {
     pages.push(
       `<b>${i18next.t('instructionTitle')}</b><br>
       <div class="inst-container">
-            <div class="inst-monitor" style="background-image: url('../assets/instruction-media/monitor-crosshair.png');">
-                <div class="inst-screen">
-                    <img src="../assets/instruction-media/screen-objects.png">
-                </div>
-            </div>
-            <p><b>${i18next.t('instructionTexts', { returnObjects: true })[0]}</b></p>
-        </div>`,
+        ${instruction_imgs[page_nb]}
+        <p class="inst-text"><b>${i18next.t('instructionTexts', { returnObjects: true, cntable: langf.translateCountable(cntable) })[page_nb]}</b></p>
+      </div>`,
     );
   }
   pages.push(
-    `<b>${i18next.t('instructionTitle')}</b><br>${i18next.t('instructionExample', { cntable: langf.translateCountable(cntable) })}<br><video muted autoplay loop preload="auto" src="../assets/instruction-media/${cntable}/example-vid.mp4"><source type="video/mp4"></source></video>`,
+    `<b>${i18next.t('instructionTitle')}</b><br>
+    <div class="inst-container">
+      <div class="inst-monitor" id="monitor-group">
+        ${instruction_imgs[0]}
+        ${instruction_imgs[1]}
+        ${generateInputExample(cntable, 0.15)}
+      </div>
+      <p class="inst-text"><b>${i18next.t('instructionTexts', { returnObjects: true })[3]}</b></p>
+    </div>`,
+  );
+  pages.push(
+    `<b>${i18next.t('instructionTitle')}</b><br>
+    <div class="inst-container">
+      ${instruction_imgs[2]}
+      <p class="inst-text"><b>${i18next.t('instructionTexts', { returnObjects: true, cntable: langf.translateCountable(cntable) })[4]}</b></p>
+    </div>`,
+  );
+  pages.push(
+    `<b>${i18next.t('instructionTitle')}</b><div class="inst-container" style="flex-direction: column; transform: scale(0.5);"><p>${i18next.t('instructionExample', { cntable: langf.translateCountable(cntable) })}</p><video muted autoplay loop preload="auto" src="../assets/instruction-media/${cntable}/example-vid.mp4" style=""><source type="video/mp4"></source></video></div>`,
   );
   return pages;
 }

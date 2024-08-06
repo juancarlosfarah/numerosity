@@ -77,6 +77,7 @@ const partofexp = (jsPsych, cntable, nb_blocks) => ({
             preamble: `How many ${cntable} were in the virtual room?`,
             html: '<input type="number" name="num-input" id="task-input" required min="0" step="1"><br>',
             autofocus: 'task-input',
+            button_label: i18next.t('estimateSubmitBtn'),
             on_load: () => {
                 const input = document.getElementById('task-input');
                 // Initially set the custom validity message
@@ -140,6 +141,8 @@ export async function run() {
     timeline.push({
         type: PreloadPlugin,
         images: generatePreloadStrings(),
+        version: {},
+        data: {},
     });
     // Switch to fullscreen
     timeline.push({
@@ -147,22 +150,10 @@ export async function run() {
         fullscreen_mode: true,
         message: '',
         button_label: i18next.t('fullscreen'),
+        version: {},
+        data: {},
     });
     timeline.push(resize(jsPsych));
-    timeline.push({
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: `
-            <div class="inst-container">
-            <div class="inst-monitor" style="background-image: url('../assets/instruction-media/monitor-crosshair.png');">
-                <div class="inst-screen">
-                    <img src="../assets/instruction-media/screen-objects.png">
-                </div>
-            </div>
-            <p><b>${i18next.t('instructionTexts', { returnObjects: true })[0]}</b></p>
-        </div>
-`,
-        choices: 'n',
-    });
     // Run numerosity task
     timeline.push(groupInstructions(jsPsych, 'people'), tipScreen(), partofexp(jsPsych, 'people', blocks_per_half), groupInstructions(jsPsych, 'objects', true), tipScreen(), partofexp(jsPsych, 'objects', blocks_per_half));
     await jsPsych.run(timeline);

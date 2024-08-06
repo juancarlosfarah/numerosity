@@ -29,6 +29,7 @@
     "Die Anzahl der {{cntable}} innerhalb des virtuellen Raumes"
   ],
   "inputInfo": "Bitte schreiben Sie eine ganze Zahl",
+  "estimateSubmitBtn": "Forfahren",
   "repeatInstructions": "Klicken Sie hier, um die Anleitung noch einmal zu lesen",
   "tipTitle": "Einige Tipps",
   "tipDescription": "Bitte halten Sie Ihr Gesicht während des Experiments etwa 50 cm vom Bildschirm entfernt.",

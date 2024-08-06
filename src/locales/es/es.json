@@ -29,6 +29,7 @@
     "El número de {{cntable}} dentro de la sala virtual"
   ],
   "inputInfo": "Por favor escribe un número entero",
+  "estimateSubmitBtn": "Continuar",
   "repeatInstructions": "Haga clic aquí para volver a leer las instrucciones",
   "tipTitle": "Algunos consejos",
   "tipDescription": "Por favor, mantén la cara a unos 50 cm de la pantalla durante el experimento.",

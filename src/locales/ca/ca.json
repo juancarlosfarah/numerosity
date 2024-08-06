@@ -29,6 +29,7 @@
     "El nombre de {{cntable}} dins de la sala virtual"
   ],
   "inputInfo": "Si us plau escriviu un número enter",
+  "estimateSubmitBtn": "Continuar",
   "repeatInstructions": "Feu clic aquí per tornar a llegir les instruccions",
   "tipTitle": "Alguns consells",
   "tipDescription": "Si us plau, manteniu la cara a uns 50 cm de la pantalla durant l'experiment.",

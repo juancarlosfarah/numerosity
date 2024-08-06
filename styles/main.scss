@@ -11,6 +11,11 @@ video {
 
 #jspsych-progressbar-container {
   position: relative;
+  color: gray;
+}
+
+#jspsych-progressbar-inner {
+  background-color: gray;
 }
 
 button:hover {
@@ -24,7 +29,6 @@ button:hover {
   background: black;
   display: flex;
   justify-content: center;
-  backdrop-filter: blur(5px);
 }
 
 #quit-close-btn {
@@ -52,10 +56,28 @@ button:hover {
   align-items: center;
 }
 
+#monitor-group {
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+}
+
 .inst-screen img {
-  width: 94%;
+  width: 68%;
   height: auto;
   max-width: 100%;
   max-height: 100%;
   transform: translateY(-5.25%);
+}
+
+#monitor-group .inst-screen img {
+  width: 95%;
+}
+
+.inst-text {
+  text-align: start;
+  margin-left: 5%;
+  font-size: 50%;
+  line-height: 1.6em;
+  width: 67%;
 }

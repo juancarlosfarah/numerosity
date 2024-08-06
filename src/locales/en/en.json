@@ -15,7 +15,7 @@
     "<b>Step 2:<br>Shortly afterwards, the picture of  a room with several {{cntable}} inside will be displayed very rapidly in the middle of the screen, like a flash.</b>",
     "<b>Step 3:<br>The picture will then disappear very quickly, and you will be asked to estimate the number of {{cntable}} that were displayed.<br><br><u>NOTE:</u> you will not be able to count the number of {{cntable}}, as it goes very fast.<br>Give an estimate only.</b>",
     "<b>These three steps will be repeated several times throughout the experiment.</b>",
-    "<b>REMINDER: you will not be ablet to count the number of {{cntable}}, don't worry it is normal as the {{cntable}} appear as a rapid flash<br><br>Give jsut an estimate.</b>"
+    "<b>REMINDER: you will not be ablet to count the number of {{cntable}}, don't worry it is normal as the {{cntable}} appear as a rapid flash<br><br>Give just an estimate.</b>"
   ],
   "instructionScreenExample": "How many {{cntable}} were in the picture?",
   "quizPreamblesHalf": [
@@ -29,6 +29,7 @@
     "The number of {{cntable}} inside the virtual room"
   ],
   "inputInfo": "Please write a whole number",
+  "estimateSubmitBtn": "Continue",
   "repeatInstructions": "Click here to read the instructions again",
   "tipTitle": "Some tips",
   "tipDescription": "Please keep your face at around 50cm from your screen during the experiment.",

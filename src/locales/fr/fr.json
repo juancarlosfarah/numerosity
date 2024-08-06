@@ -29,6 +29,7 @@
     "Le nombre de {{cntable}} présents dans la pièce"
   ],
   "inputInfo": "Veuillez entrer un nombre entier",
+  "estimateSubmitBtn": "Continuer",
   "repeatInstructions": "Cliquez ici pour lire les instructions à nouveau",
   "tipTitle": "Quelques conseils",
   "tipDescription": "Placez vous à environ 50cm de votre écran pendant l'expérience.",
