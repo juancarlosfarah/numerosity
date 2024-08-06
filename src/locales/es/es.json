@@ -12,7 +12,7 @@
   "instructionBtnPrevious": "Anterior",
   "instructionTexts": [
     "<b>Paso 1:<br>Aparece una cruz blanca en el centro de la pantalla.<br>Mírala y mantén la conentración.</b>",
-    "<b>Paso 2:<br>Poco después, la imagen de una habitación con varias {{cntable}} dentro se mosrará muy rápidamente en el centro de la pantalla, como un flash.</b>",
+    "<b>Paso 2:<br>Poco después, la imagen de una habitación con varias {{cntable}} dentro se mostrará muy rápidamente en el centro de la pantalla, como un flash.</b>",
     "<b>Paso 3:<br>A continuación, la imagen desaparecerá rápidamente y se le pedirá que estime el número de {{cntable}} que aparecían.</b><br><br><u>NOTA:</u> no podrás contar el número de {{cntable}}, ya que va muy rápido. Da sólo una estimación.",
     "<b>Estos tres pasos se repetirán varias veces a lo largo del experimento.</b>",
     "<b>RECORDATORIO: no podrás contar el número de {{cntable}}, no te preocupes es normal ya que las {{cntable}} aparecen como un flash rápido. Da sólo una estimación.</b>"
