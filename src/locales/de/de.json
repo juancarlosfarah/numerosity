@@ -19,8 +19,8 @@
   ],
   "instructionScreenExample": "Wie viele {{cntable}} waren auf dem Bild?",
   "quizPreamblesHalf": [
-    "Überprüfen Sie Ihr Wissen, bevor Sie beginnen",
-    "Sie befinden sich in der Mitte des Experiments!<br>Die Anweisungen haben sich für die zweite Hälfte geändert. Überprüfen Sie Ihr Wissen, bevor Sie beginnen!"
+    "<b>Überprüfen Sie Ihr Wissen, bevor Sie beginnen</b><br><br>",
+    "<b>Sie befinden sich in der Mitte des Experiments!</b><br><b>Die Anweisungen haben sich für die zweite Hälfte geändert.</b><br><b>Überprüfen Sie Ihr Wissen, bevor Sie beginnen!</b><br>"
   ],
   "quizQuestionPrompt": "Frage 1: Was soll geschätzt werden?",
   "quizQuestionOptions": [

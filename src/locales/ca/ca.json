@@ -19,8 +19,8 @@
   ],
   "instructionScreenExample": "Quantes {{cntable}} hi habia a la foto?",
   "quizPreamblesHalf": [
-    "Comproveu els vostres coneixements abans de començar!",
-    "Ets al mig de l'experiment!<br>Les instruccions han canviat per a la segona part. Comproveu els vostres coneixements abans de començar!"
+    "<b>Comproveu els vostres coneixements abans de començar!</b><br><br>",
+    "<b>Ets al mig de l'experiment!</b><br><b>Les instruccions han canviat per a la segona part.</b><br><b>Comproveu els vostres coneixements abans de començar!</b><br>"
   ],
   "quizQuestionPrompt": "Pregunta 1: Què cal estimar?",
   "quizQuestionOptions": [

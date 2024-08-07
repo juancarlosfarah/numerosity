@@ -19,8 +19,8 @@
   ],
   "instructionScreenExample": "Combien de {{cntable}} étaient dans l'image?",
   "quizPreamblesHalf": [
-    "Vérifiez vos connaissances avant de commencer!",
-    "Vous êtes au milieu de l'expérience!<br>Les instructions ont changé pour la seconde moitié. Vérifiez vos connaissances avant de commencer!"
+    "<b>Vérifiez vos connaissances avant de commencer!</b><br><br>",
+    "<b>Vous êtes au milieu de l'expérience!</b><br><b>Les instructions ont changé pour la seconde moitié.</b><br><b>Vérifiez vos connaissances avant de commencer!</b><br>"
   ],
   "quizQuestionPrompt": "Question 1: Que devez-vous estimer?",
   "quizQuestionOptions": [

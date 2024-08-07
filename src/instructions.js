@@ -98,7 +98,7 @@ const instructionQuiz = (jsPsych, cntable, second_half = false) => ({
         {
             type: jsPsychSurveyMultiChoice,
             questions: langf.quizQuestions(cntable),
-            preamble: `<b>${i18next.t('quizPreamblesHalf', { returnObjects: true })[Number(second_half)]}</b><br><br><button id="quiz-repeat-btn" class="jspsych-btn" style="cursor: pointer;">${i18next.t('repeatInstructions')}</button>`,
+            preamble: `${i18next.t('quizPreamblesHalf', { returnObjects: true })[Number(second_half)]}<button id="quiz-repeat-btn" class="jspsych-btn" style="cursor: pointer;">${i18next.t('repeatInstructions')}</button>`,
         },
     ],
     on_load: () => {

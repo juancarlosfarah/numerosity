@@ -19,8 +19,8 @@
   ],
   "instructionScreenExample": "¿Cuántas {{cntable}} había en la foto?",
   "quizPreamblesHalf": [
-    "¡Compruebe sus conocimientos antes de empezar!",
-    "¡Estás en medio del experimento!<br>Las instrucciones han cambiado para la segunda parte. ¡Compruebe sus conocimientos antes de empezar!"
+    "<b>¡Compruebe sus conocimientos antes de empezar!</b><br><br>",
+    "<b>¡Estás en medio del experimento!</b><br><b>Las instrucciones han cambiado para la segunda parte.</b><br><b>¡Compruebe sus conocimientos antes de empezar!</b><br>"
   ],
   "quizQuestionPrompt": "Pregunta 1: ¿Qué debe estimarse?",
   "quizQuestionOptions": [
