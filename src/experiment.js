@@ -89,7 +89,11 @@ const partofexp = (jsPsych, cntable, nb_blocks) => ({
                 });
             },
             on_finish: function () {
-                jsPsych.progressBar.progress += 1 / (8 * nb_blocks);
+                console.log(1 / (8 * nb_blocks));
+                console.log(jsPsych.progressBar.progress);
+                jsPsych.progressBar.progress =
+                    Math.round((jsPsych.progressBar.progress + 1 / (8 * nb_blocks)) * 1000000) / 1000000;
+                console.log(jsPsych.progressBar.progress);
             },
         },
     ],

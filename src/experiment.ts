@@ -119,7 +119,10 @@ const partofexp: (
         });
       },
       on_finish: function (): void {
-        jsPsych.progressBar!.progress += 1 / (8 * nb_blocks);
+        jsPsych.progressBar!.progress =
+          Math.round(
+            (jsPsych.progressBar!.progress + 1 / (8 * nb_blocks)) * 1000000,
+          ) / 1000000;
       },
     },
   ],
