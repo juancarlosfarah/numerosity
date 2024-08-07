@@ -188,6 +188,11 @@ export async function run(): Promise<JsPsych> {
   timeline.push({
     type: PreloadPlugin,
     images: generatePreloadStrings(),
+    info: {
+      name: 'PreloadPlugin',
+      version: '8.0.1',
+      data: {},
+    },
   });
 
   // Switch to fullscreen
@@ -196,6 +201,11 @@ export async function run(): Promise<JsPsych> {
     fullscreen_mode: true,
     message: '',
     button_label: i18next.t('fullscreen'),
+    info: {
+      name: 'FullscreenPlugin',
+      version: '8.0.1',
+      data: {},
+    },
   });
 
   timeline.push(resize(jsPsych));

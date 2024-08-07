@@ -141,8 +141,11 @@ export async function run() {
     timeline.push({
         type: PreloadPlugin,
         images: generatePreloadStrings(),
-        version: {},
-        data: {},
+        info: {
+            name: 'PreloadPlugin',
+            version: '8.0.1',
+            data: {},
+        },
     });
     // Switch to fullscreen
     timeline.push({
@@ -150,8 +153,11 @@ export async function run() {
         fullscreen_mode: true,
         message: '',
         button_label: i18next.t('fullscreen'),
-        version: {},
-        data: {},
+        info: {
+            name: 'FullscreenPlugin',
+            version: '8.0.1',
+            data: {},
+        },
     });
     timeline.push(resize(jsPsych));
     // Run numerosity task

@@ -46,7 +46,7 @@
   ],
   "quitSurveyInputInfo": "Please select a reason",
   "quitSurveyBtnClose": "Close",
-  "quitSurveyBtnEnd": "Cancel the experiment",
+  "quitSurveyBtnEnd": "Abort the experiment",
   "abortedMessage": "Experiment aborted!<br><br>You aborted the experience prematurely.",
   "endMessage": "Thank you!<br><br>You have completed the experiment!"
 }
