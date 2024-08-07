@@ -39,7 +39,7 @@ function generateInstructionPages(cntable) {
         <img src="../assets/instruction-media/screen-${cntable}.png">
       </div>
     </div>`,
-        generateInputExample(cntable, 0.2),
+        generateInputExample(cntable, 0.185),
     ];
     const pages = [];
     for (let page_nb = 0; page_nb < 3; page_nb++) {
@@ -54,7 +54,7 @@ function generateInstructionPages(cntable) {
       <div class="inst-monitor" id="monitor-group">
         ${instruction_imgs[0]}
         ${instruction_imgs[1]}
-        ${generateInputExample(cntable, 0.15)}
+        ${generateInputExample(cntable, 0.1375)}
       </div>
       <p class="inst-text"><b>${i18next.t('instructionTexts', { returnObjects: true })[3]}</b></p>
     </div>`);
