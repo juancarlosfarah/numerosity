@@ -172,7 +172,7 @@ export function tipScreen() {
         timeline: [
             {
                 type: HtmlButtonResponsePlugin,
-                stimulus: `<b>${i18next.t('tipTitle')}</b><br><img src="../assets/instruction-media/tip.png" alt='tip image'><br>${i18next.t('tipDescription')}<br>`,
+                stimulus: `<b>${i18next.t('tipTitle')}</b><br><img src="../assets/instruction-media/tip.png" alt='tip image' style="width: auto;"><br>${i18next.t('tipDescription')}<br>`,
                 choices: [i18next.t('tipBtnTxt')],
             },
         ],

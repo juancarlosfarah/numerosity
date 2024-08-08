@@ -90,7 +90,7 @@ const partofexp: (
         return `<img src='../assets/num-task-imgs/${cntable}/num-${jsPsych.evaluateTimelineVariable('num')}-${jsPsych.evaluateTimelineVariable('id')}.png' alt='task image'>`;
       },
       choices: 'NO_KEYS',
-      trial_duration: 25000,
+      trial_duration: 250,
       on_finish: (): void => {
         document.body.style.cursor = 'auto';
       },
