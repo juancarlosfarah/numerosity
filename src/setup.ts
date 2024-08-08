@@ -1,12 +1,3 @@
-import JsResize from '@jspsych/plugin-resize';
-import i18next from 'i18next';
-import { JsPsych } from 'jspsych';
-
-import { quitBtnAction } from './quit';
-
-// Type aliases for better code readability
-type timeline = JsPsych['timeline'];
-
 /**
  * @function generatePreloadStrings
  * @description Generates a list of file paths for preloading images used in a numerical task.
@@ -35,6 +26,7 @@ export function generatePreloadStrings(): string[] {
  * @param {JsPsych} jsPsych - The jsPsych instance.
  * @returns {timeline} - The timeline object for resizing.
  */
+/*
 export const resize: (jsPsych: JsPsych) => timeline = (
   jsPsych: JsPsych,
 ): timeline => ({
@@ -66,8 +58,8 @@ export const resize: (jsPsych: JsPsych) => timeline = (
       .appendChild(quit_btn);
   },
   on_finish: function (): void {
-    const width_px: number =
-      jsPsych.data.get().last(1).values()[0].scale_factor * 559.37007874;
+    //const width_px: number = jsPsych.data.get().last(1).values()[0].scale_factor * 559.37007874;
+    const width_px: number = window.devicePixelRatio * 559.37007874;
     const style: HTMLElement = document.createElement('style');
     style.innerHTML = `img, vid, .inst-container {
         width: ${width_px}px; 
@@ -75,3 +67,41 @@ export const resize: (jsPsych: JsPsych) => timeline = (
     document.head.appendChild(style);
   },
 });
+*/
+
+function setSizes(scaling_element: HTMLElement): void {
+  const width_px: number = window.devicePixelRatio * 559.37007874;
+  scaling_element.setAttribute('id', 'scaling');
+  scaling_element.innerHTML = `img, vid, .inst-container {
+        width: ${width_px}px; 
+        height: ${(9 * width_px) / 16}px;
+    }`;
+}
+
+export function resize(): void {
+  let remove: (() => void) | null = null;
+
+  const updateSizes = () => {
+    if (remove != null) {
+      remove();
+    }
+
+    const pixel_ratio: number = window.devicePixelRatio;
+    const mqString = `(resolution: ${pixel_ratio}dppx)`;
+    const media = matchMedia(mqString);
+    media.addEventListener('change', updateSizes);
+
+    remove = () => {
+      media.removeEventListener('change', updateSizes);
+    };
+
+    const style: HTMLElement =
+      document.getElementById('scaling') || document.createElement('style');
+    setSizes(style);
+    if (!style.parentElement) {
+      document.head.appendChild(style);
+    }
+  };
+
+  updateSizes();
+}

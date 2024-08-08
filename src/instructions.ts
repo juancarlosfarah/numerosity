@@ -7,6 +7,7 @@ import { JsPsych } from 'jspsych';
 //import { DataCollection } from 'jspsych/src/modules/data/DataCollection';
 // Import styles and language functions
 import * as langf from './languages.js';
+import { activateMQCunderline } from './utils.js';
 
 // Type aliases for better code readability
 type timeline = JsPsych['timeline'];
@@ -47,7 +48,7 @@ function generateInstructionPages(cntable: 'people' | 'objects'): string[] {
     `
     <div class="inst-monitor" style="background-image: url('../assets/instruction-media/monitor-crosshair.png');">
       <div class="inst-screen">
-        <img src="../assets/instruction-media/screen-${cntable}.png">
+        <img src="../assets/instruction-media/screen-${cntable}.png" alt='task image'>
       </div>
     </div>`,
     generateInputExample(cntable, 0.185),
@@ -129,9 +130,11 @@ const instructionQuiz: (
       type: jsPsychSurveyMultiChoice,
       questions: langf.quizQuestions(cntable),
       preamble: `${i18next.t('quizPreamblesHalf', { returnObjects: true })[Number(second_half)]}<button id="quiz-repeat-btn" class="jspsych-btn" style="cursor: pointer;">${i18next.t('repeatInstructions')}</button>`,
+      button_label: i18next.t('estimateSubmitBtn'),
     },
   ],
   on_load: (): void => {
+    //make repeat instruction button fulfill its function
     document
       .getElementById('quiz-repeat-btn')!
       .addEventListener('click', (): void => {
@@ -139,6 +142,9 @@ const instructionQuiz: (
           response: { Q0: 'read-again' },
         });
       });
+
+    //make selected choice underlined
+    activateMQCunderline();
   },
 });
 
@@ -218,8 +224,7 @@ export function tipScreen(): timeline {
     timeline: [
       {
         type: HtmlButtonResponsePlugin,
-        stimulus: `<b>${i18next.t('tipTitle')}</b><br><img src="../assets/instruction-media/tip.png"><br>`,
-        prompt: i18next.t('tipDescription'),
+        stimulus: `<b>${i18next.t('tipTitle')}</b><br><img src="../assets/instruction-media/tip.png" alt='tip image'><br>${i18next.t('tipDescription')}<br>`,
         choices: [i18next.t('tipBtnTxt')],
       },
     ],

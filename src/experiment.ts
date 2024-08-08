@@ -18,6 +18,7 @@ import { JsPsych, initJsPsych } from 'jspsych';
 import '../styles/main.scss';
 import { groupInstructions, tipScreen } from './instructions';
 import { showEndScreen } from './quit';
+import { quitBtnAction } from './quit';
 import { generatePreloadStrings, resize } from './setup';
 
 // Type aliases for better code readability
@@ -86,10 +87,10 @@ const partofexp: (
     {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: function () {
-        return `<img src='../assets/num-task-imgs/${cntable}/num-${jsPsych.evaluateTimelineVariable('num')}-${jsPsych.evaluateTimelineVariable('id')}.png'>`;
+        return `<img src='../assets/num-task-imgs/${cntable}/num-${jsPsych.evaluateTimelineVariable('num')}-${jsPsych.evaluateTimelineVariable('id')}.png' alt='task image'>`;
       },
       choices: 'NO_KEYS',
-      trial_duration: 250,
+      trial_duration: 25000,
       on_finish: (): void => {
         document.body.style.cursor = 'auto';
       },
@@ -209,9 +210,25 @@ export async function run(): Promise<JsPsych> {
       version: '8.0.1',
       data: {},
     },
-  });
+    on_load: function (): void {
+      const quit_btn: HTMLButtonElement = document.createElement('button');
+      quit_btn.setAttribute('type', 'button');
+      quit_btn.setAttribute(
+        'style',
+        'color: #fff; border-radius: 4px; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)',
+      );
 
-  timeline.push(resize(jsPsych));
+      quit_btn.addEventListener('click', () => quitBtnAction(jsPsych));
+
+      quit_btn.appendChild(document.createTextNode(i18next.t('quitBtn')));
+
+      document
+        .getElementById('jspsych-progressbar-container')!
+        .appendChild(quit_btn);
+
+      resize();
+    },
+  });
 
   // Run numerosity task
   timeline.push(
@@ -224,6 +241,10 @@ export async function run(): Promise<JsPsych> {
   );
 
   await jsPsych.run(timeline);
+
+  document
+    .getElementsByClassName('jspsych-content-wrapper')[0]
+    .setAttribute('style', 'overflow-x: hidden;');
 
   if (jsPsych.data.get().last(2).values()[0].trial_type === 'quit-survey') {
     showEndScreen(i18next.t('abortedMessage'));

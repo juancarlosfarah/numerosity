@@ -1,6 +1,7 @@
 // You can import stylesheets (.scss or .css).
 // Import required plugins and modules from jsPsych
 import i18next from 'i18next';
+import { activateMQCunderline } from './utils';
 /**
  * @function generateQuitSurvey
  * @description Generates the HTML for the quit survey with options and a form.
@@ -20,7 +21,7 @@ function generateQuitSurvey() {
           <label><b>${i18next.t('quitSurveyPrompt')}</b></label>
         </div>
         ${i18next.t('quitSurveyOptions', { returnObjects: true })
-        .map((option, index) => `<div><input type="radio" name="quit-option" value="${index}" id="option-${index}" required><label for="option-${index}">${option}</label></div>`)
+        .map((option, index) => `<div class="jspsych-survey-multi-choice-text"><input type="radio" name="quit-option" value="${index}" id="option-${index}" required><label for="option-${index}">${option}</label></div>`)
         .join('')}
         <div align="center">
           <input type="submit" class="jspsych-btn" id="quit-end-btn" value="${i18next.t('quitSurveyBtnEnd')}">
@@ -47,6 +48,7 @@ export function quitBtnAction(jsPsych) {
             option.setCustomValidity(i18next.t('quitSurveyInputInfo'));
         });
     });
+    activateMQCunderline();
     document.getElementById('quit-close-btn').addEventListener('click', () => {
         document.body.removeChild(panel);
     });

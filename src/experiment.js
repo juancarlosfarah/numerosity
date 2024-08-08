@@ -17,6 +17,7 @@ import { initJsPsych } from 'jspsych';
 import '../styles/main.scss';
 import { groupInstructions, tipScreen } from './instructions';
 import { showEndScreen } from './quit';
+import { quitBtnAction } from './quit';
 import { generatePreloadStrings, resize } from './setup';
 /**
  * @function generateTimelineVars
@@ -63,10 +64,10 @@ const partofexp = (jsPsych, cntable, nb_blocks) => ({
         {
             type: jsPsychHtmlKeyboardResponse,
             stimulus: function () {
-                return `<img src='../assets/num-task-imgs/${cntable}/num-${jsPsych.evaluateTimelineVariable('num')}-${jsPsych.evaluateTimelineVariable('id')}.png'>`;
+                return `<img src='../assets/num-task-imgs/${cntable}/num-${jsPsych.evaluateTimelineVariable('num')}-${jsPsych.evaluateTimelineVariable('id')}.png' alt='task image'>`;
             },
             choices: 'NO_KEYS',
-            trial_duration: 250,
+            trial_duration: 25000,
             on_finish: () => {
                 document.body.style.cursor = 'auto';
             },
@@ -89,11 +90,8 @@ const partofexp = (jsPsych, cntable, nb_blocks) => ({
                 });
             },
             on_finish: function () {
-                console.log(1 / (8 * nb_blocks));
-                console.log(jsPsych.progressBar.progress);
                 jsPsych.progressBar.progress =
                     Math.round((jsPsych.progressBar.progress + 1 / (8 * nb_blocks)) * 1000000) / 1000000;
-                console.log(jsPsych.progressBar.progress);
             },
         },
     ],
@@ -162,11 +160,24 @@ export async function run() {
             version: '8.0.1',
             data: {},
         },
+        on_load: function () {
+            const quit_btn = document.createElement('button');
+            quit_btn.setAttribute('type', 'button');
+            quit_btn.setAttribute('style', 'color: #fff; border-radius: 4px; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)');
+            quit_btn.addEventListener('click', () => quitBtnAction(jsPsych));
+            quit_btn.appendChild(document.createTextNode(i18next.t('quitBtn')));
+            document
+                .getElementById('jspsych-progressbar-container')
+                .appendChild(quit_btn);
+            resize();
+        },
     });
-    timeline.push(resize(jsPsych));
     // Run numerosity task
     timeline.push(groupInstructions(jsPsych, 'people'), tipScreen(), partofexp(jsPsych, 'people', blocks_per_half), groupInstructions(jsPsych, 'objects', true), tipScreen(), partofexp(jsPsych, 'objects', blocks_per_half));
     await jsPsych.run(timeline);
+    document
+        .getElementsByClassName('jspsych-content-wrapper')[0]
+        .setAttribute('style', 'overflow-x: hidden;');
     if (jsPsych.data.get().last(2).values()[0].trial_type === 'quit-survey') {
         showEndScreen(i18next.t('abortedMessage'));
     }
