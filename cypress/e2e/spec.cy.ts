@@ -25,7 +25,7 @@ function testInstructions() {
   const next_inst_btn: string = 'Next';
   for (let page: number = 0; page < 5; page++) {
     // Verify instruction content and navigate to the next page
-    cy.contains('Instructions');
+    cy.contains('Tutorial');
     cy.get('.inst-monitor').should('be.visible');
     cy.contains(next_inst_btn).click();
   }
@@ -50,7 +50,7 @@ function testInstructions() {
 function testPartOfExp() {
   for (let task = 0; task < nb_blocks * 4; task++) {
     // Wait for task to be ready and perform the task
-    cy.wait(500 + 250 + 1);
+    cy.wait(1651 + 500 + 250 + 1000);
     cy.contains('in the virtual ');
     cy.get('#task-input').type(task.toString());
     cy.contains('Continue').click();
@@ -69,17 +69,23 @@ describe('Ordinary run', () => {
 
     // Navigate through initial instructions
     cy.contains('Quit');
-    cy.contains('Continue').click();
 
     // Test the instruction screens
     testInstructions();
+
+    cy.contains('Begin').click();
 
     // Verify progress bar is empty
     cy.get('#jspsych-progressbar-inner').should('not.be.visible');
 
     // Perform a part of the experiment
     testPartOfExp();
+
+    cy.contains('Continue').click();
+
     testInstructions();
+
+    cy.contains('Begin').click();
 
     // Verify progress bar is not empty
     cy.get('#jspsych-progressbar-inner').should('be.visible');
