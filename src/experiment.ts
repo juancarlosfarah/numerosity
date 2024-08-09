@@ -262,29 +262,26 @@ export async function run(): Promise<JsPsych> {
   });
 
   // Randomize order of countables
-  let exp_part_picker: timeline[] = [
-    partofexp(jsPsych, 'people', blocks_per_half),
-    partofexp(jsPsych, 'objects', blocks_per_half),
-  ];
-  exp_part_picker = jsPsych.randomization.shuffle(exp_part_picker);
+  let exp_parts_cntables: ('people' | 'objects')[] = ['people', 'objects'];
+  exp_parts_cntables = jsPsych.randomization.shuffle(exp_parts_cntables);
 
   // Run numerosity task
   timeline.push(
-    groupInstructions(jsPsych, 'people'),
+    groupInstructions(jsPsych, exp_parts_cntables[0]),
     tipScreen(),
     createButtonPage(
       i18next.t('experimentStart'),
       i18next.t('experimentStartBtn'),
     ),
-    exp_part_picker[0],
+    partofexp(jsPsych, exp_parts_cntables[0], blocks_per_half),
     createButtonPage(i18next.t('firstHalfEnd'), i18next.t('resizeBtn')),
-    groupInstructions(jsPsych, 'objects'),
+    groupInstructions(jsPsych, exp_parts_cntables[1]),
     tipScreen(),
     createButtonPage(
       i18next.t('experimentStart'),
       i18next.t('experimentStartBtn'),
     ),
-    exp_part_picker[1],
+    partofexp(jsPsych, exp_parts_cntables[1], blocks_per_half),
   );
 
   await jsPsych.run(timeline);

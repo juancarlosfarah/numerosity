@@ -201,13 +201,10 @@ export async function run() {
         },
     });
     // Randomize order of countables
-    let exp_part_picker = [
-        partofexp(jsPsych, 'people', blocks_per_half),
-        partofexp(jsPsych, 'objects', blocks_per_half),
-    ];
-    exp_part_picker = jsPsych.randomization.shuffle(exp_part_picker);
+    let exp_parts_cntables = ['people', 'objects'];
+    exp_parts_cntables = jsPsych.randomization.shuffle(exp_parts_cntables);
     // Run numerosity task
-    timeline.push(groupInstructions(jsPsych, 'people'), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), exp_part_picker[0], createButtonPage(i18next.t('firstHalfEnd'), i18next.t('resizeBtn')), groupInstructions(jsPsych, 'objects'), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), exp_part_picker[1]);
+    timeline.push(groupInstructions(jsPsych, exp_parts_cntables[0]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[0], blocks_per_half), createButtonPage(i18next.t('firstHalfEnd'), i18next.t('resizeBtn')), groupInstructions(jsPsych, exp_parts_cntables[1]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[1], blocks_per_half));
     await jsPsych.run(timeline);
     document
         .getElementsByClassName('jspsych-content-wrapper')[0]
