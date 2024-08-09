@@ -83,7 +83,7 @@ function generateInstructionPages(cntable: 'people' | 'objects'): string[] {
     </div>`,
   );
   pages.push(
-    `<b>${i18next.t('instructionTitle')}</b><div class="inst-container" style="flex-direction: column; transform: scale(0.75);"><p>${i18next.t('instructionExample', { cntable: langf.translateCountable(cntable) })}</p><video muted autoplay loop preload="auto" src="../assets/instruction-media/${cntable}/example-vid.mp4"><source type="video/mp4"></source></video></div><br>`,
+    `<b>${i18next.t('instructionTitle')}</b><div class="inst-container" style="flex-direction: column; transform: scale(0.75);"><p>${i18next.t('instructionExample', { cntable: langf.translateCountable(cntable) })}</p><video muted autoplay loop preload="auto" src="../assets/instruction-media/${cntable}-vid.mp4"><source type="video/mp4"></source></video></div><br>`,
   );
   return pages;
 }
