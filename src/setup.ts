@@ -72,9 +72,13 @@ export const resize: (jsPsych: JsPsych) => timeline = (
 function setSizes(scaling_element: HTMLElement): void {
   const width_px: number = window.devicePixelRatio * 559.37007874;
   scaling_element.setAttribute('id', 'scaling');
-  scaling_element.innerHTML = `img, vid, .inst-container {
+  scaling_element.innerHTML = `img, vid {
         width: ${width_px}px; 
         height: ${(9 * width_px) / 16}px;
+    }
+    .inst-container {
+      width: ${1.5 * width_px}px;
+      height: ${(27 * width_px) / 32}px;
     }`;
 }
 

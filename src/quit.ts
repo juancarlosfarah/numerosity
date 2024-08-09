@@ -43,12 +43,14 @@ function generateQuitSurvey(): string {
  * @param { JsPsych } jsPsych - The JsPsych instance.
  */
 export function quitBtnAction(jsPsych: JsPsych): void {
+  jsPsych.pauseExperiment();
   const panel: HTMLElement = document.createElement('div');
 
   panel.setAttribute('id', 'quit-overlay');
   panel.classList.add('custom-overlay');
   panel.innerHTML = generateQuitSurvey();
   document.body.appendChild(panel);
+  document.body.style.cursor = 'auto';
 
   const form: HTMLFormElement = document.getElementById(
     'quit-form',
@@ -66,6 +68,7 @@ export function quitBtnAction(jsPsych: JsPsych): void {
 
   document.getElementById('quit-close-btn')!.addEventListener('click', () => {
     document.body.removeChild(panel);
+    jsPsych.resumeExperiment();
   });
 
   form.addEventListener('submit', (event) => {

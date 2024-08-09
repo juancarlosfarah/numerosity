@@ -19,6 +19,7 @@ import { groupInstructions, tipScreen } from './instructions';
 import { showEndScreen } from './quit';
 import { quitBtnAction } from './quit';
 import { generatePreloadStrings, resize } from './setup';
+import { createButtonPage } from './utils';
 /**
  * @function generateTimelineVars
  * @description Generate timeline variables for the experiment.
@@ -32,7 +33,11 @@ function generateTimelineVars(JsPsych, nb_blocks) {
     for (let num = 5; num <= 8; num++) {
         const id_list = JsPsych.randomization.sampleWithoutReplacement([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], nb_blocks);
         for (let i = 0; i < nb_blocks; i++) {
-            timeline_variables.push({ num: num, id: id_list[i] });
+            timeline_variables.push({
+                num: num,
+                id: id_list[i],
+                bs_jitter: (Math.random() - 0.5) * 300,
+            });
         }
     }
     return timeline_variables;
@@ -50,6 +55,16 @@ function generateTimelineVars(JsPsych, nb_blocks) {
  */
 const partofexp = (jsPsych, cntable, nb_blocks) => ({
     timeline: [
+        // Blackscreen before stimuli
+        {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: '',
+            choices: 'NO_KEYS',
+            trial_duration: () => 1500 + jsPsych.evaluateTimelineVariable('bs_jitter'),
+            on_start: () => {
+                document.body.style.cursor = 'none';
+            },
+        },
         // Crosshair shown before each image for 500ms.
         {
             type: jsPsychHtmlKeyboardResponse,
@@ -68,6 +83,19 @@ const partofexp = (jsPsych, cntable, nb_blocks) => ({
             },
             choices: 'NO_KEYS',
             trial_duration: 250,
+            on_start: () => {
+                document.body.style.cursor = 'none';
+            },
+        },
+        // Blackscreen after image
+        {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: '',
+            choices: 'NO_KEYS',
+            trial_duration: 1000,
+            on_start: () => {
+                document.body.style.cursor = 'none';
+            },
             on_finish: () => {
                 document.body.style.cursor = 'auto';
             },
@@ -76,7 +104,7 @@ const partofexp = (jsPsych, cntable, nb_blocks) => ({
         {
             type: jsPsychSurveyHtmlForm,
             preamble: `How many ${cntable} were in the virtual room?`,
-            html: '<input type="number" name="num-input" id="task-input" required min="0" step="1"><br>',
+            html: `<input type="number" label="numerosity input" name="num-input" id="task-input" required min="0" step="1" placeholder="${i18next.t('inputPlaceholder')}"><br>`,
             autofocus: 'task-input',
             button_label: i18next.t('estimateSubmitBtn'),
             on_load: () => {
@@ -173,7 +201,7 @@ export async function run() {
         },
     });
     // Run numerosity task
-    timeline.push(groupInstructions(jsPsych, 'people'), tipScreen(), partofexp(jsPsych, 'people', blocks_per_half), groupInstructions(jsPsych, 'objects', true), tipScreen(), partofexp(jsPsych, 'objects', blocks_per_half));
+    timeline.push(groupInstructions(jsPsych, 'people'), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, 'people', blocks_per_half), createButtonPage(i18next.t('firstHalfEnd'), i18next.t('resizeBtn')), groupInstructions(jsPsych, 'objects'), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, 'objects', blocks_per_half));
     await jsPsych.run(timeline);
     document
         .getElementsByClassName('jspsych-content-wrapper')[0]

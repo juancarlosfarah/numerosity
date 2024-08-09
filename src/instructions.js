@@ -64,7 +64,7 @@ function generateInstructionPages(cntable) {
       ${instruction_imgs[2]}
       <p class="inst-text"><b>${i18next.t('instructionTexts', { returnObjects: true, cntable: langf.translateCountable(cntable) })[4]}</b></p>
     </div>`);
-    pages.push(`<b>${i18next.t('instructionTitle')}</b><div class="inst-container" style="flex-direction: column; transform: scale(0.5);"><p>${i18next.t('instructionExample', { cntable: langf.translateCountable(cntable) })}</p><video muted autoplay loop preload="auto" src="../assets/instruction-media/${cntable}/example-vid.mp4" style=""><source type="video/mp4"></source></video></div>`);
+    pages.push(`<b>${i18next.t('instructionTitle')}</b><div class="inst-container" style="flex-direction: column; transform: scale(0.75);"><p>${i18next.t('instructionExample', { cntable: langf.translateCountable(cntable) })}</p><video muted autoplay loop preload="auto" src="../assets/instruction-media/${cntable}/example-vid.mp4"><source type="video/mp4"></source></video></div><br>`);
     return pages;
 }
 /**
@@ -91,15 +91,14 @@ function instructions(cntable) {
  * @function instructionQuiz
  * @description Instruction quiz timeline with looping functionality until correct answers are given.
  * @param { 'people' | 'objects' } cntable - The type of countable (people or objects)
- * @param { boolean } second_half - Whether it is the second half of the quiz
  * @returns { timeline } - Timeline for instruction quiz
  */
-const instructionQuiz = (jsPsych, cntable, second_half = false) => ({
+const instructionQuiz = (jsPsych, cntable) => ({
     timeline: [
         {
             type: jsPsychSurveyMultiChoice,
             questions: langf.quizQuestions(cntable),
-            preamble: `${i18next.t('quizPreamblesHalf', { returnObjects: true })[Number(second_half)]}<button id="quiz-repeat-btn" class="jspsych-btn" style="cursor: pointer;">${i18next.t('repeatInstructions')}</button>`,
+            preamble: `<b>${i18next.t('quizPreamble')}</b><br><br><button id="quiz-repeat-btn" class="jspsych-btn" style="cursor: pointer;">${i18next.t('repeatInstructions')}</button>`,
             button_label: i18next.t('estimateSubmitBtn'),
         },
     ],
@@ -172,7 +171,7 @@ export function tipScreen() {
         timeline: [
             {
                 type: HtmlButtonResponsePlugin,
-                stimulus: `<b>${i18next.t('tipTitle')}</b><br><img src="../assets/instruction-media/tip.png" alt='tip image' style="width: auto;"><br>${i18next.t('tipDescription')}<br>`,
+                stimulus: `<b>${i18next.t('tipTitle')}</b><br><img src="../assets/instruction-media/tip.png" alt='tip image' style="width: auto;"><br>${i18next.t('tipDescription')}<br><br>`,
                 choices: [i18next.t('tipBtnTxt')],
             },
         ],

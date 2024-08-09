@@ -36,11 +36,13 @@ function generateQuitSurvey() {
  * @param { JsPsych } jsPsych - The JsPsych instance.
  */
 export function quitBtnAction(jsPsych) {
+    jsPsych.pauseExperiment();
     const panel = document.createElement('div');
     panel.setAttribute('id', 'quit-overlay');
     panel.classList.add('custom-overlay');
     panel.innerHTML = generateQuitSurvey();
     document.body.appendChild(panel);
+    document.body.style.cursor = 'auto';
     const form = document.getElementById('quit-form');
     const options = form.querySelectorAll('input[name="quit-option"]');
     options.forEach((option) => {
@@ -51,6 +53,7 @@ export function quitBtnAction(jsPsych) {
     activateMQCunderline();
     document.getElementById('quit-close-btn').addEventListener('click', () => {
         document.body.removeChild(panel);
+        jsPsych.resumeExperiment();
     });
     form.addEventListener('submit', (event) => {
         event.preventDefault(); // Prevent the default form submission behavior

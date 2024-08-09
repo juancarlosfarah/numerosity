@@ -6,7 +6,7 @@
   "resizeBtn": "Continuar",
   "countablePeople": "persones",
   "countableObjects": "objectes",
-  "instructionTitle": "Instruccions: el que has de fer",
+  "instructionTitle": "Tutorial",
   "instructionExample": "Vet aquí un exemple de la tasca. Com podeu veure, la imatge es mostra durant molt poc temps. Heu d'estimar el nombre de {{cntable}} que es van mostrar. No us preocupeu, s'esperen errors d'estimació.",
   "instructionBtnNext": "Següent",
   "instructionBtnPrevious": "Anterior",
@@ -18,18 +18,19 @@
     "<b>RECORDATORI: no podrás comptar el nombre de {{cntable}}, no et preocupis és nomal ja que les {{cntable}} apareixen com un flaix ràpid. Dóna només una estimació.</b>"
   ],
   "instructionScreenExample": "Quantes {{cntable}} hi habia a la foto?",
-  "quizPreamblesHalf": [
-    "<b>Comproveu els vostres coneixements abans de començar!</b><br><br>",
-    "<b>Ets al mig de l'experiment!</b><br><b>Les instruccions han canviat per a la segona part.</b><br><b>Comproveu els vostres coneixements abans de començar!</b><br>"
-  ],
+  "quizPreamble": "Comproveu els vostres coneixements abans de començar!",
   "quizQuestionPrompt": "Pregunta 1: Què cal estimar?",
   "quizQuestionOptions": [
     "La mida de la sala virtual",
     "La durada de la presentació de la imatge",
     "El nombre de {{cntable}} dins de la sala virtual"
   ],
+  "experimentStart": "L'experiment començarà immediatament després de fer clic al botó següent.",
+  "experimentStartBtn": "Començar",
   "inputInfo": "Si us plau escriviu un número enter",
+  "inputPlaceholder": " respon aquí",
   "estimateSubmitBtn": "Continuar",
+  "firstHalfEnd": "Heu arribat al final de la primera part de l'experiment. Les instruccions han canviat per a la segona part. Feu clic al botó següent per passar a la segona part.",
   "repeatInstructions": "Feu clic aquí per tornar a llegir les instruccions",
   "tipTitle": "Instruccions",
   "tipDescription": "Si us plau, manteniu la cara a uns 50 cm de la pantalla durant l'experiment.",

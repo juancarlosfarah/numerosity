@@ -6,7 +6,7 @@
   "resizeBtn": "Continuar",
   "countablePeople": "personas",
   "countableObjects": "objetos",
-  "instructionTitle": "Instrucciones: lo que tienes que hacer",
+  "instructionTitle": "Tutorial",
   "instructionExample": "He aquí un ejemplo de la tarea. Como puede ver, la imagen se muestra durante muy poco tiempo. Tienes que estimar el número de {{cntable}} que se mostraron. No se preocupe, se esperan errores de estimación.",
   "instructionBtnNext": "Siguiente",
   "instructionBtnPrevious": "Anterior",
@@ -18,18 +18,19 @@
     "<b>RECORDATORIO: no podrás contar el número de {{cntable}}, no te preocupes es normal ya que las {{cntable}} aparecen como un flash rápido. Da sólo una estimación.</b>"
   ],
   "instructionScreenExample": "¿Cuántas {{cntable}} había en la foto?",
-  "quizPreamblesHalf": [
-    "<b>¡Compruebe sus conocimientos antes de empezar!</b><br><br>",
-    "<b>¡Estás en medio del experimento!</b><br><b>Las instrucciones han cambiado para la segunda parte.</b><br><b>¡Compruebe sus conocimientos antes de empezar!</b><br>"
-  ],
+  "quizPreamble": "¡Compruebe sus conocimientos antes de empezar!",
   "quizQuestionPrompt": "Pregunta 1: ¿Qué debe estimarse?",
   "quizQuestionOptions": [
     "El tamaño de la sala virtual",
     "La duración de la presentación de la imagen",
     "El número de {{cntable}} dentro de la sala virtual"
   ],
+  "experimentStart": "El experimento comenzará inmediatamente después de hacer clic en el botón de abajo.",
+  "experimentStartBtn": "Empezar",
   "inputInfo": "Por favor escribe un número entero",
+  "inputPlaceholder": " responda aquí",
   "estimateSubmitBtn": "Continuar",
+  "firstHalfEnd": "Ha llegado al final de la primera parte del experimento. Las instrucciones han cambiado para la segunda parte. Haga clic en el botón de abajo para proceder a la segunda mitad.",
   "repeatInstructions": "Haga clic aquí para volver a leer las instrucciones",
   "tipTitle": "Instrucciones",
   "tipDescription": "Por favor, mantén la cara a unos 50 cm de la pantalla durante el experimento.",

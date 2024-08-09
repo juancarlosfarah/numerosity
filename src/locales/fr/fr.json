@@ -6,7 +6,7 @@
   "resizeBtn": "Continuer",
   "countablePeople": "personnes",
   "countableObjects": "objets",
-  "instructionTitle": "Instructions: ce que vous devez faire",
+  "instructionTitle": "Tutoriel",
   "instructionExample": "Voici un exemple montrant le déroulement de la tâche. Comme vous pouvez le voir, l'image s'affiche durant un très court instant. Vous devez estimer le nombre de {{cntable}} qui étaient affichées. Ne vous inquiétez pas, des erreurs d'estimation sont attendues.",
   "instructionBtnNext": "Suivant",
   "instructionBtnPrevious": "Précédent",
@@ -18,18 +18,19 @@
     "<b>RAPPEL: Il est normal de ne pas pouvoir compter le nombre de {{cntable}} car les images vont très vite. C'est intentionnel.<br><br>Donnez seulment une estimation.</b>"
   ],
   "instructionScreenExample": "Combien de {{cntable}} étaient dans l'image?",
-  "quizPreamblesHalf": [
-    "<b>Vérifiez vos connaissances avant de commencer!</b><br><br>",
-    "<b>Vous êtes au milieu de l'expérience!</b><br><b>Les instructions ont changé pour la seconde moitié.</b><br><b>Vérifiez vos connaissances avant de commencer!</b><br>"
-  ],
+  "quizPreamble": "Vérifiez vos connaissances avant de commencer!",
   "quizQuestionPrompt": "Question 1: Que devez-vous estimer?",
   "quizQuestionOptions": [
     "La taille de la pièce",
     "La durée de présentation des images",
     "Le nombre de {{cntable}} présents dans la pièce"
   ],
+  "experimentStart": "L'expérience commencera immédiatement après avoir cliqué sur le bouton ci-dessous.",
+  "experimentStartBtn": "Commencer",
   "inputInfo": "Veuillez entrer un nombre entier",
+  "inputPlaceholder": " réponse ici",
   "estimateSubmitBtn": "Continuer",
+  "firstHalfEnd": "Vous avez atteint la fin de la première partie de l'expérience. Les instructions ont changé pour la seconde moitié. Cliquez sur le bouton ci-dessous pour passer à la seconde moitié.",
   "repeatInstructions": "Cliquez ici pour lire les instructions à nouveau",
   "tipTitle": "Instructions",
   "tipDescription": "Placez vous à environ 50cm de votre écran pendant l'expérience.",

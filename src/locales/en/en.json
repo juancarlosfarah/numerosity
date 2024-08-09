@@ -6,30 +6,31 @@
   "resizeBtn": "Continue",
   "countablePeople": "people",
   "countableObjects": "objects",
-  "instructionTitle": "Instructions: what you have to do",
+  "instructionTitle": "Tutorial",
   "instructionExample": "Here is an example of the task. As you can see, the picture is displayed for a very short time. You have to estimate the number of {{cntable}} that were displayed. Do not worry, estimation errors are expected.",
   "instructionBtnNext": "Next",
   "instructionBtnPrevious": "Previous",
   "instructionTexts": [
     "<b>Step 1:<br>A white cross is displayed in the middle of the screen.<br> Look at it and keep focus.</b>",
     "<b>Step 2:<br>Shortly afterwards, the picture of a room with several {{cntable}} inside will be displayed very rapidly in the middle of the screen, like a flash.</b>",
-    "<b>Step 3:<br>The picture will then disappear very quickly, and you will be asked to estimate the number of {{cntable}} that were displayed.<br><br><u>NOTE:</u> you will not be able to count the number of {{cntable}}, as it goes very fast.<br>Give an estimate only.</b>",
+    "<b>Step 3:<br>The picture will then disappear very quickly, and you will be asked to guess the number of {{cntable}} that were displayed.<br><br><u>NOTE:</u> you will not be able to count the number of {{cntable}}, as it goes very fast.<br>Give a guess only.</b>",
     "<b>These three steps will be repeated several times throughout the experiment.</b>",
-    "<b>REMINDER: you will not be able to count the number of {{cntable}}, don't worry it is normal as the {{cntable}} appear as a rapid flash<br><br>Give just an estimate.</b>"
+    "<b>REMINDER: you will not be able to count the number of {{cntable}}, don't worry it is normal as the {{cntable}} appear as a rapid flash<br><br>Give just a guess.</b>"
   ],
   "instructionScreenExample": "How many {{cntable}} were in the picture?",
-  "quizPreamblesHalf": [
-    "<b>Check your knowledge before you begin!</b><br><br>",
-    "<b>You are in the middle of the experiment!</b><br><b>Instructions have changed for the second half.</b><br><b>Check your knowledge before you begin!</b><br>"
-  ],
+  "quizPreamble": "Check your knowledge before you begin!",
   "quizQuestionPrompt": "Question 1: What should be estimated?",
   "quizQuestionOptions": [
     "The size of the virtual room",
     "The duration of picture presentation",
     "The number of {{cntable}} inside the virtual room"
   ],
+  "experimentStart": "The experiment will begin immediately after clicking the button bellow.",
+  "experimentStartBtn": "Begin",
   "inputInfo": "Please write a whole number",
+  "inputPlaceholder": " answer here",
   "estimateSubmitBtn": "Continue",
+  "firstHalfEnd": "You have reached the end of the first part of the experiment. Instructions have changed for the second half. Click the button below to proceed to the second half.",
   "repeatInstructions": "Click here to read the instructions again",
   "tipTitle": "Instructions",
   "tipDescription": "Please keep your face at around 50cm from your screen during the experiment.",

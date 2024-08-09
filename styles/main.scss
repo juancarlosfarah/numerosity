@@ -78,11 +78,14 @@ button:hover {
 .inst-text {
   text-align: start;
   margin-left: 5%;
-  font-size: 50%;
-  line-height: 1.6em;
   width: 67%;
 }
 
 .underlined {
   text-decoration: underline;
+}
+
+#task-input {
+  font-size: larger;
+  margin: 5%;
 }
