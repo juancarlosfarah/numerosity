@@ -95,3 +95,37 @@ describe('Ordinary run', () => {
     cy.contains('Thank you');
   });
 });
+
+function testQuit() {
+  for (let task = 0; task < nb_blocks * 4; task++) {
+    // Wait for task to be ready and perform the task
+    cy.wait(1651 + 500 + 250 + 1000);
+    cy.contains('in the virtual ');
+    cy.get('#task-input').type(task.toString());
+    cy.contains('Continue').click();
+  }
+}
+
+// Main test suite
+describe('Quit screen test', () => {
+  it('opens quit window and aborts experiment', () => {
+    // Visit the application
+    cy.visit(`http://localhost:3000`);
+    cy.get('#jspsych-progressbar-outer').should('be.visible');
+
+    // Navigate through initial instructions
+    cy.contains('Quit').click();
+    !cy.contains('Completion progress');
+    cy.contains('Close').click();
+
+    cy.contains('Fullscreen');
+    cy.get('#jspsych-progressbar-outer').should('be.visible');
+    cy.contains('Quit').click();
+
+    !cy.contains('Completion progress');
+    cy.contains('Other').click();
+    cy.contains('Abort the experiment').click();
+
+    cy.contains('aborted!');
+  });
+});
