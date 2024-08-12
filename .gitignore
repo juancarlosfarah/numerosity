@@ -55,3 +55,13 @@ cypress/videos/
 
 # Cypress logs
 cypress/logs/
+
+# Cypress test results and screenshots
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/
+
+# Cypress coverage reports
+coverage/
+.cypress-coverage/
+.nyc_output/
