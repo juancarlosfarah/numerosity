@@ -162,7 +162,7 @@ export async function run() {
         auto_update_progress_bar: false,
         message_progress_bar: i18next.t('progressBar'),
         on_finish: () => {
-            jsPsych.data.get().localSave('json', 'experiment-data.json');
+            jsPsych.data.get().localSave('csv', 'experiment-data.csv');
         },
     });
     const timeline = [];

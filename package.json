@@ -1,6 +1,7 @@
 {
   "private": true,
   "homepage": "https://juancarlosfarah.github.io/numerosity",
+  "version": "0.1.0",
   "scripts": {
     "jspsych": "jspsych -e experiment",
     "start": "npm run jspsych -- run",
@@ -21,6 +22,7 @@
     "@jspsych/plugin-resize": "^2.0.0",
     "@jspsych/plugin-survey-html-form": "^1.0.3",
     "@jspsych/plugin-survey-multi-choice": "^2.0.0",
+    "@types/w3c-web-usb": "^1.0.10",
     "i18next": "^23.12.2",
     "jspsych": "^8.0.1"
   },

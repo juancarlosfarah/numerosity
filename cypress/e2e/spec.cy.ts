@@ -93,18 +93,16 @@ describe('Ordinary run', () => {
 
     // Verify end message
     cy.contains('Thank you');
+
+    cy.readFile(
+      require('path').join('cypress/downloads', 'experiment-data.csv'),
+    ).should('exist');
+
+    cy.readFile(
+      require('path').join('cypress/downloads', 'experiment-data.csv'),
+    ).should('exist');
   });
 });
-
-function testQuit() {
-  for (let task = 0; task < nb_blocks * 4; task++) {
-    // Wait for task to be ready and perform the task
-    cy.wait(1651 + 500 + 250 + 1000);
-    cy.contains('in the virtual ');
-    cy.get('#task-input').type(task.toString());
-    cy.contains('Continue').click();
-  }
-}
 
 // Main test suite
 describe('Quit screen test', () => {
@@ -123,6 +121,54 @@ describe('Quit screen test', () => {
     cy.contains('Quit').click();
 
     !cy.contains('Completion progress');
+    cy.contains('Other').click();
+    cy.contains('Abort the experiment').click();
+
+    cy.contains('aborted!');
+
+    cy.readFile(
+      require('path').join('cypress/downloads', 'experiment-data.csv'),
+    ).should('exist');
+  });
+});
+
+// Main test suite
+describe('Edge cases test', () => {
+  it('visits all input elements and tests edge case entries', () => {
+    // Visit the application
+    cy.visit(`http://localhost:3000`);
+    cy.get('#jspsych-progressbar-outer').should('be.visible');
+
+    // Enter fullscreen mode
+    cy.contains('Fullscreen').click();
+
+    // Navigate through initial instructions
+    cy.contains('Quit');
+
+    // Test the instruction screens
+    testInstructions();
+
+    cy.contains('Begin').click();
+
+    cy.wait(1651 + 500 + 250 + 1000);
+    cy.get('#task-input').type('-1');
+    cy.contains('Continue').click();
+    cy.get('#task-input').should('have.value', '-1');
+    cy.get('#task-input').clear();
+
+    cy.get('#task-input').type('1.5');
+    cy.contains('Continue').click();
+    cy.get('#task-input').should('have.value', '1.5');
+    cy.get('#task-input').clear();
+
+    cy.get('#task-input').type('+00');
+    cy.contains('Continue').click();
+    cy.wait(1651 + 500 + 250 + 1000);
+    cy.get('#task-input').should('not.contain.value');
+
+    cy.contains('Quit').click();
+    cy.contains('Abort the experiment').click();
+
     cy.contains('Other').click();
     cy.contains('Abort the experiment').click();
 

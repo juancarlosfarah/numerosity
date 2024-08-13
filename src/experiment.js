@@ -19,7 +19,7 @@ import { groupInstructions, tipScreen } from './instructions';
 import { showEndScreen } from './quit';
 import { quitBtnAction } from './quit';
 import { generatePreloadStrings, resize } from './setup';
-import { createButtonPage } from './utils';
+import { connectToUSB, createButtonPage, sendTriggerToUSB } from './utils';
 /**
  * @function generateTimelineVars
  * @description Generate timeline variables for the experiment.
@@ -53,7 +53,7 @@ function generateTimelineVars(JsPsych, nb_blocks) {
  * @param { number } nb_blocks - Number of blocks per half
  * @returns { timeline } - Timeline for one half of the numerosity task
  */
-const partofexp = (jsPsych, cntable, nb_blocks) => ({
+const partofexp = (jsPsych, cntable, nb_blocks, devices_out) => ({
     timeline: [
         // Blackscreen before stimuli
         {
@@ -62,6 +62,7 @@ const partofexp = (jsPsych, cntable, nb_blocks) => ({
             choices: 'NO_KEYS',
             trial_duration: () => 1500 + jsPsych.evaluateTimelineVariable('bs_jitter'),
             on_start: () => {
+                sendTriggerToUSB(devices_out.usb_device, '0');
                 document.body.style.cursor = 'none';
             },
         },
@@ -72,6 +73,7 @@ const partofexp = (jsPsych, cntable, nb_blocks) => ({
             choices: 'NO_KEYS',
             trial_duration: 500,
             on_start: () => {
+                sendTriggerToUSB(devices_out.usb_device, '1');
                 document.body.style.cursor = 'none';
             },
         },
@@ -84,6 +86,7 @@ const partofexp = (jsPsych, cntable, nb_blocks) => ({
             choices: 'NO_KEYS',
             trial_duration: 250,
             on_start: () => {
+                sendTriggerToUSB(devices_out.usb_device, '2');
                 document.body.style.cursor = 'none';
             },
         },
@@ -94,6 +97,7 @@ const partofexp = (jsPsych, cntable, nb_blocks) => ({
             choices: 'NO_KEYS',
             trial_duration: 1000,
             on_start: () => {
+                sendTriggerToUSB(devices_out.usb_device, '3');
                 document.body.style.cursor = 'none';
             },
             on_finish: () => {
@@ -108,6 +112,9 @@ const partofexp = (jsPsych, cntable, nb_blocks) => ({
             autofocus: 'task-input',
             button_label: i18next.t('estimateSubmitBtn'),
             on_load: () => {
+                document
+                    .getElementById('jspsych-survey-html-form')
+                    .addEventListener('submit', () => sendTriggerToUSB(devices_out.usb_device, '5'));
                 const input = document.getElementById('task-input');
                 // Initially set the custom validity message
                 input.setCustomValidity(i18next.t('inputInfo'));
@@ -116,6 +123,9 @@ const partofexp = (jsPsych, cntable, nb_blocks) => ({
                     // If the input value is not empty, clear the custom validity message
                     input.setCustomValidity(input.value === '' ? i18next.t('inputInfo') : '');
                 });
+            },
+            on_start: () => {
+                sendTriggerToUSB(devices_out.usb_device, '4');
             },
             on_finish: function () {
                 jsPsych.progressBar.progress =
@@ -155,14 +165,15 @@ const partofexp = (jsPsych, cntable, nb_blocks) => ({
  * Initializes jsPsych, sets up the timeline, and runs the experiment.
  * @returns { Promise<JsPsych> } - Promise resolving to the jsPsych instance
  */
-export async function run() {
+export async function run({ assetPaths, input = {}, environment, title, version, }) {
+    let devices = { usb_device: null };
     const blocks_per_half = 5;
     const jsPsych = initJsPsych({
         show_progress_bar: true,
         auto_update_progress_bar: false,
         message_progress_bar: i18next.t('progressBar'),
         on_finish: () => {
-            jsPsych.data.get().localSave('json', 'experiment-data.json');
+            jsPsych.data.get().localSave('csv', 'experiment-data.csv');
         },
     });
     const timeline = [];
@@ -181,7 +192,7 @@ export async function run() {
     timeline.push({
         type: FullscreenPlugin,
         fullscreen_mode: true,
-        message: '',
+        message: '<button class="jspsych-btn" id="init-btn">initiate USB</button><br><br>',
         button_label: i18next.t('fullscreen'),
         info: {
             name: 'FullscreenPlugin',
@@ -197,6 +208,11 @@ export async function run() {
             document
                 .getElementById('jspsych-progressbar-container')
                 .appendChild(quit_btn);
+            document
+                .getElementById('init-btn')
+                .addEventListener('click', async () => {
+                devices.usb_device = await connectToUSB();
+            });
             resize();
         },
     });
@@ -204,7 +220,7 @@ export async function run() {
     let exp_parts_cntables = ['people', 'objects'];
     exp_parts_cntables = jsPsych.randomization.shuffle(exp_parts_cntables);
     // Run numerosity task
-    timeline.push(groupInstructions(jsPsych, exp_parts_cntables[0]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[0], blocks_per_half), createButtonPage(i18next.t('firstHalfEnd'), i18next.t('resizeBtn')), groupInstructions(jsPsych, exp_parts_cntables[1]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[1], blocks_per_half));
+    timeline.push(groupInstructions(jsPsych, exp_parts_cntables[0]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[0], blocks_per_half, devices), createButtonPage(i18next.t('firstHalfEnd'), i18next.t('resizeBtn')), groupInstructions(jsPsych, exp_parts_cntables[1]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[1], blocks_per_half, devices));
     await jsPsych.run(timeline);
     document
         .getElementsByClassName('jspsych-content-wrapper')[0]

@@ -20,7 +20,7 @@ import { groupInstructions, tipScreen } from './instructions';
 import { showEndScreen } from './quit';
 import { quitBtnAction } from './quit';
 import { generatePreloadStrings, resize } from './setup';
-import { createButtonPage } from './utils';
+import { connectToUSB, createButtonPage, sendTriggerToUSB } from './utils';
 
 // Type aliases for better code readability
 type img_description = { num: number; id: number; bs_jitter: number };
@@ -71,10 +71,12 @@ const partofexp: (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
   nb_blocks: number,
+  devices_out: { usb_device: USBDevice | null },
 ) => timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
   nb_blocks: number,
+  devices_out: { usb_device: USBDevice | null },
 ): timeline => ({
   timeline: [
     // Blackscreen before stimuli
@@ -85,6 +87,7 @@ const partofexp: (
       trial_duration: (): number =>
         1500 + jsPsych.evaluateTimelineVariable('bs_jitter'),
       on_start: (): void => {
+        sendTriggerToUSB(devices_out.usb_device, '0');
         document.body.style.cursor = 'none';
       },
     },
@@ -96,6 +99,7 @@ const partofexp: (
       choices: 'NO_KEYS',
       trial_duration: 500,
       on_start: (): void => {
+        sendTriggerToUSB(devices_out.usb_device, '1');
         document.body.style.cursor = 'none';
       },
     },
@@ -109,6 +113,7 @@ const partofexp: (
       choices: 'NO_KEYS',
       trial_duration: 250,
       on_start: (): void => {
+        sendTriggerToUSB(devices_out.usb_device, '2');
         document.body.style.cursor = 'none';
       },
     },
@@ -120,6 +125,7 @@ const partofexp: (
       choices: 'NO_KEYS',
       trial_duration: 1000,
       on_start: (): void => {
+        sendTriggerToUSB(devices_out.usb_device, '3');
         document.body.style.cursor = 'none';
       },
       on_finish: (): void => {
@@ -135,6 +141,12 @@ const partofexp: (
       autofocus: 'task-input',
       button_label: i18next.t('estimateSubmitBtn'),
       on_load: (): void => {
+        document
+          .getElementById('jspsych-survey-html-form')!
+          .addEventListener(
+            'submit',
+            (): Promise<void> => sendTriggerToUSB(devices_out.usb_device, '5'),
+          );
         const input: HTMLInputElement = document.getElementById(
           'task-input',
         ) as HTMLInputElement;
@@ -149,6 +161,9 @@ const partofexp: (
             input.value === '' ? i18next.t('inputInfo') : '',
           );
         });
+      },
+      on_start: (): void => {
+        sendTriggerToUSB(devices_out.usb_device, '4');
       },
       on_finish: function (): void {
         jsPsych.progressBar!.progress =
@@ -205,7 +220,21 @@ const partofexp: (
  * Initializes jsPsych, sets up the timeline, and runs the experiment.
  * @returns { Promise<JsPsych> } - Promise resolving to the jsPsych instance
  */
-export async function run(): Promise<JsPsych> {
+export async function run({
+  assetPaths,
+  input = {},
+  environment,
+  title,
+  version,
+}: {
+  assetPaths: { images: string[]; audio: string[]; video: string[] };
+  input: any;
+  environment: string;
+  title: string;
+  version: string;
+}): Promise<JsPsych> {
+  let devices: { usb_device: USBDevice | null } = { usb_device: null };
+
   const blocks_per_half: number = 5;
 
   const jsPsych: JsPsych = initJsPsych({
@@ -213,9 +242,10 @@ export async function run(): Promise<JsPsych> {
     auto_update_progress_bar: false,
     message_progress_bar: i18next.t('progressBar'),
     on_finish: (): void => {
-      jsPsych.data.get().localSave('json', 'experiment-data.json');
+      jsPsych.data.get().localSave('csv', 'experiment-data.csv');
     },
   });
+
   const timeline: timeline = [];
 
   jsPsych;
@@ -234,7 +264,8 @@ export async function run(): Promise<JsPsych> {
   timeline.push({
     type: FullscreenPlugin,
     fullscreen_mode: true,
-    message: '',
+    message:
+      '<button class="jspsych-btn" id="init-btn">initiate USB</button><br><br>',
     button_label: i18next.t('fullscreen'),
     info: {
       name: 'FullscreenPlugin',
@@ -257,6 +288,12 @@ export async function run(): Promise<JsPsych> {
         .getElementById('jspsych-progressbar-container')!
         .appendChild(quit_btn);
 
+      document
+        .getElementById('init-btn')!
+        .addEventListener('click', async () => {
+          devices.usb_device = await connectToUSB();
+        });
+
       resize();
     },
   });
@@ -273,7 +310,7 @@ export async function run(): Promise<JsPsych> {
       i18next.t('experimentStart'),
       i18next.t('experimentStartBtn'),
     ),
-    partofexp(jsPsych, exp_parts_cntables[0], blocks_per_half),
+    partofexp(jsPsych, exp_parts_cntables[0], blocks_per_half, devices),
     createButtonPage(i18next.t('firstHalfEnd'), i18next.t('resizeBtn')),
     groupInstructions(jsPsych, exp_parts_cntables[1]),
     tipScreen(),
@@ -281,7 +318,7 @@ export async function run(): Promise<JsPsych> {
       i18next.t('experimentStart'),
       i18next.t('experimentStartBtn'),
     ),
-    partofexp(jsPsych, exp_parts_cntables[1], blocks_per_half),
+    partofexp(jsPsych, exp_parts_cntables[1], blocks_per_half, devices),
   );
 
   await jsPsych.run(timeline);
