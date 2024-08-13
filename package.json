@@ -24,7 +24,7 @@
     "@jspsych/plugin-survey-multi-choice": "^2.0.0",
     "@types/w3c-web-usb": "^1.0.10",
     "i18next": "^23.12.2",
-    "jspsych": "^8.0.1"
+    "jspsych": "https://github.com/juancarlosfarah/jsPsych.git"
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.12.44",
