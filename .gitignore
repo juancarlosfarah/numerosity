@@ -39,3 +39,29 @@ database.sqlite
 .jspsych-builder
 packaged/
 experiment/
+
+# ESLint cache
+.eslintcache
+
+# Husky hooks
+.husky/_/
+
+# Cypress artifacts
+cypress/screenshots/
+cypress/videos/
+
+# Cypress cache
+.cache/Cypress
+
+# Cypress logs
+cypress/logs/
+
+# Cypress test results and screenshots
+cypress/screenshots/
+cypress/videos/
+cypress/downloads/
+
+# Cypress coverage reports
+coverage/
+.cypress-coverage/
+.nyc_output/

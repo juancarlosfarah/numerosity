@@ -1,0 +1,53 @@
+{
+  "fullscreen": "Vollbild",
+  "quitBtn": "Abbrechen",
+  "calibration": "Klicken und ziehen Sie die untere rechte Ecke des Feldes, bis das Feld die Größe einer an den Bildschirm gehaltenen Kreditkarte hat.",
+  "progressBar": "Fortschritt",
+  "resizeBtn": "Fortfahren",
+  "countablePeople": "Personen",
+  "countableObjects": "Objekte",
+  "instructionTitle": "Anleitung",
+  "instructionExample": "Hier ein Beispiel für eine Aufgabe. Wie Sie sehen können, wird das Bild nur für eine sehr kurze Zeit angezeigt. Sie müssen die Anzahl der {{cntable}} schätzen, die angezeigt wurden. Keine Sorge, Schätzfehler werden erwartet.",
+  "instructionBtnNext": "Weiter",
+  "instructionBtnPrevious": "Zurück",
+  "instructionTexts": [
+    "<b>Schritt 1:<br>Ein weißes Kreuz wird in der Mitte des Bildschirms angezeigt.<br> Schauen Sie darauf und behalten Sie den Fokus.</b>",
+    "<b>Schritt 2:<br>Kurz danach wird das Bild eines Raums mit mehreren {{cntable}} sehr schnell in der Mitte des Bildschirms angezeigt, wie ein Blitz.</b>",
+    "<b>Schritt 3:<br>Das Bild wird dann sehr schnell verschwinden, und Sie werden gebeten, die Anzahl der {{cntable}} zu schätzen, die angezeigt wurden.<br><br><u>HINWEIS:</u> Sie werden nicht in der Lage sein, die Anzahl der {{cntable}} zu zählen, da es sehr schnell geht.<br>Geben Sie nur eine Schätzung ab.</b>",
+    "<b>Diese drei Schritte werden mehrmals während des Experiments wiederholt.</b>",
+    "<b>ERINNERUNG: Sie werden nicht in der Lage sein, die Anzahl der {{cntable}} zu zählen, machen Sie sich keine Sorgen, es ist normal, da die {{cntable}} als schneller Blitz erscheinen.<br><br>Geben Sie einfach eine Schätzung ab.</b>"
+  ],
+  "instructionScreenExample": "Wie viele {{cntable}} waren auf dem Bild?",
+  "quizPreamble": "Überprüfen Sie Ihr Wissen, bevor Sie beginnen!",
+  "quizQuestionPrompt": "Frage 1: Was soll geschätzt werden?",
+  "quizQuestionOptions": [
+    "Die Größe des virtuellen Raums",
+    "Die Dauer der Präsentation des Bildes",
+    "Die Anzahl der {{cntable}} innerhalb des virtuellen Raumes"
+  ],
+  "experimentStart": "Das Experiment beginnt unmittelbar nach dem Anklicken des untenstehenden Buttons.",
+  "experimentStartBtn": "Beginnen",
+  "inputInfo": "Bitte schreiben Sie eine ganze Zahl",
+  "inputPlaceholder": " hier antworten",
+  "estimateSubmitBtn": "Fortfahren",
+  "firstHalfEnd": "Sie haben das Ende des ersten Teils des Experiments erreicht. Die Anweisungen haben sich für die zweite Hälfte geändert. Klicken Sie auf die Schaltfläche unten, um zur zweiten Hälfte zu gelangen.",
+  "repeatInstructions": "Klicken Sie hier, um die Anleitung noch einmal zu lesen",
+  "tipTitle": "Anleitung",
+  "tipDescription": "Bitte halten Sie Ihr Gesicht während des Experiments etwa 50 cm vom Bildschirm entfernt.",
+  "tipBtnTxt": "Ich bin bereit zu beginnen",
+  "quitSurveyPreamble": "Das Experiment ist im Gange.<br> Wollen Sie wirklich aufhören?",
+  "quitSurveyPrompt": "Bitte wählen Sie unten den Grund für Ihren Abbruch aus:",
+  "quitSurveyOptions": [
+    "Das Experiment nimmt zu viel Zeit in Anspruch",
+    "Die Aufgabe ist zu kompliziert",
+    "Das Experiment ist langweilig",
+    "Ich bin zu müde, um weiterzumachen",
+    "Ich bin mit meinen Antworten nicht zufrieden",
+    "Andere"
+  ],
+  "quitSurveyInputInfo": "Bitte wählen Sie einen Grund aus",
+  "quitSurveyBtnClose": "Schließen",
+  "quitSurveyBtnEnd": "Experiment abbrechen",
+  "abortedMessage": "Experiment abgebrochen!<br><br>Sie haben das Experiment frühzeitig abgebrochen.",
+  "endMessage": "Vielen Dank!<br><br>Sie haben das Experiment abgeschlossen!"
+}

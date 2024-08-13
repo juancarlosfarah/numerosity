@@ -1,0 +1,53 @@
+{
+  "fullscreen": "Pantalla completa",
+  "quitBtn": "Sortir",
+  "calibration": "Feu clic i arrossegueu l'extrem inferior dret del quadre fins que el quadre tingui la mateixa mida que una targeta de crèdit que es mostra a la pantalla.",
+  "progressBar": "Progrés de l'experimentació",
+  "resizeBtn": "Continuar",
+  "countablePeople": "persones",
+  "countableObjects": "objectes",
+  "instructionTitle": "Tutorial",
+  "instructionExample": "Vet aquí un exemple de la tasca. Com podeu veure, la imatge es mostra durant molt poc temps. Heu d'estimar el nombre de {{cntable}} que es van mostrar. No us preocupeu, s'esperen errors d'estimació.",
+  "instructionBtnNext": "Següent",
+  "instructionBtnPrevious": "Anterior",
+  "instructionTexts": [
+    "<b>Pas 1:<br>Apareix una creu blanca al centre de la pantalla. Mira-<br>la i mantingues la concentració.</b>",
+    "<b>Pas 2:<br>Poc despreés, la  imatge d'una habitació amb diverses {{cntable}} dins es mostrarà molt ràpidament al centre de la pantalla, com un flaix.</b>",
+    "<b>Pas 3:<br>A continuació, la imatge desapareixerà ràpidament i se us demanarà que estimi el nombre de {{cntable}} que apareixien.<br><br><u>NOTA:</u> no podreu comptar el nombre de persones, ja que va molt ràpid.<br>Dóna només una estimació.</b>",
+    "<b>Aquests tres passos es repetiran diverses vegades al llarg de lexperiment.</b>",
+    "<b>RECORDATORI: no podrás comptar el nombre de {{cntable}}, no et preocupis és nomal ja que les {{cntable}} apareixen com un flaix ràpid. Dóna només una estimació.</b>"
+  ],
+  "instructionScreenExample": "Quantes {{cntable}} hi habia a la foto?",
+  "quizPreamble": "Comproveu els vostres coneixements abans de començar!",
+  "quizQuestionPrompt": "Pregunta 1: Què cal estimar?",
+  "quizQuestionOptions": [
+    "La mida de la sala virtual",
+    "La durada de la presentació de la imatge",
+    "El nombre de {{cntable}} dins de la sala virtual"
+  ],
+  "experimentStart": "L'experiment començarà immediatament després de fer clic al botó següent.",
+  "experimentStartBtn": "Començar",
+  "inputInfo": "Si us plau escriviu un número enter",
+  "inputPlaceholder": " respon aquí",
+  "estimateSubmitBtn": "Continuar",
+  "firstHalfEnd": "Heu arribat al final de la primera part de l'experiment. Les instruccions han canviat per a la segona part. Feu clic al botó següent per passar a la segona part.",
+  "repeatInstructions": "Feu clic aquí per tornar a llegir les instruccions",
+  "tipTitle": "Instruccions",
+  "tipDescription": "Si us plau, manteniu la cara a uns 50 cm de la pantalla durant l'experiment.",
+  "tipBtnTxt": "Estic llest per començar",
+  "quitSurveyPreamble": "Experiment en curs.<br> De veritat vols deixar-ho?",
+  "quitSurveyPrompt": "Trieu a continuació el motiu del vostre avortament:",
+  "quitSurveyOptions": [
+    "L'experiment dura massa temps",
+    "La tasca és massa complicada",
+    "L'experiment és avorrit",
+    "Estic massa cansat per continuar",
+    "No estic satisfet amb les meves respostes",
+    "Un altre"
+  ],
+  "quitSurveyInputInfo": "Seleccioneu un motiu",
+  "quitSurveyBtnClose": "Tancar",
+  "quitSurveyBtnEnd": "Avortar l'experiment",
+  "abortedMessage": "Experiment avortat!<br><br>Has acabat l'experiment abans d'hora.",
+  "endMessage": "Gràcies!<br><br>Heu completat l'experiment!"
+}

@@ -1,0 +1,53 @@
+{
+  "fullscreen": "Pantalla completa",
+  "quitBtn": "Salir",
+  "calibration": "Haga clic y arrastre la esquina inferior derecha del cuadro hasta que tenga el mismo tamaño que una tarjeta de crédito sostenida en la pantalla.",
+  "progressBar": "Progreso del experimento",
+  "resizeBtn": "Continuar",
+  "countablePeople": "personas",
+  "countableObjects": "objetos",
+  "instructionTitle": "Tutorial",
+  "instructionExample": "He aquí un ejemplo de la tarea. Como puede ver, la imagen se muestra durante muy poco tiempo. Tienes que estimar el número de {{cntable}} que se mostraron. No se preocupe, se esperan errores de estimación.",
+  "instructionBtnNext": "Siguiente",
+  "instructionBtnPrevious": "Anterior",
+  "instructionTexts": [
+    "<b>Paso 1:<br>Aparece una cruz blanca en el centro de la pantalla.<br>Mírala y mantén la conentración.</b>",
+    "<b>Paso 2:<br>Poco después, la imagen de una habitación con varias {{cntable}} dentro se mostrará muy rápidamente en el centro de la pantalla, como un flash.</b>",
+    "<b>Paso 3:<br>A continuación, la imagen desaparecerá rápidamente y se le pedirá que estime el número de {{cntable}} que aparecían.</b><br><br><u>NOTA:</u> no podrás contar el número de {{cntable}}, ya que va muy rápido. Da sólo una estimación.",
+    "<b>Estos tres pasos se repetirán varias veces a lo largo del experimento.</b>",
+    "<b>RECORDATORIO: no podrás contar el número de {{cntable}}, no te preocupes es normal ya que las {{cntable}} aparecen como un flash rápido. Da sólo una estimación.</b>"
+  ],
+  "instructionScreenExample": "¿Cuántas {{cntable}} había en la foto?",
+  "quizPreamble": "¡Compruebe sus conocimientos antes de empezar!",
+  "quizQuestionPrompt": "Pregunta 1: ¿Qué debe estimarse?",
+  "quizQuestionOptions": [
+    "El tamaño de la sala virtual",
+    "La duración de la presentación de la imagen",
+    "El número de {{cntable}} dentro de la sala virtual"
+  ],
+  "experimentStart": "El experimento comenzará inmediatamente después de hacer clic en el botón de abajo.",
+  "experimentStartBtn": "Empezar",
+  "inputInfo": "Por favor escribe un número entero",
+  "inputPlaceholder": " responda aquí",
+  "estimateSubmitBtn": "Continuar",
+  "firstHalfEnd": "Ha llegado al final de la primera parte del experimento. Las instrucciones han cambiado para la segunda parte. Haga clic en el botón de abajo para proceder a la segunda mitad.",
+  "repeatInstructions": "Haga clic aquí para volver a leer las instrucciones",
+  "tipTitle": "Instrucciones",
+  "tipDescription": "Por favor, mantén la cara a unos 50 cm de la pantalla durante el experimento.",
+  "tipBtnTxt": "Estoy listo para empezar",
+  "quitSurveyPreamble": "Experimento en curso.<br> ¿De verdad quieres dejarlo?",
+  "quitSurveyPrompt": "Elija a continuación el motivo de su aborto:",
+  "quitSurveyOptions": [
+    "El experimento lleva demasiado tiempo",
+    "La tarea es demasiado complicada",
+    "El experimento es aburrido",
+    "Estoy demasiado cansado para continuar",
+    "No estoy satisfecho con mis respuestas",
+    "Otro"
+  ],
+  "quitSurveyInputInfo": "Seleccione un motivo",
+  "quitSurveyBtnClose": "Cerrar",
+  "quitSurveyBtnEnd": "Abortar el experimento",
+  "abortedMessage": "¡Experimento abortado!<br><br>Abortó la experiencia prematuramente.",
+  "endMessage": "¡Gracias!<br><br>¡Has completado el experimento!"
+}

@@ -1,0 +1,53 @@
+{
+  "fullscreen": "Plein écran",
+  "quitBtn": "Quitter",
+  "calibration": "Cliquez et faites glisser le coin inférieur droit de la boîte jusqu'à ce que la boîte ait la même taille qu'une carte de crédit tenue devant l'écran.",
+  "progressBar": "Progrès de l'expérience",
+  "resizeBtn": "Continuer",
+  "countablePeople": "personnes",
+  "countableObjects": "objets",
+  "instructionTitle": "Tutoriel",
+  "instructionExample": "Voici un exemple montrant le déroulement de la tâche. Comme vous pouvez le voir, l'image s'affiche durant un très court instant. Vous devez estimer le nombre de {{cntable}} qui étaient affichées. Ne vous inquiétez pas, des erreurs d'estimation sont attendues.",
+  "instructionBtnNext": "Suivant",
+  "instructionBtnPrevious": "Précédent",
+  "instructionTexts": [
+    "<b>Etape 1:<br>Une croix va s'afficher au centre de l'écran.<br>Fixez-la bien les yeux.</b>",
+    "<b>Etape 2:<br>Immédiatement après, une image présentant plusieurs {{cntable}} dans une pièce va s'afficher très rapidement au centre de l'écran.</b>",
+    "<b>Etape 3:<br>Ensuite, l'image disparaîtra très rapidement, et vous devrez estimer le nombre de {{cntable}} qui étaient affichées sur l'écran.<br><br><u>NOTE:</u> Il est normal de ne pas pouvoir compter le nombre de personnes car les images vont très vite, Donnez seulement une estimation.</b>",
+    "<b>Ces trois étapes vont se répéter plusieurs fois pendant l'expérience.</b>",
+    "<b>RAPPEL: Il est normal de ne pas pouvoir compter le nombre de {{cntable}} car les images vont très vite. C'est intentionnel.<br><br>Donnez seulment une estimation.</b>"
+  ],
+  "instructionScreenExample": "Combien de {{cntable}} étaient dans l'image?",
+  "quizPreamble": "Vérifiez vos connaissances avant de commencer!",
+  "quizQuestionPrompt": "Question 1: Que devez-vous estimer?",
+  "quizQuestionOptions": [
+    "La taille de la pièce",
+    "La durée de présentation des images",
+    "Le nombre de {{cntable}} présents dans la pièce"
+  ],
+  "experimentStart": "L'expérience commencera immédiatement après avoir cliqué sur le bouton ci-dessous.",
+  "experimentStartBtn": "Commencer",
+  "inputInfo": "Veuillez entrer un nombre entier",
+  "inputPlaceholder": " réponse ici",
+  "estimateSubmitBtn": "Continuer",
+  "firstHalfEnd": "Vous avez atteint la fin de la première partie de l'expérience. Les instructions ont changé pour la seconde moitié. Cliquez sur le bouton ci-dessous pour passer à la seconde moitié.",
+  "repeatInstructions": "Cliquez ici pour lire les instructions à nouveau",
+  "tipTitle": "Instructions",
+  "tipDescription": "Placez vous à environ 50cm de votre écran pendant l'expérience.",
+  "tipBtnTxt": "Je souhaite commencer",
+  "quitSurveyPreamble": "Expérience en cours.<br> Voulez-vous vraiment arrêter?",
+  "quitSurveyPrompt": "Veuillez choisir ci-dessous la raison de votre arrêt:",
+  "quitSurveyOptions": [
+    "L'expérience prend trop de temps",
+    "La tâche est trop compliquée",
+    "L'expérience est ennuyeuse",
+    "Je suis trop fatigué(e) pour continuer",
+    "Je ne suis pas satisfait(e) de mes réponses",
+    "Autre"
+  ],
+  "quitSurveyInputInfo": "Veuillez sélectionner une raison",
+  "quitSurveyBtnClose": "Fermer",
+  "quitSurveyBtnEnd": "Arrêter l'expérience",
+  "abortedMessage": "Expérience arrêtée !<br><br>Vous avez interrompu l'expérience prématurément.",
+  "endMessage": "Merci!<br><br>Vous êtes arrivé.e à la fin de l'expérience!"
+}
