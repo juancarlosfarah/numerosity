@@ -21,7 +21,8 @@ export async function connectToUSB() {
         }); // Replace with your device's vendorId
         await device.open();
         await device.selectConfiguration(1);
-        //await device.claimInterface(0);
+        console.log(device.configuration?.interfaces);
+        await device.claimInterface(0);
         return device;
     }
     catch (error) {

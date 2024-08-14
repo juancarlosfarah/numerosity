@@ -81,7 +81,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, devices_out) => ({
         {
             type: jsPsychHtmlKeyboardResponse,
             stimulus: function () {
-                return `<img src='../assets/num-task-imgs/${cntable}/num-${jsPsych.evaluateTimelineVariable('num')}-${jsPsych.evaluateTimelineVariable('id')}.png' alt='task image'>`;
+                return `<img src='./assets/num-task-imgs/${cntable}/num-${jsPsych.evaluateTimelineVariable('num')}-${jsPsych.evaluateTimelineVariable('id')}.png' alt='task image'>`;
             },
             choices: 'NO_KEYS',
             trial_duration: 250,
