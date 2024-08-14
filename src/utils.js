@@ -13,33 +13,32 @@ export function createButtonPage(page_txt, btn_txt) {
         choices: [btn_txt],
     };
 }
-// Helper function to connect to the USB device
-export async function connectToUSB() {
+export async function connectToSerial() {
     try {
-        const device = await navigator.usb.requestDevice({
-            filters: [{ vendorId: 0x2341, productId: 0x8037 }],
-        }); // Replace with your device's vendorId
-        await device.open();
-        await device.selectConfiguration(1);
-        console.log(device.configuration?.interfaces);
-        await device.claimInterface(0);
-        return device;
+        // Request a serial port from the user
+        const port = await navigator.serial.requestPort({
+            filters: [{ usbVendorId: 0x2341, usbProductId: 0x8037 }], // Adjust filter to match your device
+        });
+        // Open the serial port with desired settings
+        await port.open({ baudRate: 9600 }); // Adjust baudRate as needed
+        return port;
     }
     catch (error) {
-        console.error('USB Connection Error:', error);
+        console.error('Serial Port Connection Error:', error);
         return null;
     }
 }
-// Helper function to send data to the USB device
-export async function sendTriggerToUSB(device, trigger) {
+export async function sendTriggerToSerial(port, trigger) {
     try {
-        if (device) {
+        if (port) {
+            // Get the writer from the port's writable stream
+            const writer = port.writable.getWriter();
             const encoder = new TextEncoder();
-            await device.transferOut(1, encoder.encode(trigger));
-            console.log('Trigger sent:', trigger);
+            await writer.write(encoder.encode(trigger));
+            writer.releaseLock();
         }
         else {
-            console.log(`No USB device connected. Tried to send ${trigger}`);
+            console.log(`No serial port connected. Tried to send ${trigger}`);
         }
     }
     catch (error) {

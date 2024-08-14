@@ -19,7 +19,7 @@ import { groupInstructions, tipScreen } from './instructions';
 import { showEndScreen } from './quit';
 import { quitBtnAction } from './quit';
 import { generatePreloadStrings, resize } from './setup';
-import { connectToUSB, createButtonPage, sendTriggerToUSB } from './utils';
+import { connectToSerial, createButtonPage, sendTriggerToSerial, } from './utils';
 /**
  * @function generateTimelineVars
  * @description Generate timeline variables for the experiment.
@@ -62,7 +62,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, devices_out) => ({
             choices: 'NO_KEYS',
             trial_duration: () => 1500 + jsPsych.evaluateTimelineVariable('bs_jitter'),
             on_start: () => {
-                sendTriggerToUSB(devices_out.usb_device, '0');
+                sendTriggerToSerial(devices_out.usb_device, '0');
                 document.body.style.cursor = 'none';
             },
         },
@@ -73,7 +73,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, devices_out) => ({
             choices: 'NO_KEYS',
             trial_duration: 500,
             on_start: () => {
-                sendTriggerToUSB(devices_out.usb_device, '1');
+                sendTriggerToSerial(devices_out.usb_device, '1');
                 document.body.style.cursor = 'none';
             },
         },
@@ -86,7 +86,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, devices_out) => ({
             choices: 'NO_KEYS',
             trial_duration: 250,
             on_start: () => {
-                sendTriggerToUSB(devices_out.usb_device, '2');
+                sendTriggerToSerial(devices_out.usb_device, '2');
                 document.body.style.cursor = 'none';
             },
         },
@@ -97,7 +97,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, devices_out) => ({
             choices: 'NO_KEYS',
             trial_duration: 1000,
             on_start: () => {
-                sendTriggerToUSB(devices_out.usb_device, '3');
+                sendTriggerToSerial(devices_out.usb_device, '3');
                 document.body.style.cursor = 'none';
             },
             on_finish: () => {
@@ -112,9 +112,6 @@ const partofexp = (jsPsych, cntable, nb_blocks, devices_out) => ({
             autofocus: 'task-input',
             button_label: i18next.t('estimateSubmitBtn'),
             on_load: () => {
-                document
-                    .getElementById('jspsych-survey-html-form')
-                    .addEventListener('submit', () => sendTriggerToUSB(devices_out.usb_device, '5'));
                 const input = document.getElementById('task-input');
                 // Initially set the custom validity message
                 input.setCustomValidity(i18next.t('inputInfo'));
@@ -125,7 +122,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, devices_out) => ({
                 });
             },
             on_start: () => {
-                sendTriggerToUSB(devices_out.usb_device, '4');
+                sendTriggerToSerial(devices_out.usb_device, '4');
             },
             on_finish: function () {
                 jsPsych.progressBar.progress =
@@ -211,7 +208,7 @@ export async function run({ assetPaths, input = {}, environment, title, version,
             document
                 .getElementById('init-btn')
                 .addEventListener('click', async () => {
-                devices.usb_device = await connectToUSB();
+                devices.usb_device = await connectToSerial();
             });
             resize();
         },

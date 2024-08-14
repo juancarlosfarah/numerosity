@@ -30,35 +30,37 @@ export function createButtonPage(
   };
 }
 
-// Helper function to connect to the USB device
-export async function connectToUSB(): Promise<USBDevice | null> {
+export async function connectToSerial(): Promise<SerialPort | null> {
   try {
-    const device: USBDevice = await navigator.usb.requestDevice({
-      filters: [{ vendorId: 0x2341, productId: 0x8037 }],
-    }); // Replace with your device's vendorId
-    await device.open();
-    await device.selectConfiguration(1);
-    console.log(device.configuration?.interfaces);
-    await device.claimInterface(0);
-    return device;
+    // Request a serial port from the user
+    const port: SerialPort = await navigator.serial.requestPort({
+      filters: [{ usbVendorId: 0x2341, usbProductId: 0x8037 }], // Adjust filter to match your device
+    });
+
+    // Open the serial port with desired settings
+    await port.open({ baudRate: 9600 }); // Adjust baudRate as needed
+
+    return port;
   } catch (error) {
-    console.error('USB Connection Error:', error);
+    console.error('Serial Port Connection Error:', error);
     return null;
   }
 }
 
-// Helper function to send data to the USB device
-export async function sendTriggerToUSB(
-  device: USBDevice | null,
+export async function sendTriggerToSerial(
+  port: SerialPort | null,
   trigger: string,
 ): Promise<void> {
   try {
-    if (device) {
+    if (port) {
+      // Get the writer from the port's writable stream
+      const writer: WritableStreamDefaultWriter<Uint8Array> =
+        port.writable!.getWriter();
       const encoder: TextEncoder = new TextEncoder();
-      await device.transferOut(1, encoder.encode(trigger));
-      console.log('Trigger sent:', trigger);
+      await writer.write(encoder.encode(trigger));
+      writer.releaseLock();
     } else {
-      console.log(`No USB device connected. Tried to send ${trigger}`);
+      console.log(`No serial port connected. Tried to send ${trigger}`);
     }
   } catch (error) {
     console.error('Failed to send trigger:', error);
