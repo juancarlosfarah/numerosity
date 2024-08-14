@@ -11,7 +11,7 @@ export function generatePreloadStrings(): string[] {
     for (let num: number = 5; num < 9; num++) {
       for (let id: number = 0; id < 10; id++) {
         path_list.push(
-          `../assets/num-task-imgs/${cntable}/num-${num}-${id}.png`,
+          `./assets/num-task-imgs/${cntable}/num-${num}-${id}.png`,
         );
       }
     }
