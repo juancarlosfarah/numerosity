@@ -9,7 +9,7 @@ export function generatePreloadStrings() {
     for (const cntable of cntables) {
         for (let num = 5; num < 9; num++) {
             for (let id = 0; id < 10; id++) {
-                path_list.push(`../assets/num-task-imgs/${cntable}/num-${num}-${id}.png`);
+                path_list.push(`./assets/num-task-imgs/${cntable}/num-${num}-${id}.png`);
             }
         }
     }

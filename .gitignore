@@ -65,3 +65,4 @@ cypress/downloads/
 coverage/
 .cypress-coverage/
 .nyc_output/
+instrumented/

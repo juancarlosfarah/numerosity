@@ -14,7 +14,7 @@ import { activateMQCunderline } from './utils.js';
  * @returns {string} - An HTML string representing the example input screen.
  */
 const generateInputExample = (cntable, scale) => `
-    <div class="inst-monitor" style="background-image: url('../assets/instruction-media/monitor-crosshair.png');">
+    <div class="inst-monitor" style="background-image: url('./assets/instruction-media/monitor-crosshair.png');">
       <div class="inst-screen input-example" style="background-color: black; transform: scale(${scale}) translateY(-25%);">
         <p style="cursor: default;">${i18next.t('instructionScreenExample', { cntable: langf.translateCountable(cntable) })}</p>
         <input type="number" style="cursor: default;" readonly>
@@ -32,12 +32,12 @@ const generateInputExample = (cntable, scale) => `
 function generateInstructionPages(cntable) {
     const instruction_imgs = [
         `
-    <div class="inst-monitor" style="background-image: url('../assets/instruction-media/monitor-crosshair.png');">
+    <div class="inst-monitor" style="background-image: url('./assets/instruction-media/monitor-crosshair.png');">
     </div>`,
         `
-    <div class="inst-monitor" style="background-image: url('../assets/instruction-media/monitor-crosshair.png');">
+    <div class="inst-monitor" style="background-image: url('./assets/instruction-media/monitor-crosshair.png');">
       <div class="inst-screen">
-        <img src="../assets/instruction-media/screen-${cntable}.png" alt='task image'>
+        <img src="./assets/instruction-media/screen-${cntable}.png" alt='task image'>
       </div>
     </div>`,
         generateInputExample(cntable, 0.36),
@@ -64,7 +64,7 @@ function generateInstructionPages(cntable) {
       ${instruction_imgs[2]}
       <p class="inst-text"><b>${i18next.t('instructionTexts', { returnObjects: true, cntable: langf.translateCountable(cntable) })[4]}</b></p>
     </div>`);
-    pages.push(`<b>${i18next.t('instructionTitle')}</b><div class="inst-container" style="flex-direction: column; transform: scale(0.75);"><p>${i18next.t('instructionExample', { cntable: langf.translateCountable(cntable) })}</p><video muted autoplay loop preload="auto" src="../assets/instruction-media/${cntable}-vid.mp4"><source type="video/mp4"></source></video></div><br>`);
+    pages.push(`<b>${i18next.t('instructionTitle')}</b><div class="inst-container" style="flex-direction: column; transform: scale(0.75);"><p>${i18next.t('instructionExample', { cntable: langf.translateCountable(cntable) })}</p><video muted autoplay loop preload="auto" src="./assets/instruction-media/${cntable}-vid.mp4"><source type="video/mp4"></source></video></div><br>`);
     return pages;
 }
 /**
@@ -171,7 +171,7 @@ export function tipScreen() {
         timeline: [
             {
                 type: HtmlButtonResponsePlugin,
-                stimulus: `<b>${i18next.t('tipTitle')}</b><br><img src="../assets/instruction-media/tip.png" alt='tip image' style="width: auto;"><br>${i18next.t('tipDescription')}<br><br>`,
+                stimulus: `<b>${i18next.t('tipTitle')}</b><br><img src="./assets/instruction-media/tip.png" alt='tip image' style="width: auto;"><br>${i18next.t('tipDescription')}<br><br>`,
                 choices: [i18next.t('tipBtnTxt')],
             },
         ],
