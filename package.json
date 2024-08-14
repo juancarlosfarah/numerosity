@@ -23,6 +23,7 @@
     "@jspsych/plugin-survey-html-form": "1.0.3",
     "@jspsych/plugin-survey-multi-choice": "2.0.0",
     "@types/w3c-web-serial": "1.0.6",
+    "@types/w3c-web-usb": "1.0.10",
     "i18next": "23.12.2",
     "jspsych": "8.0.2"
   },

@@ -201,7 +201,7 @@ export const groupInstructions: (
     instructionQuiz(jsPsych, cntable, second_half),
     returnPage(jsPsych, cntable),
   ],
-  loop_function: function (data: timeline): boolean {
+  loop_function: function (data: any): boolean {
     return (
       data.last(2).values()[1].response.Q0 !==
       langf.quizQuestions(cntable)[0].options[2]

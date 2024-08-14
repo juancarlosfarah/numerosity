@@ -1,3 +1,11 @@
+import HtmlButtonResponsePlugin from '@jspsych/plugin-html-button-response';
+import i18next from 'i18next';
+import { JsPsych } from 'jspsych';
+
+import { connectToSerial } from './utils';
+
+type timeline = JsPsych['timeline'];
+
 /**
  * @function generatePreloadStrings
  * @description Generates a list of file paths for preloading images used in a numerical task.
@@ -80,6 +88,37 @@ function setSizes(scaling_element: HTMLElement): void {
       width: ${1.5 * width_px}px;
       height: ${(27 * width_px) / 32}px;
     }`;
+}
+
+export function USBConfigPages(
+  devices: { device_obj: SerialPort | USBDevice | null },
+  connect_function: () => Promise<USBDevice | SerialPort | null>,
+): timeline {
+  return {
+    timeline: [
+      {
+        type: HtmlButtonResponsePlugin,
+        stimulus: i18next.t('connectInstructions'),
+        choices: [i18next.t('connectDeviceBtn'), i18next.t('skipConnect')],
+        on_load: (): void => {
+          document
+            .getElementsByClassName('jspsych-btn')[0]
+            .addEventListener('click', async () => {
+              devices.device_obj = await connect_function();
+              document.getElementsByClassName('jspsych-btn')[0].innerHTML =
+                i18next.t('retry');
+              document.getElementById(
+                'jspsych-html-button-response-stimulus',
+              )!.innerHTML +=
+                `<br><small style="color: red;">${i18next.t('connectFailed')}</small>`;
+            });
+        },
+      },
+    ],
+    loop_function: function (data: any): boolean {
+      return data.last(1).values()[0].response === 0;
+    },
+  };
 }
 
 export function resize(): void {

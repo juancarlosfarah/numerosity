@@ -25,7 +25,7 @@
     "The duration of picture presentation",
     "The number of {{cntable}} inside the virtual room"
   ],
-  "experimentStart": "The experiment will begin immediately after clicking the button bellow.",
+  "experimentStart": "The experiment will begin immediately after clicking the button below.",
   "experimentStartBtn": "Begin",
   "inputInfo": "Please write a whole number",
   "inputPlaceholder": " answer here",

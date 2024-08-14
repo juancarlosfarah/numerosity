@@ -19,11 +19,13 @@ import '../styles/main.scss';
 import { groupInstructions, tipScreen } from './instructions';
 import { showEndScreen } from './quit';
 import { quitBtnAction } from './quit';
-import { generatePreloadStrings, resize } from './setup';
+import { USBConfigPages, generatePreloadStrings, resize } from './setup';
 import {
   connectToSerial,
+  connectToUSB,
   createButtonPage,
   sendTriggerToSerial,
+  sendTriggerToUSB,
 } from './utils';
 
 // Type aliases for better code readability
@@ -75,12 +77,20 @@ const partofexp: (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
   nb_blocks: number,
-  devices_out: { usb_device: SerialPort | null },
+  device_out: { device_obj: SerialPort | USBDevice | null },
+  trigger_func: (
+    device: SerialPort | USBDevice | null,
+    trigger: string,
+  ) => Promise<void>,
 ) => timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
   nb_blocks: number,
-  devices_out: { usb_device: SerialPort | null },
+  device_out: { device_obj: SerialPort | USBDevice | null },
+  trigger_func: (
+    device: SerialPort | USBDevice | null,
+    trigger: string,
+  ) => Promise<void>,
 ): timeline => ({
   timeline: [
     // Blackscreen before stimuli
@@ -91,7 +101,7 @@ const partofexp: (
       trial_duration: (): number =>
         1500 + jsPsych.evaluateTimelineVariable('bs_jitter'),
       on_start: (): void => {
-        sendTriggerToSerial(devices_out.usb_device, '0');
+        trigger_func(device_out.device_obj, '0');
         document.body.style.cursor = 'none';
       },
     },
@@ -103,7 +113,7 @@ const partofexp: (
       choices: 'NO_KEYS',
       trial_duration: 500,
       on_start: (): void => {
-        sendTriggerToSerial(devices_out.usb_device, '1');
+        trigger_func(device_out.device_obj, '1');
         document.body.style.cursor = 'none';
       },
     },
@@ -117,7 +127,7 @@ const partofexp: (
       choices: 'NO_KEYS',
       trial_duration: 250,
       on_start: (): void => {
-        sendTriggerToSerial(devices_out.usb_device, '2');
+        trigger_func(device_out.device_obj, '2');
         document.body.style.cursor = 'none';
       },
     },
@@ -129,7 +139,7 @@ const partofexp: (
       choices: 'NO_KEYS',
       trial_duration: 1000,
       on_start: (): void => {
-        sendTriggerToSerial(devices_out.usb_device, '3');
+        trigger_func(device_out.device_obj, '3');
         document.body.style.cursor = 'none';
       },
       on_finish: (): void => {
@@ -161,7 +171,7 @@ const partofexp: (
         });
       },
       on_start: (): void => {
-        sendTriggerToSerial(devices_out.usb_device, '4');
+        trigger_func(device_out.device_obj, '4');
       },
       on_finish: function (): void {
         jsPsych.progressBar!.progress =
@@ -231,9 +241,19 @@ export async function run({
   title: string;
   version: string;
 }): Promise<JsPsych> {
-  let devices: { usb_device: SerialPort | null } = { usb_device: null };
-
+  //Parameters:
   const blocks_per_half: number = 5;
+  const connect_type: 'serial' | 'usb' = 'serial';
+
+  const connect_func: () => Promise<USBDevice | SerialPort | null> =
+    connect_type === 'serial' ? connectToSerial : connectToUSB;
+
+  const send_trigger_func: (device: any, trigger: string) => Promise<void> =
+    connect_type === 'serial' ? sendTriggerToSerial : sendTriggerToUSB;
+
+  let devices: { device_obj: SerialPort | USBDevice | null } = {
+    device_obj: null,
+  };
 
   const jsPsych: JsPsych = initJsPsych({
     show_progress_bar: true,
@@ -258,12 +278,13 @@ export async function run({
     },
   });
 
+  timeline.push(USBConfigPages(devices, connect_func));
+
   // Switch to fullscreen
   timeline.push({
     type: FullscreenPlugin,
     fullscreen_mode: true,
-    message:
-      '<button class="jspsych-btn" id="init-btn">initiate USB</button><br><br>',
+    message: '',
     button_label: i18next.t('fullscreen'),
     info: {
       name: 'FullscreenPlugin',
@@ -286,12 +307,6 @@ export async function run({
         .getElementById('jspsych-progressbar-container')!
         .appendChild(quit_btn);
 
-      document
-        .getElementById('init-btn')!
-        .addEventListener('click', async () => {
-          devices.usb_device = await connectToSerial();
-        });
-
       resize();
     },
   });
@@ -308,7 +323,13 @@ export async function run({
       i18next.t('experimentStart'),
       i18next.t('experimentStartBtn'),
     ),
-    partofexp(jsPsych, exp_parts_cntables[0], blocks_per_half, devices),
+    partofexp(
+      jsPsych,
+      exp_parts_cntables[0],
+      blocks_per_half,
+      devices,
+      send_trigger_func,
+    ),
     createButtonPage(i18next.t('firstHalfEnd'), i18next.t('resizeBtn')),
     groupInstructions(jsPsych, exp_parts_cntables[1]),
     tipScreen(),
@@ -316,7 +337,13 @@ export async function run({
       i18next.t('experimentStart'),
       i18next.t('experimentStartBtn'),
     ),
-    partofexp(jsPsych, exp_parts_cntables[1], blocks_per_half, devices),
+    partofexp(
+      jsPsych,
+      exp_parts_cntables[1],
+      blocks_per_half,
+      devices,
+      send_trigger_func,
+    ),
   );
 
   await jsPsych.run(timeline);

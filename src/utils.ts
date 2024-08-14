@@ -33,16 +33,34 @@ export function createButtonPage(
 export async function connectToSerial(): Promise<SerialPort | null> {
   try {
     // Request a serial port from the user
-    const port: SerialPort = await navigator.serial.requestPort({
-      filters: [{ usbVendorId: 0x2341, usbProductId: 0x8037 }], // Adjust filter to match your device
-    });
+    const port: SerialPort = await navigator.serial.requestPort();
 
     // Open the serial port with desired settings
     await port.open({ baudRate: 9600 }); // Adjust baudRate as needed
 
+    // Configure serial port settings if needed (e.g., baud rate, data bits, etc.)
+    console.log('Serial Port Opened');
+
     return port;
   } catch (error) {
     console.error('Serial Port Connection Error:', error);
+    return null;
+  }
+}
+
+// Helper function to connect to the USB device
+export async function connectToUSB(): Promise<USBDevice | null> {
+  try {
+    const device: USBDevice = await navigator.usb.requestDevice({
+      filters: [{ vendorId: 0x2341, productId: 0x8037 }],
+    }); // Replace with your device's vendorId
+    await device.open();
+    await device.selectConfiguration(1);
+    console.log(device.configuration?.interfaces);
+    await device.claimInterface(0);
+    return device;
+  } catch (error) {
+    console.error('USB Connection Error:', error);
     return null;
   }
 }
@@ -58,9 +76,28 @@ export async function sendTriggerToSerial(
         port.writable!.getWriter();
       const encoder: TextEncoder = new TextEncoder();
       await writer.write(encoder.encode(trigger));
+      console.log('Trigger sent:', trigger);
       writer.releaseLock();
     } else {
       console.log(`No serial port connected. Tried to send ${trigger}`);
+    }
+  } catch (error) {
+    console.error('Failed to send trigger:', error);
+  }
+}
+
+// Helper function to send data to the USB device
+export async function sendTriggerToUSB(
+  device: USBDevice | null,
+  trigger: string,
+): Promise<void> {
+  try {
+    if (device) {
+      const encoder: TextEncoder = new TextEncoder();
+      await device.transferOut(1, encoder.encode(trigger));
+      console.log('Trigger sent:', trigger);
+    } else {
+      console.log(`No USB device connected. Tried to send ${trigger}`);
     }
   } catch (error) {
     console.error('Failed to send trigger:', error);
