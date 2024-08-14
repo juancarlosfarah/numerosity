@@ -1,7 +1,7 @@
 {
   "private": true,
   "homepage": "https://juancarlosfarah.github.io/numerosity",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "scripts": {
     "jspsych": "jspsych -e experiment",
     "start": "npm run jspsych -- run",
