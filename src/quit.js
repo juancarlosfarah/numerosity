@@ -38,7 +38,7 @@ function generateQuitSurvey() {
 export function quitBtnAction(jsPsych) {
     jsPsych.pauseExperiment();
     const panel = document.createElement('div');
-    panel.setAttribute('id', 'quit-overlay');
+    panel.id = 'quit-overlay';
     panel.classList.add('custom-overlay');
     panel.innerHTML = generateQuitSurvey();
     document.body.appendChild(panel);

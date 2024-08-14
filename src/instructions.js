@@ -98,7 +98,7 @@ const instructionQuiz = (jsPsych, cntable) => ({
         {
             type: jsPsychSurveyMultiChoice,
             questions: langf.quizQuestions(cntable),
-            preamble: `<b>${i18next.t('quizPreamble')}</b><br><br><button id="quiz-repeat-btn" class="jspsych-btn" style="cursor: pointer;">${i18next.t('repeatInstructions')}</button>`,
+            preamble: `<b>${i18next.t('quizPreamble')}</b><br><br><button id="quiz-repeat-btn" class="jspsych-btn">${i18next.t('repeatInstructions')}</button>`,
             button_label: i18next.t('estimateSubmitBtn'),
         },
     ],

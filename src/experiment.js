@@ -191,7 +191,7 @@ export async function run({ assetPaths, input = {}, environment, title, version,
             data: {},
         },
     });
-    timeline.push(USBConfigPages(devices, connect_func));
+    timeline.push(USBConfigPages(jsPsych, devices, connect_func));
     // Switch to fullscreen
     timeline.push({
         type: FullscreenPlugin,
@@ -205,16 +205,16 @@ export async function run({ assetPaths, input = {}, environment, title, version,
         },
         on_load: function () {
             const quit_btn = document.createElement('button');
-            quit_btn.setAttribute('type', 'button');
+            quit_btn.type = 'button';
             quit_btn.setAttribute('style', 'color: #fff; border-radius: 4px; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)');
             quit_btn.addEventListener('click', () => quitBtnAction(jsPsych));
             quit_btn.appendChild(document.createTextNode(i18next.t('quitBtn')));
             document
                 .getElementById('jspsych-progressbar-container')
                 .appendChild(quit_btn);
-            resize();
         },
     });
+    timeline.push(resize(jsPsych));
     // Randomize order of countables
     let exp_parts_cntables = ['people', 'objects'];
     exp_parts_cntables = jsPsych.randomization.shuffle(exp_parts_cntables);

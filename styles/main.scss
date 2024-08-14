@@ -10,6 +10,10 @@ video {
   border: 1px solid white;
 }
 
+.jspsych-btn:hover {
+  cursor: pointer;
+}
+
 #jspsych-progressbar-container {
   position: relative;
   color: gray;
@@ -23,6 +27,13 @@ button:hover {
   cursor: pointer;
 }
 
+#resize-bar {
+  height: 4px;
+  width: 10cm;
+  background-color: white;
+  border: 3px solid #3fa0ef;
+}
+
 .custom-overlay {
   position: fixed;
   height: 100%;
@@ -30,6 +41,8 @@ button:hover {
   background: black;
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 #quit-close-btn {

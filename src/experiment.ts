@@ -278,7 +278,7 @@ export async function run({
     },
   });
 
-  timeline.push(USBConfigPages(devices, connect_func));
+  timeline.push(USBConfigPages(jsPsych, devices, connect_func));
 
   // Switch to fullscreen
   timeline.push({
@@ -293,7 +293,7 @@ export async function run({
     },
     on_load: function (): void {
       const quit_btn: HTMLButtonElement = document.createElement('button');
-      quit_btn.setAttribute('type', 'button');
+      quit_btn.type = 'button';
       quit_btn.setAttribute(
         'style',
         'color: #fff; border-radius: 4px; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)',
@@ -306,10 +306,10 @@ export async function run({
       document
         .getElementById('jspsych-progressbar-container')!
         .appendChild(quit_btn);
-
-      resize();
     },
   });
+
+  timeline.push(resize(jsPsych));
 
   // Randomize order of countables
   let exp_parts_cntables: ('people' | 'objects')[] = ['people', 'objects'];

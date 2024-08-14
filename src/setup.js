@@ -1,4 +1,5 @@
 import HtmlButtonResponsePlugin from '@jspsych/plugin-html-button-response';
+import JsResize from '@jspsych/plugin-resize';
 import i18next from 'i18next';
 /**
  * @function generatePreloadStrings
@@ -23,52 +24,66 @@ export function generatePreloadStrings() {
  * @param {JsPsych} jsPsych - The jsPsych instance.
  * @returns {timeline} - The timeline object for resizing.
  */
-/*
-export const resize: (jsPsych: JsPsych) => timeline = (
-  jsPsych: JsPsych,
-): timeline => ({
-  timeline: [
-    {
-      type: JsResize,
-      item_width: 8.56,
-      item_height: 5.398,
-      prompt: `<p>${i18next.t('calibration')}</p>`,
-      starting_size: 383,
-      button_label: i18next.t('resizeBtn'),
-      pixels_per_unit: 37.795275591,
+export const resize = (jsPsych) => ({
+    timeline: [
+        {
+            type: JsResize,
+            item_width: 8.56,
+            item_height: 5.398,
+            prompt: `<p>${i18next.t('calibration')}</p>`,
+            starting_size: 383,
+            button_label: i18next.t('resizeBtn'),
+            pixels_per_unit: 37.795275591,
+        },
+    ],
+    on_load: function () {
+        const bar_resize_page = document.createElement('div');
+        bar_resize_page.id = 'bar-resize-page';
+        bar_resize_page.style.top = `${document.getElementById('jspsych-progressbar-container').offsetHeight + 1}px`;
+        bar_resize_page.classList.add('custom-overlay');
+        bar_resize_page.innerHTML = ` <p><b>${i18next.t('barResizeTitle')}</b></p>
+                                  <br>
+                                  <p>${i18next.t('barResizeInstructions')}</p>
+                                  <br>
+                                  <div id="resize-bar"></div>
+                                  <br>
+                                  <form id="bar-resize-form" style="text-align: center;">
+                                    <div>  
+                                      <label for="cm-bar-input">${i18next.t('barResizeInputLabel')}</label>
+                                      <input id="cm-bar-input" type="number" min="0.001" step="0.001" placeholder="cm" required style="font-size: larger; margin-left: 5%; width: 10%;">
+                                    </div>
+                                    <br>
+                                    <input type="submit" class="jspsych-btn" value="${i18next.t('resizeBtn')}">
+                                  </form>
+                                  <br>
+                                  <button class="jspsych-btn" onclick="document.getElementById('bar-resize-page').style.display = 'none'" style="border: 2px solid red">${i18next.t('noRuler')}</button>`;
+        document.body.appendChild(bar_resize_page);
+        document
+            .getElementById('bar-resize-form')
+            .addEventListener('submit', (event) => {
+            event.preventDefault();
+            jsPsych.finishTrial({
+                scale_factor: 10 /
+                    Number(document.getElementById('cm-bar-input')
+                        .value),
+            });
+            document.body.removeChild(document.getElementById('bar-resize-page'));
+        });
+        document.getElementById('cm-bar-input').focus();
+        const resize_switch_btn = document.createElement('div');
+        resize_switch_btn.innerHTML = `<br><button class="jspsych-btn" onclick="document.getElementById('bar-resize-page').style.display = 'flex'" style="border: 2px solid red">${i18next.t('returnBarResize')}</button>`;
+        document.getElementById('jspsych-content').appendChild(resize_switch_btn);
     },
-  ],
-  on_load: function (): void {
-    const quit_btn: HTMLButtonElement = document.createElement('button');
-    quit_btn.setAttribute('type', 'button');
-    quit_btn.setAttribute(
-      'style',
-      'color: #fff; border-radius: 4px; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)',
-    );
-
-    quit_btn.addEventListener('click', () => quitBtnAction(jsPsych));
-
-    quit_btn.appendChild(document.createTextNode(i18next.t('quitBtn')));
-
-    document
-      .getElementById('jspsych-progressbar-container')!
-      .appendChild(quit_btn);
-  },
-  on_finish: function (): void {
-    //const width_px: number = jsPsych.data.get().last(1).values()[0].scale_factor * 559.37007874;
-    const width_px: number = window.devicePixelRatio * 559.37007874;
-    const style: HTMLElement = document.createElement('style');
-    style.innerHTML = `img, vid, .inst-container {
-        width: ${width_px}px;
-        height: ${(9 * width_px) / 16}px;}`;
-    document.head.appendChild(style);
-  },
+    on_finish: () => {
+        setSizes(jsPsych.data.get().last(1).values()[0].scale_factor);
+        document.getElementById('jspsych-content').removeAttribute('style');
+    },
 });
-*/
-function setSizes(scaling_element) {
-    const width_px = window.devicePixelRatio * 559.37007874;
-    scaling_element.setAttribute('id', 'scaling');
-    scaling_element.innerHTML = `img, vid {
+function setSizes(scaling_factor = window.devicePixelRatio) {
+    const style = document.getElementById('scaling') || document.createElement('style');
+    const width_px = scaling_factor * 585.82677165;
+    style.id = 'scaling';
+    style.innerHTML = `img, vid {
         width: ${width_px}px; 
         height: ${(9 * width_px) / 16}px;
     }
@@ -76,8 +91,11 @@ function setSizes(scaling_element) {
       width: ${1.5 * width_px}px;
       height: ${(27 * width_px) / 32}px;
     }`;
+    if (!style.parentElement) {
+        document.head.appendChild(style);
+    }
 }
-export function USBConfigPages(devices, connect_function) {
+export function USBConfigPages(jsPsych, devices, connect_function) {
     return {
         timeline: [
             {
@@ -89,6 +107,9 @@ export function USBConfigPages(devices, connect_function) {
                         .getElementsByClassName('jspsych-btn')[0]
                         .addEventListener('click', async () => {
                         devices.device_obj = await connect_function();
+                        if (devices.device_obj !== null) {
+                            jsPsych.finishTrial();
+                        }
                         document.getElementsByClassName('jspsych-btn')[0].innerHTML =
                             i18next.t('retry');
                         document.getElementById('jspsych-html-button-response-stimulus').innerHTML +=
@@ -102,24 +123,32 @@ export function USBConfigPages(devices, connect_function) {
         },
     };
 }
-export function resize() {
-    let remove = null;
-    const updateSizes = () => {
-        if (remove != null) {
-            remove();
-        }
-        const pixel_ratio = window.devicePixelRatio;
-        const mqString = `(resolution: ${pixel_ratio}dppx)`;
-        const media = matchMedia(mqString);
-        media.addEventListener('change', updateSizes);
-        remove = () => {
-            media.removeEventListener('change', updateSizes);
-        };
-        const style = document.getElementById('scaling') || document.createElement('style');
-        setSizes(style);
-        if (!style.parentElement) {
-            document.head.appendChild(style);
-        }
+/*
+export function resize(): void {
+  let remove: (() => void) | null = null;
+
+  const updateSizes = () => {
+    if (remove != null) {
+      remove();
+    }
+
+    const pixel_ratio: number = window.devicePixelRatio;
+    const mqString = `(resolution: ${pixel_ratio}dppx)`;
+    const media = matchMedia(mqString);
+    media.addEventListener('change', updateSizes);
+
+    remove = () => {
+      media.removeEventListener('change', updateSizes);
     };
-    updateSizes();
+
+    const style: HTMLElement =
+      document.getElementById('scaling') || document.createElement('style');
+    setSizes(style);
+    if (!style.parentElement) {
+      document.head.appendChild(style);
+    }
+  };
+
+  updateSizes();
 }
+*/
