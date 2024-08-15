@@ -45,7 +45,7 @@ export async function connectToUSB() {
         return null;
     }
 }
-export async function sendTriggerToSerial(port, trigger) {
+export async function sendTriggerToSerial(device, trigger) {
     try {
         if (port) {
             // Get the writer from the port's writable stream

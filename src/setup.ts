@@ -1,7 +1,7 @@
 import HtmlButtonResponsePlugin from '@jspsych/plugin-html-button-response';
 import JsResize from '@jspsych/plugin-resize';
 import i18next from 'i18next';
-import { JsPsych } from 'jspsych';
+import { DataCollection, JsPsych } from 'jspsych';
 
 type timeline = JsPsych['timeline'];
 
@@ -119,6 +119,8 @@ function setSizes(scaling_factor: number = window.devicePixelRatio): void {
 
   if (!style.parentElement) {
     document.head.appendChild(style);
+  } else {
+    console.error('Scaling factor cannot be applied.');
   }
 }
 
@@ -151,7 +153,7 @@ export function USBConfigPages(
         },
       },
     ],
-    loop_function: function (data: any): boolean {
+    loop_function: function (data: DataCollection): boolean {
       return data.last(1).values()[0].response === 0;
     },
   };

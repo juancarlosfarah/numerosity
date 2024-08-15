@@ -66,7 +66,7 @@ export async function connectToUSB(): Promise<USBDevice | null> {
 }
 
 export async function sendTriggerToSerial(
-  port: SerialPort | null,
+  device: SerialPort | null,
   trigger: string,
 ): Promise<void> {
   try {

@@ -2,7 +2,7 @@ import HtmlButtonResponsePlugin from '@jspsych/plugin-html-button-response';
 import jsPsychinstructions from '@jspsych/plugin-instructions';
 import jsPsychSurveyMultiChoice from '@jspsych/plugin-survey-multi-choice';
 import i18next from 'i18next';
-import { JsPsych } from 'jspsych';
+import { DataCollection, JsPsych } from 'jspsych';
 
 //import { DataCollection } from 'jspsych/src/modules/data/DataCollection';
 // Import styles and language functions
@@ -201,7 +201,7 @@ export const groupInstructions: (
     instructionQuiz(jsPsych, cntable, second_half),
     returnPage(jsPsych, cntable),
   ],
-  loop_function: function (data: any): boolean {
+  loop_function: function (data: DataCollection): boolean {
     return (
       data.last(2).values()[1].response.Q0 !==
       langf.quizQuestions(cntable)[0].options[2]

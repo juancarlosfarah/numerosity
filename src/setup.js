@@ -95,6 +95,9 @@ function setSizes(scaling_factor = window.devicePixelRatio) {
     if (!style.parentElement) {
         document.head.appendChild(style);
     }
+    else {
+        console.error('Scaling factor cannot be applied.');
+    }
 }
 export function USBConfigPages(jsPsych, devices, connect_function) {
     return {

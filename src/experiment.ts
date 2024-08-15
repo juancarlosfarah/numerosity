@@ -248,7 +248,9 @@ export async function run({
   const connect_func: () => Promise<USBDevice | SerialPort | null> =
     connect_type === 'serial' ? connectToSerial : connectToUSB;
 
-  const send_trigger_func: (device: any, trigger: string) => Promise<void> =
+  const send_trigger_func:
+    | ((device: SerialPort | null, trigger: string) => Promise<void>)
+    | ((device: USBDevice | null, trigger: string) => Promise<void>) =
     connect_type === 'serial' ? sendTriggerToSerial : sendTriggerToUSB;
 
   let devices: { device_obj: SerialPort | USBDevice | null } = {
