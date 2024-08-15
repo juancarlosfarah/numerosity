@@ -77,20 +77,18 @@ const partofexp: (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
   nb_blocks: number,
-  device_out: { device_obj: SerialPort | USBDevice | null },
-  trigger_func: (
-    device: SerialPort | USBDevice | null,
-    trigger: string,
-  ) => Promise<void>,
+  device_out: { device_obj: (SerialPort & USBDevice) | null },
+  trigger_func:
+    | ((device: SerialPort | null, trigger: string) => Promise<void>)
+    | ((device: USBDevice | null, trigger: string) => Promise<void>),
 ) => timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
   nb_blocks: number,
-  device_out: { device_obj: SerialPort | USBDevice | null },
-  trigger_func: (
-    device: SerialPort | USBDevice | null,
-    trigger: string,
-  ) => Promise<void>,
+  device_out: { device_obj: (SerialPort & USBDevice) | null },
+  trigger_func:
+    | ((device: SerialPort | null, trigger: string) => Promise<void>)
+    | ((device: USBDevice | null, trigger: string) => Promise<void>),
 ): timeline => ({
   timeline: [
     // Blackscreen before stimuli
@@ -245,7 +243,9 @@ export async function run({
   const blocks_per_half: number = 5;
   const connect_type: 'serial' | 'usb' = 'serial';
 
-  const connect_func: () => Promise<USBDevice | SerialPort | null> =
+  const connect_func:
+    | (() => Promise<SerialPort | null>)
+    | (() => Promise<USBDevice | null>) =
     connect_type === 'serial' ? connectToSerial : connectToUSB;
 
   const send_trigger_func:
@@ -253,7 +253,7 @@ export async function run({
     | ((device: USBDevice | null, trigger: string) => Promise<void>) =
     connect_type === 'serial' ? sendTriggerToSerial : sendTriggerToUSB;
 
-  let devices: { device_obj: SerialPort | USBDevice | null } = {
+  let devices: { device_obj: (SerialPort & USBDevice) | null } = {
     device_obj: null,
   };
 

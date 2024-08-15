@@ -14,6 +14,7 @@ export function generatePreloadStrings(): string[] {
   const cntables: string[] = ['people', 'objects'];
   const path_list: string[] = [];
 
+  // Use nested loops to construct the file paths
   for (const cntable of cntables) {
     for (let num: number = 5; num < 9; num++) {
       for (let id: number = 0; id < 10; id++) {
@@ -48,6 +49,7 @@ export const resize: (jsPsych: JsPsych) => timeline = (
     },
   ],
   on_load: function (): void {
+    // Create a custom overlay for bar resize instructions
     const bar_resize_page: HTMLElement = document.createElement('div');
 
     bar_resize_page.id = 'bar-resize-page';
@@ -72,6 +74,7 @@ export const resize: (jsPsych: JsPsych) => timeline = (
                                     <button class="jspsych-btn" onclick="document.getElementById('bar-resize-page').style.display = 'none'" style="border: 2px solid red">${i18next.t('noRuler')}</button>`;
     document.body.appendChild(bar_resize_page);
 
+    // Handle form submission and calculate scale factor
     document
       .getElementById('bar-resize-form')!
       .addEventListener('submit', (event: SubmitEvent): void => {
@@ -92,16 +95,23 @@ export const resize: (jsPsych: JsPsych) => timeline = (
 
     document.getElementById('cm-bar-input')!.focus();
 
+    // Add button to return to bar resize page if needed
     const resize_switch_btn: HTMLElement = document.createElement('div');
     resize_switch_btn.innerHTML = `<br><button class="jspsych-btn" onclick="document.getElementById('bar-resize-page').style.display = 'flex'" style="border: 2px solid red">${i18next.t('returnBarResize')}</button>`;
     document.getElementById('jspsych-content')!.appendChild(resize_switch_btn);
   },
   on_finish: () => {
+    // Apply scaling factor to images and other elements
     setSizes(jsPsych.data.get().last(1).values()[0].scale_factor);
     document.getElementById('jspsych-content')!.removeAttribute('style');
   },
 });
 
+/**
+ * @function setSizes
+ * @description Sets the sizes of images and containers based on a scaling factor.
+ * @param {number} [scaling_factor=window.devicePixelRatio] - The scaling factor to apply.
+ */
 function setSizes(scaling_factor: number = window.devicePixelRatio): void {
   const style: HTMLElement =
     document.getElementById('scaling') || document.createElement('style');
@@ -124,10 +134,20 @@ function setSizes(scaling_factor: number = window.devicePixelRatio): void {
   }
 }
 
+/**
+ * @function USBConfigPages
+ * @description Creates a timeline to guide the user through connecting a USB or Serial device.
+ * @param {JsPsych} jsPsych - The jsPsych instance.
+ * @param {{ device_obj: SerialPort | USBDevice | null }} devices - An object to store the connected device.
+ * @param {() => Promise<USBDevice | SerialPort | null>} connect_function - A function that connects to a USB or Serial device.
+ * @returns {timeline} - The timeline for USB/Serial connection configuration.
+ */
 export function USBConfigPages(
   jsPsych: JsPsych,
-  devices: { device_obj: SerialPort | USBDevice | null },
-  connect_function: () => Promise<USBDevice | SerialPort | null>,
+  devices: { device_obj: SerialPort | null } | { device_obj: USBDevice | null },
+  connect_function:
+    | (() => Promise<SerialPort | null>)
+    | (() => Promise<USBDevice | null>),
 ): timeline {
   return {
     timeline: [
@@ -136,6 +156,7 @@ export function USBConfigPages(
         stimulus: i18next.t('connectInstructions'),
         choices: [i18next.t('connectDeviceBtn'), i18next.t('skipConnect')],
         on_load: (): void => {
+          // Add event listener to connect button
           document
             .getElementsByClassName('jspsych-btn')[0]
             .addEventListener('click', async () => {
@@ -154,6 +175,7 @@ export function USBConfigPages(
       },
     ],
     loop_function: function (data: DataCollection): boolean {
+      // Repeat the connection step if the user chooses to retry
       return data.last(1).values()[0].response === 0;
     },
   };
