@@ -41,22 +41,23 @@ export const resize = (jsPsych) => ({
         bar_resize_page.id = 'bar-resize-page';
         bar_resize_page.style.top = `${document.getElementById('jspsych-progressbar-container').offsetHeight + 1}px`;
         bar_resize_page.classList.add('custom-overlay');
-        bar_resize_page.innerHTML = ` <p><b>${i18next.t('barResizeTitle')}</b></p>
-                                  <br>
-                                  <p>${i18next.t('barResizeInstructions')}</p>
-                                  <br>
-                                  <div id="resize-bar"></div>
-                                  <br>
-                                  <form id="bar-resize-form" style="text-align: center;">
-                                    <div>  
-                                      <label for="cm-bar-input">${i18next.t('barResizeInputLabel')}</label>
-                                      <input id="cm-bar-input" type="number" min="0.001" step="0.001" placeholder="cm" required style="font-size: larger; margin-left: 5%; width: 10%;">
-                                    </div>
+        bar_resize_page.innerHTML = ` <div>
+                                    <p><b>${i18next.t('barResizeTitle')}</b></p>
                                     <br>
-                                    <input type="submit" class="jspsych-btn" value="${i18next.t('resizeBtn')}">
-                                  </form>
-                                  <br>
-                                  <button class="jspsych-btn" onclick="document.getElementById('bar-resize-page').style.display = 'none'" style="border: 2px solid red">${i18next.t('noRuler')}</button>`;
+                                    <p>${i18next.t('barResizeInstructions')}</p>
+                                    <br>
+                                    <div id="resize-bar"></div>
+                                    <br>
+                                    <form id="bar-resize-form" style="text-align: center;">
+                                      <div>  
+                                        <label for="cm-bar-input">${i18next.t('barResizeInputLabel')}</label>
+                                        <input id="cm-bar-input" type="number" min="0.001" step="0.001" placeholder="cm" required style="font-size: larger; margin-left: 5%; width: 10%;">
+                                      </div>
+                                      <br>
+                                      <input type="submit" class="jspsych-btn" value="${i18next.t('resizeBtn')}">
+                                    </form>
+                                    <br>
+                                    <button class="jspsych-btn" onclick="document.getElementById('bar-resize-page').style.display = 'none'" style="border: 2px solid red">${i18next.t('noRuler')}</button>`;
         document.body.appendChild(bar_resize_page);
         document
             .getElementById('bar-resize-form')
@@ -123,32 +124,3 @@ export function USBConfigPages(jsPsych, devices, connect_function) {
         },
     };
 }
-/*
-export function resize(): void {
-  let remove: (() => void) | null = null;
-
-  const updateSizes = () => {
-    if (remove != null) {
-      remove();
-    }
-
-    const pixel_ratio: number = window.devicePixelRatio;
-    const mqString = `(resolution: ${pixel_ratio}dppx)`;
-    const media = matchMedia(mqString);
-    media.addEventListener('change', updateSizes);
-
-    remove = () => {
-      media.removeEventListener('change', updateSizes);
-    };
-
-    const style: HTMLElement =
-      document.getElementById('scaling') || document.createElement('style');
-    setSizes(style);
-    if (!style.parentElement) {
-      document.head.appendChild(style);
-    }
-  };
-
-  updateSizes();
-}
-*/
