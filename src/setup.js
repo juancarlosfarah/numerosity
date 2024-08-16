@@ -23,6 +23,118 @@ export function generatePreloadStrings() {
     return path_list;
 }
 /**
+ * @function DeviceConnectPages
+ * @description Creates a timeline to guide the user through the process of connecting a USB or Serial device, with options for handling connection errors and retries. The timeline consists of a page that provides instructions for connecting the device and allows the user to attempt the connection, retry if it fails, or skip the connection process entirely.
+ *
+ * The function handles:
+ * - Displaying connection instructions based on the specified connection type (USB or Serial).
+ * - Providing a button to initiate the connection attempt.
+ * - Handling connection failures by allowing the user to retry the connection or skip it.
+ * - Updating the `device_info` object with the connected device and the appropriate trigger function based on the connection type.
+ *
+ * @param {JsPsych} jsPsych - The jsPsych instance used to manage the experiment timeline.
+ * @param {{ device: SerialPort | USBDevice | null, send_trigger_func: (device: SerialPort | USBDevice | null, trigger: string) => Promise<void> }} device_info - An object that holds the connected device, which can be either `SerialPort` or `USBDevice`, or `null`, and a function to send triggers to the device.
+ * @param {'Serial Port' | 'USB'} connect_type - The type of connection being established, either 'Serial Port' or 'USB'.
+ *
+ * @returns {timeline} - The timeline configuration object for managing the device connection process, including error handling and retry options.
+ */
+export function DeviceConnectPages(jsPsych, device_info, connect_type) {
+    const serial_connect = connect_type === 'Serial Port';
+    const connect_function = serial_connect
+        ? connectToSerial
+        : connectToUSB;
+    return {
+        timeline: [
+            {
+                type: HtmlButtonResponsePlugin,
+                stimulus: `${i18next.t('connectInstructions', {
+                    connection: connect_type,
+                })}<br>`,
+                choices: [i18next.t('connectDeviceBtn'), i18next.t('skipConnect')],
+                on_load: () => {
+                    // Add event listener to the connect button
+                    document
+                        .getElementsByClassName('jspsych-btn')[0]
+                        .addEventListener('click', async () => {
+                        device_info.device = await connect_function();
+                        if (device_info.device !== null) {
+                            device_info.send_trigger_func = serial_connect
+                                ? sendTriggerToSerial
+                                : sendTriggerToUSB;
+                            jsPsych.finishTrial();
+                        }
+                        document.getElementsByClassName('jspsych-btn')[0].innerHTML =
+                            i18next.t('retry');
+                        document.getElementById('jspsych-html-button-response-stimulus').innerHTML +=
+                            `<br><small style="color: red;">${i18next.t('connectFailed')}</small>`;
+                    });
+                },
+            },
+        ],
+        loop_function: function (data) {
+            // Repeat the connection step if the user chooses to retry
+            return data.last(1).values()[0].response === 0;
+        },
+    };
+}
+/**
+ * @function fullScreenPlugin
+ * @description Creates a timeline configuration for enabling fullscreen mode during the experiment. This configuration includes a button for participants to enter fullscreen mode and a custom "Quit" button that allows them to exit the experiment if needed.
+ *
+ * The trial includes:
+ * - Fullscreen mode activation with an optional customizable message.
+ * - A "Quit" button added to the screen, which allows participants to exit the experiment at any time.
+ *
+ * @param {JsPsych} jsPsych - The jsPsych instance used to manage the experiment timeline.
+ *
+ * @returns {timeline} - The timeline configuration object for enabling fullscreen mode with an additional quit button.
+ */
+export const fullScreenPlugin = (jsPsych) => ({
+    type: FullscreenPlugin,
+    fullscreen_mode: true,
+    message: '',
+    button_label: i18next.t('fullscreen'),
+    on_load: function () {
+        const quit_btn = document.createElement('button');
+        quit_btn.type = 'button';
+        quit_btn.setAttribute('style', 'color: #fff; border-radius: 4px; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)');
+        quit_btn.addEventListener('click', () => quitBtnAction(jsPsych));
+        quit_btn.appendChild(document.createTextNode(i18next.t('quitBtn')));
+        document
+            .getElementById('jspsych-progressbar-container')
+            .appendChild(quit_btn);
+    },
+});
+/**
+ * @function autoResize
+ * @description Automatically adjusts the scale factor of the experiment display based on the device's pixel ratio. This function ensures that the experiment is correctly resized when the device's resolution changes. It continuously monitors for changes in the device's pixel ratio and updates the display accordingly.
+ *
+ * The function includes:
+ * - Detection of the device's pixel ratio using `window.devicePixelRatio`.
+ * - Continuous monitoring of changes in the pixel ratio, adjusting the scale factor in real-time.
+ * - Clean-up of event listeners to prevent memory leaks.
+ *
+ * @returns {number} - The scale factor determined by the device's pixel ratio.
+ */
+function autoResize() {
+    let remove = null;
+    const updateSizes = () => {
+        if (remove != null) {
+            remove();
+        }
+        const pixel_ratio = window.devicePixelRatio;
+        const mqString = `(resolution: ${pixel_ratio}dppx)`;
+        const media = matchMedia(mqString);
+        media.addEventListener('change', updateSizes);
+        remove = () => {
+            media.removeEventListener('change', updateSizes);
+        };
+        return pixel_ratio;
+    };
+    const scale_factor = updateSizes();
+    return scale_factor;
+}
+/**
  * @function resize
  * @description Generates the resize timeline for the experiment with calibration and quit button.
  * @param {JsPsych} jsPsych - The jsPsych instance.
@@ -48,7 +160,6 @@ export const resize = (jsPsych) => ({
         bar_resize_page.classList.add('custom-overlay');
         bar_resize_page.innerHTML = `
                                     <p><b>${i18next.t('barResizeTitle')}</b></p>
-                                    <br>
                                     <p>${i18next.t('barResizeInstructions')}</p>
                                     <br>
                                     <div id="resize-bar"></div>
@@ -61,8 +172,10 @@ export const resize = (jsPsych) => ({
                                       <br>
                                       <input type="submit" class="jspsych-btn" value="${i18next.t('resizeBtn')}">
                                     </form>
-                                    <br>
-                                    <button class="jspsych-btn" onclick="document.getElementById('bar-resize-page').style.display = 'none'" style="border: 2px solid red">${i18next.t('noRuler')}</button>`;
+                                    <div style="display: flex; align-items: center; text-align: center;">
+                                      <h1 class="warning"><b>!</b></h1><p padding-right: 5%;">${i18next.t('noRuler')}</p>
+                                    </div>
+                                    <button class="jspsych-btn" type="button" onclick="document.getElementById('bar-resize-page').style.display = 'none'">${i18next.t('noRulerBtn')}</button>`;
         document.body.appendChild(bar_resize_page);
         // Handle form submission and calculate scale factor
         document
@@ -79,7 +192,10 @@ export const resize = (jsPsych) => ({
         document.getElementById('cm-bar-input').focus();
         // Add button to return to bar resize page if needed
         const resize_switch_btn = document.createElement('div');
-        resize_switch_btn.innerHTML = `<br><button class="jspsych-btn" onclick="document.getElementById('bar-resize-page').style.display = 'flex'" style="border: 2px solid red">${i18next.t('returnBarResize')}</button>`;
+        resize_switch_btn.innerHTML = `<br><button class="jspsych-btn">${i18next.t('autoResizeBtn')}</button>`;
+        resize_switch_btn.addEventListener('click', () => {
+            jsPsych.finishTrial({ scale_factor: autoResize() });
+        });
         document.getElementById('jspsych-content').appendChild(resize_switch_btn);
     },
     on_finish: () => {
@@ -112,88 +228,3 @@ function setSizes(scaling_factor = window.devicePixelRatio) {
         console.error('Scaling factor cannot be applied.');
     }
 }
-/**
- * @function DeviceConnectPages
- * @description Creates a timeline to guide the user through connecting a USB or Serial device, including options to handle connection errors and retries. The timeline consists of a page that instructs the user to connect the device and provides options for retrying the connection or switching to another connection type if the initial attempt fails.
- *
- * The function handles:
- * - Displaying instructions for connecting the device based on the connection type.
- * - Providing a button to initiate the connection attempt.
- * - Handling connection errors by allowing the user to retry or switch connection types.
- * - Updating the `device_info` object with the connected device and the appropriate trigger function.
- *
- * @param {JsPsych} jsPsych - The jsPsych instance used to manage the experiment timeline.
- * @param {{ device: SerialPort | null | USBDevice | null, send_trigger_func: (device: SerialPort & USBDevice | null, trigger: string) => Promise<void> }} device_info - An object holding the connected device (either `SerialPort` or `USBDevice`, or `null`) and a function to send triggers to the device.
- * @param {() => Promise<SerialPort | null> | () => Promise<USBDevice | null>} connect_function - A function that attempts to connect to a USB or Serial device, returning a promise that resolves to the connected device or `null` if the connection fails.
- * @param {string} device_name - The name of the device to be connected, used in the connection instructions.
- *
- * @returns {timeline} - The timeline configuration object for managing the device connection process, including error handling and retry options.
- */
-export function DeviceConnectPages(jsPsych, device_info, connect_function, device_name) {
-    const on_usb_page = connect_function === connectToUSB;
-    return {
-        timeline: [
-            {
-                type: HtmlButtonResponsePlugin,
-                stimulus: `${i18next.t('connectInstructions', {
-                    connection: on_usb_page
-                        ? 'USB'
-                        : connect_function === connectToSerial
-                            ? 'Serial Port'
-                            : 'invalid connection type',
-                    device_name: device_name,
-                })}<br>`,
-                choices: [
-                    i18next.t('connectDeviceBtn'),
-                    i18next.t(on_usb_page ? 'skipConnection' : 'tryUSB'),
-                ],
-                on_load: () => {
-                    // Add event listener to the connect button
-                    document
-                        .getElementsByClassName('jspsych-btn')[0]
-                        .addEventListener('click', async () => {
-                        device_info.device = await connect_function();
-                        if (device_info.device !== null) {
-                            device_info.send_trigger_func = on_usb_page
-                                ? sendTriggerToUSB
-                                : sendTriggerToSerial;
-                            jsPsych.finishTrial();
-                        }
-                        document.getElementsByClassName('jspsych-btn')[0].innerHTML =
-                            i18next.t('retry');
-                        document.getElementById('jspsych-html-button-response-stimulus').innerHTML +=
-                            `<br><small style="color: red;">${i18next.t('connectFailed')}</small>`;
-                    });
-                },
-            },
-        ],
-        loop_function: function (data) {
-            // Repeat the connection step if the user chooses to retry
-            return data.last(1).values()[0].response === 0;
-        },
-        conditional_function: function () {
-            if (on_usb_page) {
-                return device_info.device === null ? true : false;
-            }
-            else {
-                return true;
-            }
-        },
-    };
-}
-export const fullScreenPlugin = (jsPsych) => ({
-    type: FullscreenPlugin,
-    fullscreen_mode: true,
-    message: '',
-    button_label: i18next.t('fullscreen'),
-    on_load: function () {
-        const quit_btn = document.createElement('button');
-        quit_btn.type = 'button';
-        quit_btn.setAttribute('style', 'color: #fff; border-radius: 4px; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)');
-        quit_btn.addEventListener('click', () => quitBtnAction(jsPsych));
-        quit_btn.appendChild(document.createTextNode(i18next.t('quitBtn')));
-        document
-            .getElementById('jspsych-progressbar-container')
-            .appendChild(quit_btn);
-    },
-});

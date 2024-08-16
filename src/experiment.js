@@ -17,7 +17,7 @@ import '../styles/main.scss';
 import { groupInstructions, tipScreen } from './instructions';
 import { showEndScreen } from './quit';
 import { DeviceConnectPages, fullScreenPlugin, generatePreloadStrings, resize, } from './setup';
-import { connectToSerial, connectToUSB, createButtonPage, } from './utils';
+import { createButtonPage, } from './utils';
 /**
  * @function generateTimelineVars
  * @description Generate timeline variables for the experiment.
@@ -176,7 +176,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, device_info) => ({
 export async function run({ assetPaths, input = {}, environment, title, version, }) {
     //Parameters:
     const blocks_per_half = 5;
-    const device_name = 'Arduino Micro';
+    const connect_type = 'Serial Port';
     //Pseudo state variable
     let device_info = {
         device: null,
@@ -203,7 +203,9 @@ export async function run({ assetPaths, input = {}, environment, title, version,
         type: PreloadPlugin,
         images: generatePreloadStrings(),
     });
-    timeline.push(DeviceConnectPages(jsPsych, device_info, connectToSerial, device_name), DeviceConnectPages(jsPsych, device_info, connectToUSB, device_name));
+    if (connect_type) {
+        timeline.push(DeviceConnectPages(jsPsych, device_info, connect_type));
+    }
     // Run numerosity task
     timeline.push(fullScreenPlugin(jsPsych), resize(jsPsych), groupInstructions(jsPsych, exp_parts_cntables[0]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[0], blocks_per_half, device_info), createButtonPage(i18next.t('firstHalfEnd'), i18next.t('resizeBtn')), groupInstructions(jsPsych, exp_parts_cntables[1]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[1], blocks_per_half, device_info));
     await jsPsych.run(timeline);

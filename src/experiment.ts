@@ -263,7 +263,7 @@ export async function run({
 }): Promise<JsPsych> {
   //Parameters:
   const blocks_per_half: number = 5;
-  const device_name: string = 'Arduino Micro';
+  const connect_type: 'Serial Port' | 'USB' | null = 'Serial Port';
 
   //Pseudo state variable
   let device_info: {
@@ -305,10 +305,9 @@ export async function run({
     images: generatePreloadStrings(),
   });
 
-  timeline.push(
-    DeviceConnectPages(jsPsych, device_info, connectToSerial, device_name),
-    DeviceConnectPages(jsPsych, device_info, connectToUSB, device_name),
-  );
+  if (connect_type) {
+    timeline.push(DeviceConnectPages(jsPsych, device_info, connect_type));
+  }
 
   // Run numerosity task
   timeline.push(
