@@ -1,7 +1,9 @@
 {
-  "connectInstructions": "Bitte verbinden Sie sich mit #dem Gerät#, indem Sie auf die Schaltfläche unten klicken und ## aus dem Dropdown-Menü auswählen",
+  "connectInstructions": "Bitte verbinden Sie sich mit dem Gerät via {{connection}}, indem Sie auf die Schaltfläche unten klicken und '{{device_name}}' aus dem Dropdown-Menü auswählen",
   "connectDeviceBtn": "Verbinden",
-  "connectFailed": "Verbindung mit #dem Gerät# fehlgeschlagen. Bitte versuchen Sie es erneut.",
+  "connectFailed": "Verbindung mit dem Gerät fehlgeschlagen. Bitte versuchen Sie es erneut.",
+  "retry": "Erneut versuchen",
+  "tryUSB": "Versuchen Sie die Verbindung über USB",
   "skipConnect": "Verbindung überspringen",
   "fullscreen": "Vollbild",
   "quitBtn": "Abbrechen",

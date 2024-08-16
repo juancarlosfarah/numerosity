@@ -1,7 +1,9 @@
 {
-  "connectInstructions": "Conéctese a #el dispositivo# haciendo clic en el botón de abajo y seleccione ## del menú desplegable",
+  "connectInstructions": "Conéctese al dispositivo con {{connection}} haciendo clic en el botón de abajo y seleccione '{{device_name}}' del menú desplegable",
   "connectDeviceBtn": "Conectar",
-  "connectFailed": "Error al conectar con #el dispositivo#. Por favor, inténtelo de nuevo.",
+  "connectFailed": "Error al conectar con el dispositivo. Por favor, inténtelo de nuevo.",
+  "retry": "Reintentar",
+  "tryUSB": "Intentar conexión con USB",
   "skipConnect": "Omitir conexión",
   "fullscreen": "Pantalla completa",
   "quitBtn": "Salir",

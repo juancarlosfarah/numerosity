@@ -55,7 +55,6 @@ export async function connectToUSB() {
         });
         await device.open();
         await device.selectConfiguration(1);
-        console.log(device.configuration?.interfaces);
         await device.claimInterface(0);
         return device;
     }

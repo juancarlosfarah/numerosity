@@ -3,6 +3,13 @@ import JsResize from '@jspsych/plugin-resize';
 import i18next from 'i18next';
 import { DataCollection, JsPsych } from 'jspsych';
 
+import {
+  connectToSerial,
+  connectToUSB,
+  sendTriggerToSerial,
+  sendTriggerToUSB,
+} from './utils';
+
 type timeline = JsPsych['timeline'];
 
 /**
@@ -55,7 +62,7 @@ export const resize: (jsPsych: JsPsych) => timeline = (
     bar_resize_page.id = 'bar-resize-page';
     bar_resize_page.style.top = `${document.getElementById('jspsych-progressbar-container')!.offsetHeight + 1}px`;
     bar_resize_page.classList.add('custom-overlay');
-    bar_resize_page.innerHTML = ` <div>
+    bar_resize_page.innerHTML = `
                                     <p><b>${i18next.t('barResizeTitle')}</b></p>
                                     <br>
                                     <p>${i18next.t('barResizeInstructions')}</p>
@@ -135,33 +142,63 @@ function setSizes(scaling_factor: number = window.devicePixelRatio): void {
 }
 
 /**
- * @function USBConfigPages
- * @description Creates a timeline to guide the user through connecting a USB or Serial device.
- * @param {JsPsych} jsPsych - The jsPsych instance.
- * @param {{ device_obj: SerialPort | USBDevice | null }} devices - An object to store the connected device.
- * @param {() => Promise<USBDevice | SerialPort | null>} connect_function - A function that connects to a USB or Serial device.
- * @returns {timeline} - The timeline for USB/Serial connection configuration.
+ * @function DeviceConnectPages
+ * @description Creates a timeline to guide the user through connecting a USB or Serial device, including options to handle connection errors and retries. The timeline consists of a page that instructs the user to connect the device and provides options for retrying the connection or switching to another connection type if the initial attempt fails.
+ *
+ * The function handles:
+ * - Displaying instructions for connecting the device based on the connection type.
+ * - Providing a button to initiate the connection attempt.
+ * - Handling connection errors by allowing the user to retry or switch connection types.
+ * - Updating the `device_info` object with the connected device and the appropriate trigger function.
+ *
+ * @param {JsPsych} jsPsych - The jsPsych instance used to manage the experiment timeline.
+ * @param {{ device: SerialPort | null | USBDevice | null, send_trigger_func: (device: SerialPort & USBDevice | null, trigger: string) => Promise<void> }} device_info - An object holding the connected device (either `SerialPort` or `USBDevice`, or `null`) and a function to send triggers to the device.
+ * @param {() => Promise<SerialPort | null> | () => Promise<USBDevice | null>} connect_function - A function that attempts to connect to a USB or Serial device, returning a promise that resolves to the connected device or `null` if the connection fails.
+ * @param {string} device_name - The name of the device to be connected, used in the connection instructions.
+ *
+ * @returns {timeline} - The timeline configuration object for managing the device connection process, including error handling and retry options.
  */
-export function USBConfigPages(
+export function DeviceConnectPages(
   jsPsych: JsPsych,
-  devices: { device_obj: SerialPort | null } | { device_obj: USBDevice | null },
+  device_info: {
+    device: (SerialPort | null) | (USBDevice | null);
+    send_trigger_func: (
+      device: (SerialPort & USBDevice) | null,
+      trigger: string,
+    ) => Promise<void>;
+  },
   connect_function:
     | (() => Promise<SerialPort | null>)
     | (() => Promise<USBDevice | null>),
+  device_name: string,
 ): timeline {
+  const on_usb_page: boolean = connect_function === connectToUSB;
   return {
     timeline: [
       {
         type: HtmlButtonResponsePlugin,
-        stimulus: i18next.t('connectInstructions'),
-        choices: [i18next.t('connectDeviceBtn'), i18next.t('skipConnect')],
+        stimulus: `${i18next.t('connectInstructions', {
+          connection: on_usb_page
+            ? 'USB'
+            : connect_function === connectToSerial
+              ? 'Serial Port'
+              : 'invalid connection type',
+          device_name: device_name,
+        })}<br>`,
+        choices: [
+          i18next.t('connectDeviceBtn'),
+          i18next.t(on_usb_page ? 'skipConnection' : 'tryUSB'),
+        ],
         on_load: (): void => {
-          // Add event listener to connect button
+          // Add event listener to the connect button
           document
             .getElementsByClassName('jspsych-btn')[0]
             .addEventListener('click', async () => {
-              devices.device_obj = await connect_function();
-              if (devices.device_obj !== null) {
+              device_info.device = await connect_function();
+              if (device_info.device !== null) {
+                device_info.send_trigger_func = on_usb_page
+                  ? sendTriggerToUSB
+                  : sendTriggerToSerial;
                 jsPsych.finishTrial();
               }
               document.getElementsByClassName('jspsych-btn')[0].innerHTML =
@@ -177,6 +214,13 @@ export function USBConfigPages(
     loop_function: function (data: DataCollection): boolean {
       // Repeat the connection step if the user chooses to retry
       return data.last(1).values()[0].response === 0;
+    },
+    conditional_function: function (): boolean {
+      if (on_usb_page) {
+        return device_info.device === null ? true : false;
+      } else {
+        return true;
+      }
     },
   };
 }

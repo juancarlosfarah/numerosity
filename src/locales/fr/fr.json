@@ -1,7 +1,9 @@
 {
-  "connectInstructions": "Veuillez vous connecter à #l'appareil# en cliquant sur le bouton ci-dessous et sélectionnez ## dans le menu déroulant",
+  "connectInstructions": "Veuillez vous connecter à l'appareil par connexion {{connection}} en cliquant sur le bouton ci-dessous et sélectionnez '{{device_name}}' dans le menu déroulant",
   "connectDeviceBtn": "Se connecter",
-  "connectFailed": "Échec de la connexion à #l'appareil#. Veuillez réessayer.",
+  "connectFailed": "Échec de la connexion à l'appareil. Veuillez réessayer.",
+  "retry": "Réessayer",
+  "tryUSB": "Tenter la connexion avec USB",
   "skipConnect": "Ignorer la connexion",
   "fullscreen": "Plein écran",
   "quitBtn": "Quitter",

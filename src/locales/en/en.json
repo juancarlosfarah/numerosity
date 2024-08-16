@@ -1,7 +1,9 @@
 {
-  "connectInstructions": "Please connect to #the device# by clicking the button below and select ## from the dropdown menu",
+  "connectInstructions": "Please connect to the device via {{connection}} by clicking the button below and select '{{device_name}}' from the dropdown menu",
   "connectDeviceBtn": "Connect",
-  "connectFailed": "Failed to connect to #device#. Please try again.",
+  "connectFailed": "Failed to connect to the device. Please try again.",
+  "retry": "Retry",
+  "tryUSB": "Attempt connection with USB",
   "skipConnect": "Skip connection",
   "fullscreen": "Fullscreen",
   "quitBtn": "Quit",

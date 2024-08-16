@@ -1,7 +1,9 @@
 {
-  "connectInstructions": "Si us plau, connecteu-vos a #el dispositiu# fent clic al botó de sota i seleccioneu ## del menú desplegable",
+  "connectInstructions": "Si us plau, connecteu-vos al dispositiu mitjançant {{connection}} fent clic al botó de sota i seleccioneu '{{device_name}}' del menú desplegable",
   "connectDeviceBtn": "Connectar",
-  "connectFailed": "No s'ha pogut connectar a #el dispositiu#. Torneu-ho a intentar.",
+  "connectFailed": "No s'ha pogut connectar al dispositiu. Torneu-ho a intentar.",
+  "retry": "Torna-ho a intentar",
+  "tryUSB": "Intentar la connexió amb USB",
   "skipConnect": "Omet la connexió",
   "fullscreen": "Pantalla completa",
   "quitBtn": "Sortir",

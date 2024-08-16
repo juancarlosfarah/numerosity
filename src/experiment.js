@@ -18,8 +18,8 @@ import '../styles/main.scss';
 import { groupInstructions, tipScreen } from './instructions';
 import { showEndScreen } from './quit';
 import { quitBtnAction } from './quit';
-import { USBConfigPages, generatePreloadStrings, resize } from './setup';
-import { connectToSerial, connectToUSB, createButtonPage, sendTriggerToSerial, sendTriggerToUSB, } from './utils';
+import { DeviceConnectPages, generatePreloadStrings, resize } from './setup';
+import { connectToSerial, connectToUSB, createButtonPage, } from './utils';
 /**
  * @function generateTimelineVars
  * @description Generate timeline variables for the experiment.
@@ -44,16 +44,24 @@ function generateTimelineVars(JsPsych, nb_blocks) {
 }
 /**
  * @function partofexp
- * @description Timeline for one half of the numerosity task.
- * The order of stimuli correspond to the following pattern:
- * There are "nb_blocks" blocks consisting of a random image from each numerosity (5,6,7,8) in random order.
- * Two identical images will never be contained in one experiment.
- * @param { JsPsych } jsPsych - The jsPsych instance
- * @param { 'people' | 'objects' } cntable - The type of countable (people or objects)
- * @param { number } nb_blocks - Number of blocks per half
- * @returns { timeline } - Timeline for one half of the numerosity task
+ * @description Creates a timeline for one half of the numerosity task experiment. Each half consists of a series of blocks where images representing different numerosities (5, 6, 7, 8) are displayed in a random order. This ensures that no identical images are shown within the same experiment.
+ *
+ * The timeline includes:
+ * - A black screen before stimuli presentation, with a customizable jitter duration.
+ * - A crosshair displayed for 500ms before each image.
+ * - A stimulus image shown for 250ms.
+ * - A black screen following the image display.
+ * - A survey asking participants to estimate the number of countable items (either people or objects) they observed.
+ *
+ * @param {JsPsych} jsPsych - The jsPsych instance used to manage the experiment timeline.
+ * @param {'people' | 'objects'} cntable - The type of countable items (either 'people' or 'objects') to be used in the experiment.
+ * @param {number} nb_blocks - The number of blocks to be included in one half of the experiment.
+ * @param {{ device: SerialPort | USBDevice | null, send_trigger_func: (device: SerialPort & USBDevice | null, trigger: string) => Promise<void> }} device_info - An object containing the connected device (either `SerialPort` or `USBDevice`, or `null`) and a function to send triggers to the device.
+ * @param {((device: SerialPort | null, trigger: string) => Promise<void>) | ((device: USBDevice | null, trigger: string) => Promise<void>)} trigger_func - A function that sends a trigger to the connected device, applicable to either `SerialPort` or `USBDevice`.
+ *
+ * @returns {timeline} - The timeline configuration object for one half of the numerosity task experiment.
  */
-const partofexp = (jsPsych, cntable, nb_blocks, device_out, trigger_func) => ({
+const partofexp = (jsPsych, cntable, nb_blocks, device_info) => ({
     timeline: [
         // Blackscreen before stimuli
         {
@@ -62,7 +70,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, device_out, trigger_func) => ({
             choices: 'NO_KEYS',
             trial_duration: () => 1500 + jsPsych.evaluateTimelineVariable('bs_jitter'),
             on_start: () => {
-                trigger_func(device_out.device_obj, '0');
+                device_info.send_trigger_func(device_info.device, '0');
                 document.body.style.cursor = 'none';
             },
         },
@@ -73,7 +81,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, device_out, trigger_func) => ({
             choices: 'NO_KEYS',
             trial_duration: 500,
             on_start: () => {
-                trigger_func(device_out.device_obj, '1');
+                device_info.send_trigger_func(device_info.device, '1');
                 document.body.style.cursor = 'none';
             },
         },
@@ -86,7 +94,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, device_out, trigger_func) => ({
             choices: 'NO_KEYS',
             trial_duration: 250,
             on_start: () => {
-                trigger_func(device_out.device_obj, '2');
+                device_info.send_trigger_func(device_info.device, '2');
                 document.body.style.cursor = 'none';
             },
         },
@@ -97,7 +105,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, device_out, trigger_func) => ({
             choices: 'NO_KEYS',
             trial_duration: 1000,
             on_start: () => {
-                trigger_func(device_out.device_obj, '3');
+                device_info.send_trigger_func(device_info.device, '3');
                 document.body.style.cursor = 'none';
             },
             on_finish: () => {
@@ -122,7 +130,7 @@ const partofexp = (jsPsych, cntable, nb_blocks, device_out, trigger_func) => ({
                 });
             },
             on_start: () => {
-                trigger_func(device_out.device_obj, '4');
+                device_info.send_trigger_func(device_info.device, '4');
             },
             on_finish: function () {
                 jsPsych.progressBar.progress =
@@ -158,18 +166,22 @@ const partofexp = (jsPsych, cntable, nb_blocks, device_out, trigger_func) => ({
 });
 /**
  * @function run
- * @description This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment.
- * Initializes jsPsych, sets up the timeline, and runs the experiment.
- * @returns { Promise<JsPsych> } - Promise resolving to the jsPsych instance
+ * @description Initializes and runs the jsPsych experiment. This function sets up the experiment, including asset preloading, device configuration, resizing, and running the numerosity task. It handles experiment setup based on user-defined parameters, such as asset paths and connection types.
+ * @param {Object} params - The parameters for the experiment.
+ * @param {Object} params.assetPaths - Paths to the assets required for the experiment (images, audio, video).
+ * @param {any} params.input - Additional input parameters for the experiment.
+ * @param {string} params.environment - The environment in which the experiment is run.
+ * @param {string} params.title - The title of the experiment.
+ * @param {string} params.version - The version of the experiment.
+ * @returns {Promise<JsPsych>} - A promise that resolves to the initialized jsPsych instance.
  */
 export async function run({ assetPaths, input = {}, environment, title, version, }) {
     //Parameters:
     const blocks_per_half = 5;
-    const connect_type = 'serial';
-    const connect_func = connect_type === 'serial' ? connectToSerial : connectToUSB;
-    const send_trigger_func = connect_type === 'serial' ? sendTriggerToSerial : sendTriggerToUSB;
-    let devices = {
-        device_obj: null,
+    const device_name = 'Arduino Micro';
+    let device_info = {
+        device: null,
+        send_trigger_func: async (device, trigger) => { },
     };
     const jsPsych = initJsPsych({
         show_progress_bar: true,
@@ -185,24 +197,14 @@ export async function run({ assetPaths, input = {}, environment, title, version,
     timeline.push({
         type: PreloadPlugin,
         images: generatePreloadStrings(),
-        info: {
-            name: 'PreloadPlugin',
-            version: '8.0.1',
-            data: {},
-        },
     });
-    timeline.push(USBConfigPages(jsPsych, devices, connect_func));
+    timeline.push(DeviceConnectPages(jsPsych, device_info, connectToSerial, device_name), DeviceConnectPages(jsPsych, device_info, connectToUSB, device_name));
     // Switch to fullscreen
     timeline.push({
         type: FullscreenPlugin,
         fullscreen_mode: true,
         message: '',
         button_label: i18next.t('fullscreen'),
-        info: {
-            name: 'FullscreenPlugin',
-            version: '8.0.1',
-            data: {},
-        },
         on_load: function () {
             const quit_btn = document.createElement('button');
             quit_btn.type = 'button';
@@ -219,7 +221,7 @@ export async function run({ assetPaths, input = {}, environment, title, version,
     let exp_parts_cntables = ['people', 'objects'];
     exp_parts_cntables = jsPsych.randomization.shuffle(exp_parts_cntables);
     // Run numerosity task
-    timeline.push(groupInstructions(jsPsych, exp_parts_cntables[0]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[0], blocks_per_half, devices, send_trigger_func), createButtonPage(i18next.t('firstHalfEnd'), i18next.t('resizeBtn')), groupInstructions(jsPsych, exp_parts_cntables[1]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[1], blocks_per_half, devices, send_trigger_func));
+    timeline.push(groupInstructions(jsPsych, exp_parts_cntables[0]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[0], blocks_per_half, device_info), createButtonPage(i18next.t('firstHalfEnd'), i18next.t('resizeBtn')), groupInstructions(jsPsych, exp_parts_cntables[1]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[1], blocks_per_half, device_info));
     await jsPsych.run(timeline);
     document
         .getElementsByClassName('jspsych-content-wrapper')[0]
