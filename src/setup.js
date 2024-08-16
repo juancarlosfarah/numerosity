@@ -1,6 +1,8 @@
+import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import HtmlButtonResponsePlugin from '@jspsych/plugin-html-button-response';
 import JsResize from '@jspsych/plugin-resize';
 import i18next from 'i18next';
+import { quitBtnAction } from './quit';
 import { connectToSerial, connectToUSB, sendTriggerToSerial, sendTriggerToUSB, } from './utils';
 /**
  * @function generatePreloadStrings
@@ -179,3 +181,19 @@ export function DeviceConnectPages(jsPsych, device_info, connect_function, devic
         },
     };
 }
+export const fullScreenPlugin = (jsPsych) => ({
+    type: FullscreenPlugin,
+    fullscreen_mode: true,
+    message: '',
+    button_label: i18next.t('fullscreen'),
+    on_load: function () {
+        const quit_btn = document.createElement('button');
+        quit_btn.type = 'button';
+        quit_btn.setAttribute('style', 'color: #fff; border-radius: 4px; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)');
+        quit_btn.addEventListener('click', () => quitBtnAction(jsPsych));
+        quit_btn.appendChild(document.createTextNode(i18next.t('quitBtn')));
+        document
+            .getElementById('jspsych-progressbar-container')
+            .appendChild(quit_btn);
+    },
+});

@@ -7,7 +7,6 @@
  */
 // You can import stylesheets (.scss or .css).
 // Import required plugins and modules from jsPsych
-import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import jsPsychHtmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response';
 import PreloadPlugin from '@jspsych/plugin-preload';
 import jsPsychSurveyHtmlForm from '@jspsych/plugin-survey-html-form';
@@ -17,8 +16,7 @@ import { initJsPsych } from 'jspsych';
 import '../styles/main.scss';
 import { groupInstructions, tipScreen } from './instructions';
 import { showEndScreen } from './quit';
-import { quitBtnAction } from './quit';
-import { DeviceConnectPages, generatePreloadStrings, resize } from './setup';
+import { DeviceConnectPages, fullScreenPlugin, generatePreloadStrings, resize, } from './setup';
 import { connectToSerial, connectToUSB, createButtonPage, } from './utils';
 /**
  * @function generateTimelineVars
@@ -179,10 +177,12 @@ export async function run({ assetPaths, input = {}, environment, title, version,
     //Parameters:
     const blocks_per_half = 5;
     const device_name = 'Arduino Micro';
+    //Pseudo state variable
     let device_info = {
         device: null,
         send_trigger_func: async (device, trigger) => { },
     };
+    //initialize jspsych
     const jsPsych = initJsPsych({
         show_progress_bar: true,
         auto_update_progress_bar: false,
@@ -191,7 +191,12 @@ export async function run({ assetPaths, input = {}, environment, title, version,
             jsPsych.data.get().localSave('csv', 'experiment-data.csv');
         },
     });
+    // Randomize order of countables
+    let exp_parts_cntables = ['people', 'objects'];
+    exp_parts_cntables = jsPsych.randomization.shuffle(exp_parts_cntables);
+    //initiate timeline
     const timeline = [];
+    //push trials to timeline
     jsPsych;
     // Preload assets
     timeline.push({
@@ -199,29 +204,8 @@ export async function run({ assetPaths, input = {}, environment, title, version,
         images: generatePreloadStrings(),
     });
     timeline.push(DeviceConnectPages(jsPsych, device_info, connectToSerial, device_name), DeviceConnectPages(jsPsych, device_info, connectToUSB, device_name));
-    // Switch to fullscreen
-    timeline.push({
-        type: FullscreenPlugin,
-        fullscreen_mode: true,
-        message: '',
-        button_label: i18next.t('fullscreen'),
-        on_load: function () {
-            const quit_btn = document.createElement('button');
-            quit_btn.type = 'button';
-            quit_btn.setAttribute('style', 'color: #fff; border-radius: 4px; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)');
-            quit_btn.addEventListener('click', () => quitBtnAction(jsPsych));
-            quit_btn.appendChild(document.createTextNode(i18next.t('quitBtn')));
-            document
-                .getElementById('jspsych-progressbar-container')
-                .appendChild(quit_btn);
-        },
-    });
-    timeline.push(resize(jsPsych));
-    // Randomize order of countables
-    let exp_parts_cntables = ['people', 'objects'];
-    exp_parts_cntables = jsPsych.randomization.shuffle(exp_parts_cntables);
     // Run numerosity task
-    timeline.push(groupInstructions(jsPsych, exp_parts_cntables[0]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[0], blocks_per_half, device_info), createButtonPage(i18next.t('firstHalfEnd'), i18next.t('resizeBtn')), groupInstructions(jsPsych, exp_parts_cntables[1]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[1], blocks_per_half, device_info));
+    timeline.push(fullScreenPlugin(jsPsych), resize(jsPsych), groupInstructions(jsPsych, exp_parts_cntables[0]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[0], blocks_per_half, device_info), createButtonPage(i18next.t('firstHalfEnd'), i18next.t('resizeBtn')), groupInstructions(jsPsych, exp_parts_cntables[1]), tipScreen(), createButtonPage(i18next.t('experimentStart'), i18next.t('experimentStartBtn')), partofexp(jsPsych, exp_parts_cntables[1], blocks_per_half, device_info));
     await jsPsych.run(timeline);
     document
         .getElementsByClassName('jspsych-content-wrapper')[0]
