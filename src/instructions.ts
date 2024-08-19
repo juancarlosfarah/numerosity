@@ -28,7 +28,7 @@ const generateInputExample: (
       <div class="inst-screen input-example" style="background-color: black;">
         <div style="cursor: default;">${i18next.t('instructionScreenExample', { cntable: langf.translateCountable(cntable) })}</div>
         <input type="number" style="cursor: default; width: 20%;" readonly>
-        <button class="jspsych-btn" style="pointer-events: none;" readonly>${i18next.t('estimateSubmitBtn')}</button>
+        <button class="jspsych-btn" style="pointer-events: none; padding: 2%;" readonly>${i18next.t('estimateSubmitBtn')}</button>
       </div>`;
 
 /**
@@ -90,7 +90,7 @@ function generateInstructionPages(cntable: 'people' | 'objects'): string[] {
         </div>`,
   );
   pages.push(
-    `<div class="inst-container"><b>${i18next.t('instructionTitle')}</b><p>${i18next.t('instructionExample', { cntable: langf.translateCountable(cntable) })}</p><video muted autoplay loop preload="auto" src="./assets/instruction-media/${cntable}-vid.mp4" style="height: 45vh;"><source type="video/mp4"></source></video></div><br>`,
+    `<div class="inst-container"><b>${i18next.t('instructionTitle')}</b><p class="vid-text">${i18next.t('instructionExample', { cntable: langf.translateCountable(cntable) })}</p><video muted autoplay loop preload="auto" src="./assets/instruction-media/${cntable}-vid.mp4" style="height: 45vh;"><source type="video/mp4"></source></video></div><br>`,
   );
   return pages;
 }

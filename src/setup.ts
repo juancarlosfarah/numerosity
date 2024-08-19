@@ -206,7 +206,7 @@ export const resize: (jsPsych: JsPsych) => timeline = (
     bar_resize_page.classList.add('custom-overlay');
     bar_resize_page.innerHTML = `
                                     <p><b>${i18next.t('barResizeTitle')}</b></p>
-                                    <p>${i18next.t('barResizeInstructions')}</p>
+                                    <p style="text-align: center;">${i18next.t('barResizeInstructions')}</p>
                                     <br>
                                     <div id="resize-bar"></div>
                                     <br>
@@ -219,7 +219,7 @@ export const resize: (jsPsych: JsPsych) => timeline = (
                                       <input type="submit" class="jspsych-btn" value="${i18next.t('resizeBtn')}">
                                     </form>
                                     <div style="display: flex; align-items: center; text-align: center;">
-                                      <h1 class="warning"><b>!</b></h1><p padding-right: 5%;">${i18next.t('noRuler')}</p>
+                                      <h1 class="warning"><b>!</b></h1><p style="max-width: 75%; text-align: start;">${i18next.t('noRuler')}</p>
                                     </div>
                                     <button class="jspsych-btn" type="button" onclick="document.body.removeChild(document.getElementById('bar-resize-page'))">${i18next.t('noRulerBtn')}</button>`;
     document.body.appendChild(bar_resize_page);
@@ -274,8 +274,6 @@ function setSizes(scaling_factor: number = window.devicePixelRatio): void {
   style.innerHTML = `.task-img, vid {
         width: ${width_px}px; 
         height: ${(9 * width_px) / 16}px;
-    }
-    .inst-container {
     }
 `;
 

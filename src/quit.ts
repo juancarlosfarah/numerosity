@@ -15,7 +15,7 @@ function generateQuitSurvey(): string {
   return `
     <div class="quit-survey-content">
       <div style="position: relative;">
-        <h2 style="vertical-align: middle;"><b>${i18next.t('quitSurveyPreamble')}</b></h2>
+        <h2 style="vertical-align: middle; display: inline-block; width: 80%;"><b>${i18next.t('quitSurveyPreamble')}</b></h2>
         <button id="quit-close-btn" class="jspsych-btn">${i18next.t('quitSurveyBtnClose')}</button>
       </div>
       <br>

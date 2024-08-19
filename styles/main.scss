@@ -39,7 +39,7 @@ button:hover {
 
 .warning {
   color: red;
-  margin: 0 0 0 10%;
+  margin: 0 5% 0 10%;
 }
 
 .custom-overlay {
@@ -51,26 +51,35 @@ button:hover {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  font-size: calc(1vh + 1vw);
+  line-height: 250%;
 }
 
 #quit-close-btn {
   right: 0;
-  position: absolute;
   top: 50%;
+  display: inline-block;
+  position: relative;
+}
+
+.quit-survey-content {
+  width: 80vw;
 }
 
 .inst-container {
   position: relative;
-  height: fit-content;
+  height: 70vh;
+  align-content: center;
 }
 
 .inst-graphic {
   position: relative;
-  width: 30%;
+  width: 25%;
   height: auto;
   display: inline-block;
   vertical-align: middle;
   text-align: center;
+  align-items: center;
 }
 
 .group-monitors {
@@ -114,21 +123,28 @@ button:hover {
   min-width: 0; /* Allow the content to shrink below its intrinsic size */
   min-height: 0;
   height: auto;
-  font-size: 70%;
-  line-height: 90%;
+  font-size: 2vw;
+  line-height: calc(70% + 0.7vw);
   margin: 0 0 2% 0;
 }
 
-.group-monitors > * {
-  font-size: 50%;
+.group-monitors * {
+  font-size: 1vw;
 }
 
 .inst-text {
   text-align: start;
   margin-left: 5%;
-  width: 50%;
+  width: 55%;
   display: inline-block;
   vertical-align: middle;
+  font-size: calc(1vh + 1vw);
+  line-height: 150%;
+}
+
+.vid-text {
+  font-size: calc(1vh + 1vw);
+  line-height: 120%;
 }
 
 .underlined {
