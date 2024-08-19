@@ -221,7 +221,7 @@ export const resize: (jsPsych: JsPsych) => timeline = (
                                     <div style="display: flex; align-items: center; text-align: center;">
                                       <h1 class="warning"><b>!</b></h1><p padding-right: 5%;">${i18next.t('noRuler')}</p>
                                     </div>
-                                    <button class="jspsych-btn" type="button" onclick="document.getElementById('bar-resize-page').style.display = 'none'">${i18next.t('noRulerBtn')}</button>`;
+                                    <button class="jspsych-btn" type="button" onclick="document.body.removeChild(document.getElementById('bar-resize-page'))">${i18next.t('noRulerBtn')}</button>`;
     document.body.appendChild(bar_resize_page);
 
     // Handle form submission and calculate scale factor
@@ -271,14 +271,13 @@ function setSizes(scaling_factor: number = window.devicePixelRatio): void {
 
   const width_px: number = scaling_factor * 585.82677165;
   style.id = 'scaling';
-  style.innerHTML = `img, vid {
+  style.innerHTML = `.task-img, vid {
         width: ${width_px}px; 
         height: ${(9 * width_px) / 16}px;
     }
     .inst-container {
-      width: ${1.5 * width_px}px;
-      height: ${(27 * width_px) / 32}px;
-    }`;
+    }
+`;
 
   if (!style.parentElement) {
     document.head.appendChild(style);
