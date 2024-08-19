@@ -64,11 +64,16 @@ describe('Ordinary run', () => {
     cy.visit(`http://localhost:3000`);
     cy.get('#jspsych-progressbar-outer').should('be.visible');
 
+    cy.contains('Skip connection').click();
+
     // Enter fullscreen mode
     cy.contains('Fullscreen').click();
 
     // Navigate through initial instructions
     cy.contains('Quit');
+
+    cy.contains('Use card').click();
+    cy.contains('Skip calibration').click();
 
     // Test the instruction screens
     testInstructions();
@@ -104,12 +109,14 @@ describe('Ordinary run', () => {
   });
 });
 
-// Main test suite
+// Second test suite
 describe('Quit screen test', () => {
   it('opens quit window and aborts experiment', () => {
     // Visit the application
     cy.visit(`http://localhost:3000`);
     cy.get('#jspsych-progressbar-outer').should('be.visible');
+
+    cy.contains('Skip connection').click();
 
     // Navigate through initial instructions
     cy.contains('Quit').click();
@@ -132,18 +139,23 @@ describe('Quit screen test', () => {
   });
 });
 
-// Main test suite
+// Third test suite
 describe('Edge cases test', () => {
   it('visits all input elements and tests edge case entries', () => {
     // Visit the application
     cy.visit(`http://localhost:3000`);
     cy.get('#jspsych-progressbar-outer').should('be.visible');
 
+    cy.contains('Skip connection').click();
+
     // Enter fullscreen mode
     cy.contains('Fullscreen').click();
 
     // Navigate through initial instructions
     cy.contains('Quit');
+
+    cy.contains('Use card').click();
+    cy.contains('Skip calibration').click();
 
     // Test the instruction screens
     testInstructions();
