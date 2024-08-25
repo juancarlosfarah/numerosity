@@ -28,7 +28,7 @@ const generateInputExample = (cntable, scale) => `
  * @returns { string[] } - Array of instruction pages as HTML strings
  */
 function generateInstructionPages(cntable) {
-    const instruction_imgs = [
+    const instructionImages = [
         `
     <img class="inst-monitor" src="./assets/instruction-media/monitor-crosshair.png" alt="computer monitor pictogram">`,
         `
@@ -37,14 +37,14 @@ function generateInstructionPages(cntable) {
         generateInputExample(cntable, 0),
     ];
     const pages = [];
-    for (let page_nb = 0; page_nb < 3; page_nb++) {
+    for (let pageNumber = 0; pageNumber < 3; pageNumber++) {
         pages.push(`
         <div class="inst-container">
           <b>${i18next.t('instructionTitle')}</b><br>
           <div class="inst-graphic">
-            ${instruction_imgs[page_nb]}
+            ${instructionImages[pageNumber]}
           </div>
-            <p class="inst-text"><b>${i18next.t('instructionTexts', { returnObjects: true, cntable: langf.translateCountable(cntable) })[page_nb]}</b></p>
+            <p class="inst-text"><b>${i18next.t('instructionTexts', { returnObjects: true, cntable: langf.translateCountable(cntable) })[pageNumber]}</b></p>
         </div>`);
     }
     pages.push(` 
@@ -52,10 +52,10 @@ function generateInstructionPages(cntable) {
         <b>${i18next.t('instructionTitle')}</b><br>
         <div class="inst-graphic">
           <div class="group-monitors"">
-            ${instruction_imgs[0]}
+            ${instructionImages[0]}
           </div>
           <div class="group-monitors"">
-            ${instruction_imgs[1]}
+            ${instructionImages[1]}
           </div>
           <div class="group-monitors"">
             ${generateInputExample(cntable, 0.24)}
@@ -67,7 +67,7 @@ function generateInstructionPages(cntable) {
         <div class="inst-container">
           <b>${i18next.t('instructionTitle')}</b><br>
           <div class="inst-graphic">
-            ${instruction_imgs[2]}
+            ${instructionImages[2]}
           </div>
             <p class="inst-text"><b>${i18next.t('instructionTexts', { returnObjects: true, cntable: langf.translateCountable(cntable) })[4]}</b></p>
         </div>`);
@@ -151,13 +151,13 @@ const returnPage = (jsPsych, cntable) => ({
  * instruction quiz, and return page based on the countable type and experiment phase.
  * @param {JsPsych} jsPsych - The jsPsych instance.
  * @param {'people' | 'objects'} cntable - The type of countable (people or objects).
- * @param {boolean} [second_half=false] - Indicates if it is the second half of the experiment.
+ * @param {boolean} [secondHalf=false] - Indicates if it is the second half of the experiment.
  * @returns {timeline} - An object representing the timeline for the group instructions.
  */
-export const groupInstructions = (jsPsych, cntable, second_half = false) => ({
+export const groupInstructions = (jsPsych, cntable, secondHalf = false) => ({
     timeline: [
         instructions(cntable),
-        instructionQuiz(jsPsych, cntable, second_half),
+        instructionQuiz(jsPsych, cntable, secondHalf),
         returnPage(jsPsych, cntable),
     ],
     loop_function: function (data) {

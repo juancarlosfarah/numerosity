@@ -8,15 +8,15 @@ import en from './locales/en/en.json';
 import es from './locales/es/es.json';
 import fr from './locales/fr/fr.json';
 
-const fallback_lang: string = 'en';
+const fallbackLanguage: string = 'en';
 
-const lang: string = initLang(['en', 'fr', 'es', 'ca', 'de'], fallback_lang);
+const lang: string = initLang(['en', 'fr', 'es', 'ca', 'de'], fallbackLanguage);
 
 // Initialize i18next
 i18next.init(
   {
     lng: lang, // default language
-    fallbackLng: fallback_lang,
+    fallbackLng: fallbackLanguage,
     resources: {
       en: { translation: en },
       fr: { translation: fr },

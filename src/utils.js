@@ -13,15 +13,15 @@ export function activateMQCunderline() {
 /**
  * @function createButtonPage
  * @description Creates a button trial object for use in jsPsych, with a stimulus text and a single button choice.
- * @param {string} page_txt - The text to display on the page.
- * @param {string} btn_txt - The text to display on the button.
- * @returns {button_trial} - An object containing the trial configuration.
+ * @param {string} pageText - The text to display on the page.
+ * @param {string} btnText - The text to display on the button.
+ * @returns {buttonTrial} - An object containing the trial configuration.
  */
-export function createButtonPage(page_txt, btn_txt) {
+export function createButtonPage(pageText, btnText) {
     return {
         type: HtmlButtonResponsePlugin,
-        stimulus: `<b>${page_txt}</b><br><br>`,
-        choices: [btn_txt],
+        stimulus: `<b>${pageText}</b><br><br>`,
+        choices: [btnText],
     };
 }
 /**

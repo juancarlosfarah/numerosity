@@ -1,5 +1,5 @@
 // Number of blocks in the experiment
-const nb_blocks: number = 5;
+const nbBlocks: number = 5;
 
 // Handle uncaught exceptions in Cypress
 Cypress.on('uncaught:exception', (err) => {
@@ -22,17 +22,17 @@ Cypress.on('uncaught:exception', (err) => {
  * @description Tests the instruction screens by navigating through them.
  */
 function testInstructions() {
-  const next_inst_btn: string = 'Next';
+  const nextInstButton: string = 'Next';
   for (let page: number = 0; page < 5; page++) {
     // Verify instruction content and navigate to the next page
     cy.contains('Tutorial');
     cy.get('.inst-monitor').should('be.visible');
-    cy.contains(next_inst_btn).click();
+    cy.contains(nextInstButton).click();
   }
 
   // Verify video visibility and continue
   cy.get('video').should('be.visible');
-  cy.contains(next_inst_btn).click();
+  cy.contains(nextInstButton).click();
 
   // Click through specific instruction steps
   cy.contains('inside the virtual ').click();
@@ -48,7 +48,7 @@ function testInstructions() {
  * @description Simulates performing part of the experiment by entering input and navigating through tasks.
  */
 function testPartOfExp() {
-  for (let task = 0; task < nb_blocks * 4; task++) {
+  for (let task = 0; task < nbBlocks * 4; task++) {
     // Wait for task to be ready and perform the task
     cy.wait(1651 + 500 + 250 + 1000);
     cy.contains('in the virtual ');

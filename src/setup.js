@@ -11,16 +11,16 @@ import { connectToSerial, connectToUSB, sendTriggerToSerial, sendTriggerToUSB, }
  */
 export function generatePreloadStrings() {
     const cntables = ['people', 'objects'];
-    const path_list = [];
+    const pathList = [];
     // Use nested loops to construct the file paths
     for (const cntable of cntables) {
         for (let num = 5; num < 9; num++) {
             for (let id = 0; id < 10; id++) {
-                path_list.push(`./assets/num-task-imgs/${cntable}/num-${num}-${id}.png`);
+                pathList.push(`./assets/num-task-imgs/${cntable}/num-${num}-${id}.png`);
             }
         }
     }
-    return path_list;
+    return pathList;
 }
 /**
  * @function DeviceConnectPages
@@ -30,17 +30,17 @@ export function generatePreloadStrings() {
  * - Displaying connection instructions based on the specified connection type (USB or Serial).
  * - Providing a button to initiate the connection attempt.
  * - Handling connection failures by allowing the user to retry the connection or skip it.
- * - Updating the `device_info` object with the connected device and the appropriate trigger function based on the connection type.
+ * - Updating the `deviceInfo` object with the connected device and the appropriate trigger function based on the connection type.
  *
  * @param {JsPsych} jsPsych - The jsPsych instance used to manage the experiment timeline.
- * @param {{ device: SerialPort | USBDevice | null, send_trigger_func: (device: SerialPort | USBDevice | null, trigger: string) => Promise<void> }} device_info - An object that holds the connected device, which can be either `SerialPort` or `USBDevice`, or `null`, and a function to send triggers to the device.
- * @param {'Serial Port' | 'USB'} connect_type - The type of connection being established, either 'Serial Port' or 'USB'.
+ * @param {{ device: SerialPort | USBDevice | null, sendTriggerFunction: (device: SerialPort | USBDevice | null, trigger: string) => Promise<void> }} deviceInfo - An object that holds the connected device, which can be either `SerialPort` or `USBDevice`, or `null`, and a function to send triggers to the device.
+ * @param {'Serial Port' | 'USB'} connectType - The type of connection being established, either 'Serial Port' or 'USB'.
  *
  * @returns {timeline} - The timeline configuration object for managing the device connection process, including error handling and retry options.
  */
-export function DeviceConnectPages(jsPsych, device_info, connect_type) {
-    const serial_connect = connect_type === 'Serial Port';
-    const connect_function = serial_connect
+export function DeviceConnectPages(jsPsych, deviceInfo, connectType) {
+    const serialConnect = connectType === 'Serial Port';
+    const connectFunction = serialConnect
         ? connectToSerial
         : connectToUSB;
     return {
@@ -48,7 +48,7 @@ export function DeviceConnectPages(jsPsych, device_info, connect_type) {
             {
                 type: HtmlButtonResponsePlugin,
                 stimulus: `${i18next.t('connectInstructions', {
-                    connection: connect_type,
+                    connection: connectType,
                 })}<br>`,
                 choices: [i18next.t('connectDeviceBtn'), i18next.t('skipConnect')],
                 on_load: () => {
@@ -56,9 +56,9 @@ export function DeviceConnectPages(jsPsych, device_info, connect_type) {
                     document
                         .getElementsByClassName('jspsych-btn')[0]
                         .addEventListener('click', async () => {
-                        device_info.device = await connect_function();
-                        if (device_info.device !== null) {
-                            device_info.send_trigger_func = serial_connect
+                        deviceInfo.device = await connectFunction();
+                        if (deviceInfo.device !== null) {
+                            deviceInfo.sendTriggerFunction = serialConnect
                                 ? sendTriggerToSerial
                                 : sendTriggerToUSB;
                             jsPsych.finishTrial();
@@ -95,14 +95,14 @@ export const fullScreenPlugin = (jsPsych) => ({
     message: '',
     button_label: i18next.t('fullscreen'),
     on_load: function () {
-        const quit_btn = document.createElement('button');
-        quit_btn.type = 'button';
-        quit_btn.setAttribute('style', 'color: #fff; border-radius: 4px; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)');
-        quit_btn.addEventListener('click', () => quitBtnAction(jsPsych));
-        quit_btn.appendChild(document.createTextNode(i18next.t('quitBtn')));
+        const quitButton = document.createElement('button');
+        quitButton.type = 'button';
+        quitButton.setAttribute('style', 'color: #fff; border-radius: 4px; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)');
+        quitButton.addEventListener('click', () => quitBtnAction(jsPsych));
+        quitButton.appendChild(document.createTextNode(i18next.t('quitBtn')));
         document
             .getElementById('jspsych-progressbar-container')
-            .appendChild(quit_btn);
+            .appendChild(quitButton);
     },
 });
 /**
@@ -122,17 +122,17 @@ function autoResize() {
         if (remove != null) {
             remove();
         }
-        const pixel_ratio = window.devicePixelRatio;
-        const mqString = `(resolution: ${pixel_ratio}dppx)`;
+        const pixelRatio = window.devicePixelRatio;
+        const mqString = `(resolution: ${pixelRatio}dppx)`;
         const media = matchMedia(mqString);
         media.addEventListener('change', updateSizes);
         remove = () => {
             media.removeEventListener('change', updateSizes);
         };
-        return pixel_ratio;
+        return pixelRatio;
     };
-    const scale_factor = updateSizes();
-    return scale_factor;
+    const scaleFactor = updateSizes();
+    return scaleFactor;
 }
 /**
  * @function resize
@@ -154,11 +154,11 @@ export const resize = (jsPsych) => ({
     ],
     on_load: function () {
         // Create a custom overlay for bar resize instructions
-        const bar_resize_page = document.createElement('div');
-        bar_resize_page.id = 'bar-resize-page';
-        bar_resize_page.style.top = `${document.getElementById('jspsych-progressbar-container').offsetHeight + 1}px`;
-        bar_resize_page.classList.add('custom-overlay');
-        bar_resize_page.innerHTML = `
+        const barResizePage = document.createElement('div');
+        barResizePage.id = 'bar-resize-page';
+        barResizePage.style.top = `${document.getElementById('jspsych-progressbar-container').offsetHeight + 1}px`;
+        barResizePage.classList.add('custom-overlay');
+        barResizePage.innerHTML = `
                                     <p><b>${i18next.t('barResizeTitle')}</b></p>
                                     <p style="text-align: center;">${i18next.t('barResizeInstructions')}</p>
                                     <br>
@@ -176,14 +176,14 @@ export const resize = (jsPsych) => ({
                                       <h1 class="warning"><b>!</b></h1><p style="max-width: 75%; text-align: start;">${i18next.t('noRuler')}</p>
                                     </div>
                                     <button class="jspsych-btn" type="button" onclick="document.body.removeChild(document.getElementById('bar-resize-page'))">${i18next.t('noRulerBtn')}</button>`;
-        document.body.appendChild(bar_resize_page);
+        document.body.appendChild(barResizePage);
         // Handle form submission and calculate scale factor
         document
             .getElementById('bar-resize-form')
             .addEventListener('submit', (event) => {
             event.preventDefault();
             jsPsych.finishTrial({
-                scale_factor: 10 /
+                scaleFactor: 10 /
                     Number(document.getElementById('cm-bar-input')
                         .value),
             });
@@ -191,31 +191,31 @@ export const resize = (jsPsych) => ({
         });
         document.getElementById('cm-bar-input').focus();
         // Add button to return to bar resize page if needed
-        const resize_switch_btn = document.createElement('div');
-        resize_switch_btn.innerHTML = `<br><button class="jspsych-btn">${i18next.t('autoResizeBtn')}</button>`;
-        resize_switch_btn.addEventListener('click', () => {
-            jsPsych.finishTrial({ scale_factor: autoResize() });
+        const resizeSwitchButton = document.createElement('div');
+        resizeSwitchButton.innerHTML = `<br><button class="jspsych-btn">${i18next.t('autoResizeBtn')}</button>`;
+        resizeSwitchButton.addEventListener('click', () => {
+            jsPsych.finishTrial({ scaleFactor: autoResize() });
         });
-        document.getElementById('jspsych-content').appendChild(resize_switch_btn);
+        document.getElementById('jspsych-content').appendChild(resizeSwitchButton);
     },
     on_finish: () => {
         // Apply scaling factor to images and other elements
-        setSizes(jsPsych.data.get().last(1).values()[0].scale_factor);
+        setSizes(jsPsych.data.get().last(1).values()[0].scaleFactor);
         document.getElementById('jspsych-content').removeAttribute('style');
     },
 });
 /**
  * @function setSizes
  * @description Sets the sizes of images and containers based on a scaling factor.
- * @param {number} [scaling_factor=window.devicePixelRatio] - The scaling factor to apply.
+ * @param {number} [scalingFactor=window.devicePixelRatio] - The scaling factor to apply.
  */
-function setSizes(scaling_factor = window.devicePixelRatio) {
+function setSizes(scalingFactor = window.devicePixelRatio) {
     const style = document.getElementById('scaling') || document.createElement('style');
-    const width_px = scaling_factor * 585.82677165;
+    const widthPixels = scalingFactor * 585.82677165;
     style.id = 'scaling';
     style.innerHTML = `.task-img, vid {
-        width: ${width_px}px; 
-        height: ${(9 * width_px) / 16}px;
+        width: ${widthPixels}px; 
+        height: ${(9 * widthPixels) / 16}px;
     }
 `;
     if (!style.parentElement) {
