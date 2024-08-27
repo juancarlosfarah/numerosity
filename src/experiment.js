@@ -184,9 +184,9 @@ export async function run({ assetPaths, input = {}, environment, title, version,
     };
     //initialize jspsych
     const jsPsych = initJsPsych({
-        showProgressBar: true,
-        autoUpdateProgressBar: false,
-        messageProgressBar: i18next.t('progressBar'),
+        show_progress_bar: true,
+        auto_update_progress_bar: false,
+        message_progress_bar: i18next.t('progressBar'),
         on_finish: () => {
             jsPsych.data.get().localSave('csv', 'experiment-data.csv');
         },
