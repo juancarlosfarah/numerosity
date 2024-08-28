@@ -2,7 +2,7 @@ import HtmlButtonResponsePlugin from '@jspsych/plugin-html-button-response';
 import jsPsychinstructions from '@jspsych/plugin-instructions';
 import jsPsychSurveyMultiChoice from '@jspsych/plugin-survey-multi-choice';
 import i18next from 'i18next';
-import { JsPsych } from 'jspsych';
+import { DataCollection, JsPsych } from 'jspsych';
 
 //import { DataCollection } from 'jspsych/src/modules/data/DataCollection';
 // Import styles and language functions
@@ -24,14 +24,12 @@ const generateInputExample: (
   scale: number,
 ) => string = (cntable: 'people' | 'objects', scale: number) =>
   `
-    <div class="inst-monitor" style="background-image: url('./assets/instruction-media/monitor-crosshair.png');">
-      <div class="inst-screen input-example" style="background-color: black; transform: scale(${scale}) translateY(-25%);">
-        <p style="cursor: default;">${i18next.t('instructionScreenExample', { cntable: langf.translateCountable(cntable) })}</p>
-        <input type="number" style="cursor: default;" readonly>
-        <br><br>
-        <button class="jspsych-btn" style="pointer-events: none;" readonly>${i18next.t('estimateSubmitBtn')}</button>
-      </div>
-    </div>`;
+      <img class="inst-monitor" src="./assets/instruction-media/monitor-crosshair.png" alt="computer monitor pictogram">
+      <div class="inst-screen input-example" style="background-color: black;">
+        <div style="cursor: default;">${i18next.t('instructionScreenExample', { cntable: langf.translateCountable(cntable) })}</div>
+        <input type="number" style="cursor: default; width: 20%;" readonly>
+        <button class="jspsych-btn" style="pointer-events: none; padding: 2%;" readonly>${i18next.t('estimateSubmitBtn')}</button>
+      </div>`;
 
 /**
  * @function generateInstructionPages
@@ -41,49 +39,58 @@ const generateInputExample: (
  * @returns { string[] } - Array of instruction pages as HTML strings
  */
 function generateInstructionPages(cntable: 'people' | 'objects'): string[] {
-  const instruction_imgs: string[] = [
+  const instructionImages: string[] = [
     `
-    <div class="inst-monitor" style="background-image: url('./assets/instruction-media/monitor-crosshair.png');">
-    </div>`,
+    <img class="inst-monitor" src="./assets/instruction-media/monitor-crosshair.png" alt="computer monitor pictogram">`,
     `
-    <div class="inst-monitor" style="background-image: url('./assets/instruction-media/monitor-crosshair.png');">
-      <div class="inst-screen">
-        <img src="./assets/instruction-media/screen-${cntable}.png" alt='task image'>
-      </div>
-    </div>`,
-    generateInputExample(cntable, 0.36),
+    <img class="inst-monitor" src="./assets/instruction-media/monitor-crosshair.png" alt="computer monitor pictogram">
+    <img class="inst-screen" src="./assets/instruction-media/screen-${cntable}.png" alt='task image'>`,
+    generateInputExample(cntable, 0),
   ];
 
   const pages: string[] = [];
-  for (let page_nb: number = 0; page_nb < 3; page_nb++) {
+  for (let pageNumber: number = 0; pageNumber < 3; pageNumber++) {
     pages.push(
-      `<b>${i18next.t('instructionTitle')}</b><br>
-      <div class="inst-container">
-        ${instruction_imgs[page_nb]}
-        <p class="inst-text"><b>${i18next.t('instructionTexts', { returnObjects: true, cntable: langf.translateCountable(cntable) })[page_nb]}</b></p>
-      </div>`,
+      `
+        <div class="inst-container">
+          <b>${i18next.t('instructionTitle')}</b><br>
+          <div class="inst-graphic">
+            ${instructionImages[pageNumber]}
+          </div>
+            <p class="inst-text"><b>${i18next.t('instructionTexts', { returnObjects: true, cntable: langf.translateCountable(cntable) })[pageNumber]}</b></p>
+        </div>`,
     );
   }
   pages.push(
-    `<b>${i18next.t('instructionTitle')}</b><br>
-    <div class="inst-container">
-      <div class="inst-monitor" id="monitor-group">
-        ${instruction_imgs[0]}
-        ${instruction_imgs[1]}
-        ${generateInputExample(cntable, 0.24)}
-      </div>
-      <p class="inst-text"><b>${i18next.t('instructionTexts', { returnObjects: true })[3]}</b></p>
-    </div>`,
+    ` 
+      <div class="inst-container">
+        <b>${i18next.t('instructionTitle')}</b><br>
+        <div class="inst-graphic">
+          <div class="group-monitors"">
+            ${instructionImages[0]}
+          </div>
+          <div class="group-monitors"">
+            ${instructionImages[1]}
+          </div>
+          <div class="group-monitors"">
+            ${generateInputExample(cntable, 0.24)}
+          </div>
+        </div>
+        <p class="inst-text"><b>${i18next.t('instructionTexts', { returnObjects: true })[3]}</b></p>
+      </div>`,
   );
   pages.push(
-    `<b>${i18next.t('instructionTitle')}</b><br>
-    <div class="inst-container">
-      ${instruction_imgs[2]}
-      <p class="inst-text"><b>${i18next.t('instructionTexts', { returnObjects: true, cntable: langf.translateCountable(cntable) })[4]}</b></p>
-    </div>`,
+    `
+        <div class="inst-container">
+          <b>${i18next.t('instructionTitle')}</b><br>
+          <div class="inst-graphic">
+            ${instructionImages[2]}
+          </div>
+            <p class="inst-text"><b>${i18next.t('instructionTexts', { returnObjects: true, cntable: langf.translateCountable(cntable) })[4]}</b></p>
+        </div>`,
   );
   pages.push(
-    `<b>${i18next.t('instructionTitle')}</b><div class="inst-container" style="flex-direction: column; transform: scale(0.75);"><p>${i18next.t('instructionExample', { cntable: langf.translateCountable(cntable) })}</p><video muted autoplay loop preload="auto" src="./assets/instruction-media/${cntable}-vid.mp4"><source type="video/mp4"></source></video></div><br>`,
+    `<div class="inst-container"><b>${i18next.t('instructionTitle')}</b><p class="vid-text">${i18next.t('instructionExample', { cntable: langf.translateCountable(cntable) })}</p><video muted autoplay loop preload="auto" src="./assets/instruction-media/${cntable}-vid.mp4" style="height: 45vh;"><source type="video/mp4"></source></video></div><br>`,
   );
   return pages;
 }
@@ -118,7 +125,7 @@ function instructions(cntable: 'people' | 'objects'): timeline {
 const instructionQuiz: (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
-  second_half?: boolean,
+  secondHalf?: boolean,
 ) => timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
@@ -127,7 +134,7 @@ const instructionQuiz: (
     {
       type: jsPsychSurveyMultiChoice,
       questions: langf.quizQuestions(cntable),
-      preamble: `<b>${i18next.t('quizPreamble')}</b><br><br><button id="quiz-repeat-btn" class="jspsych-btn" style="cursor: pointer;">${i18next.t('repeatInstructions')}</button>`,
+      preamble: `<b>${i18next.t('quizPreamble')}</b><br><br><button id="quiz-repeat-btn" class="jspsych-btn">${i18next.t('repeatInstructions')}</button>`,
       button_label: i18next.t('estimateSubmitBtn'),
     },
   ],
@@ -184,24 +191,24 @@ const returnPage: (
  * instruction quiz, and return page based on the countable type and experiment phase.
  * @param {JsPsych} jsPsych - The jsPsych instance.
  * @param {'people' | 'objects'} cntable - The type of countable (people or objects).
- * @param {boolean} [second_half=false] - Indicates if it is the second half of the experiment.
+ * @param {boolean} [secondHalf=false] - Indicates if it is the second half of the experiment.
  * @returns {timeline} - An object representing the timeline for the group instructions.
  */
 export const groupInstructions: (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
-  second_half?: boolean,
+  secondHalf?: boolean,
 ) => timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
-  second_half: boolean = false,
+  secondHalf: boolean = false,
 ): timeline => ({
   timeline: [
     instructions(cntable),
-    instructionQuiz(jsPsych, cntable, second_half),
+    instructionQuiz(jsPsych, cntable, secondHalf),
     returnPage(jsPsych, cntable),
   ],
-  loop_function: function (data: timeline): boolean {
+  loop_function: function (data: DataCollection): boolean {
     return (
       data.last(2).values()[1].response.Q0 !==
       langf.quizQuestions(cntable)[0].options[2]
@@ -222,7 +229,7 @@ export function tipScreen(): timeline {
     timeline: [
       {
         type: HtmlButtonResponsePlugin,
-        stimulus: `<b>${i18next.t('tipTitle')}</b><br><img src="./assets/instruction-media/tip.png" alt='tip image' style="width: auto;"><br>${i18next.t('tipDescription')}<br><br>`,
+        stimulus: `<b>${i18next.t('tipTitle')}</b><br><img src="./assets/instruction-media/tip.png" alt='tip image' style="width: 20vw;"><br>${i18next.t('tipDescription')}<br><br>`,
         choices: [i18next.t('tipBtnTxt')],
       },
     ],

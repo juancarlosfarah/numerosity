@@ -10,6 +10,13 @@ video {
   border: 1px solid white;
 }
 
+.jspsych-btn {
+  margin-left: 5px;
+}
+
+.jspsych-btn:hover {
+  cursor: pointer;
+}
 #jspsych-progressbar-container {
   position: relative;
   color: gray;
@@ -23,6 +30,18 @@ button:hover {
   cursor: pointer;
 }
 
+#resize-bar {
+  height: 4px;
+  width: 10cm;
+  background-color: white;
+  border: 3px solid #3fa0ef;
+}
+
+.warning {
+  color: red;
+  margin: 0 5% 0 10%;
+}
+
 .custom-overlay {
   position: fixed;
   height: 100%;
@@ -30,55 +49,102 @@ button:hover {
   background: black;
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: calc(1vh + 1vw);
+  line-height: 200%;
 }
 
 #quit-close-btn {
   right: 0;
-  position: absolute;
   top: 50%;
+  display: inline-block;
+  position: relative;
+}
+
+.quit-survey-content {
+  width: 80vw;
 }
 
 .inst-container {
   position: relative;
-  display: flex;
-  justify-content: center;
+  height: 70vh;
+  align-content: center;
+}
+
+.inst-graphic {
+  position: relative;
+  width: 25%;
+  height: auto;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
   align-items: center;
+}
+
+.group-monitors {
+  display: inline-block;
+  position: relative;
+  width: 50%;
 }
 
 .inst-monitor {
   position: relative;
-  width: 33%;
-  height: 33%;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#monitor-group {
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
-}
-
-.inst-screen img {
-  width: 67%;
-  height: auto;
   max-width: 100%;
-  max-height: 100%;
-  transform: translateY(-5.25%);
+  height: 100%;
 }
 
-#monitor-group .inst-screen img {
-  width: 95%;
+.inst-screen {
+  position: absolute;
+  top: 5%;
+  left: 3%;
+  max-width: 93%;
+  overflow: hidden;
+  width: fit-content;
+  height: fit-content;
+}
+
+.input-example {
+  transform: scale(0.75);
+  aspect-ratio: 16 / 9;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  text-align: center;
+  min-width: 93%;
+  min-height: fit-content;
+  height: 67%;
+  align-content: center;
+}
+
+.input-example > * {
+  flex-shrink: 1; /* Allow children to shrink */
+  min-width: 0; /* Allow the content to shrink below its intrinsic size */
+  min-height: 0;
+  height: auto;
+  font-size: 2vw;
+  line-height: calc(70% + 0.7vw);
+  margin: 0 0 2% 0;
+}
+
+.group-monitors * {
+  font-size: 1vw;
 }
 
 .inst-text {
   text-align: start;
   margin-left: 5%;
-  width: 67%;
+  width: 55%;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: calc(1vh + 1vw);
+  line-height: 150%;
+}
+
+.vid-text {
+  font-size: calc(1vh + 1vw);
+  line-height: 120%;
 }
 
 .underlined {

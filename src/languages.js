@@ -9,22 +9,22 @@ class InvalidLanguageError extends Error {
 /**
  * @function initLang
  * @description Initializes and returns the language to be used in the application. It first attempts to detect the user's language, then checks for a language parameter in the URL, and finally falls back to a default language if necessary.
- * @param {string[]} supported_langs - An array of supported language codes.
- * @param {string} fallback_lang - The default language code to use if no valid language is detected.
+ * @param {string[]} supportedLanguages - An array of supported language codes.
+ * @param {string} fallbackLanguage - The default language code to use if no valid language is detected.
  * @returns {string} - The determined language code to be used in the application.
  */
-export function initLang(supported_langs, fallback_lang) {
+export function initLang(supportedLanguages, fallbackLanguage) {
     let lang = universalLanguageDetect({
-        supportedLanguages: supported_langs, // Whitelist of supported languages, will be used to filter out languages that aren't supported
-        fallbackLanguage: fallback_lang, // Fallback language in case the user's language cannot be resolved
+        supportedLanguages: supportedLanguages, // Whitelist of supported languages, will be used to filter out languages that aren't supported
+        fallbackLanguage: fallbackLanguage, // Fallback language in case the user's language cannot be resolved
     });
     const urlParams = new URLSearchParams(window.location.search);
-    const lang_url = urlParams.get('lang');
-    if (lang_url) {
-        lang = lang_url;
+    const languageUrl = urlParams.get('lang');
+    if (languageUrl) {
+        lang = languageUrl;
     }
-    if (!supported_langs.includes(lang)) {
-        lang = fallback_lang;
+    if (!supportedLanguages.includes(lang)) {
+        lang = fallbackLanguage;
     }
     return lang;
 }
@@ -56,7 +56,7 @@ export function translateCountable(cntable) {
  * @function quizQuestions
  * @description Generates quiz questions based on the type of countable.
  * @param { 'people' | 'objects' } cntable - The type of countable (people or objects).
- * @returns {quiz_questions} - An array of quiz questions.
+ * @returns {quizQuestions} - An array of quiz questions.
  * @throws Will throw an error if the language parameter is not valid.
  */
 export function quizQuestions(cntable) {

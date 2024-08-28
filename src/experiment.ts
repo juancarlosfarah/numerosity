@@ -7,7 +7,6 @@
  */
 // You can import stylesheets (.scss or .css).
 // Import required plugins and modules from jsPsych
-import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import jsPsychHtmlKeyboardResponse from '@jspsych/plugin-html-keyboard-response';
 import PreloadPlugin from '@jspsych/plugin-preload';
 import jsPsychSurveyHtmlForm from '@jspsych/plugin-survey-html-form';
@@ -18,65 +17,95 @@ import { JsPsych, initJsPsych } from 'jspsych';
 import '../styles/main.scss';
 import { groupInstructions, tipScreen } from './instructions';
 import { showEndScreen } from './quit';
-import { quitBtnAction } from './quit';
-import { generatePreloadStrings, resize } from './setup';
-import { connectToUSB, createButtonPage, sendTriggerToUSB } from './utils';
+import {
+  DeviceConnectPages,
+  fullScreenPlugin,
+  generatePreloadStrings,
+  resize,
+} from './setup';
+import {
+  connectToSerial,
+  connectToUSB,
+  createButtonPage,
+  sendTriggerToSerial,
+  sendTriggerToUSB,
+} from './utils';
 
 // Type aliases for better code readability
-type img_description = { num: number; id: number; bs_jitter: number };
+type imageDescription = { num: number; id: number; blackscreenJitter: number };
 type timeline = JsPsych['timeline'];
 
 /**
  * @function generateTimelineVars
  * @description Generate timeline variables for the experiment.
- * For each numerosity, "nb_block" images are randomly selected and put in a list ordered by numerosity.
+ * For each numerosity, "nbBlock" images are randomly selected and put in a list ordered by numerosity.
  * @param { JsPsych } JsPsych - The jsPsych instance
- * @param { number } nb_blocks - Number of blocks per numerosity
- * @returns { img_description[] } - Array of image descriptions
+ * @param { number } nbBlocks - Number of blocks per numerosity
+ * @returns { imageDescription[] } - Array of image descriptions
  */
 function generateTimelineVars(
   JsPsych: JsPsych,
-  nb_blocks: number,
-): img_description[] {
-  const timeline_variables: img_description[] = [];
+  nbBlocks: number,
+): imageDescription[] {
+  const timelineVariables: imageDescription[] = [];
 
   for (let num = 5; num <= 8; num++) {
-    const id_list: number[] = JsPsych.randomization.sampleWithoutReplacement(
+    const idList: number[] = JsPsych.randomization.sampleWithoutReplacement(
       [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-      nb_blocks,
+      nbBlocks,
     );
-    for (let i: number = 0; i < nb_blocks; i++) {
-      timeline_variables.push({
+    for (let i: number = 0; i < nbBlocks; i++) {
+      timelineVariables.push({
         num: num,
-        id: id_list[i],
-        bs_jitter: (Math.random() - 0.5) * 300,
+        id: idList[i],
+        blackscreenJitter: (Math.random() - 0.5) * 300,
       });
     }
   }
-  return timeline_variables;
+  return timelineVariables;
 }
 
 /**
  * @function partofexp
- * @description Timeline for one half of the numerosity task.
- * The order of stimuli correspond to the following pattern:
- * There are "nb_blocks" blocks consisting of a random image from each numerosity (5,6,7,8) in random order.
- * Two identical images will never be contained in one experiment.
- * @param { JsPsych } jsPsych - The jsPsych instance
- * @param { 'people' | 'objects' } cntable - The type of countable (people or objects)
- * @param { number } nb_blocks - Number of blocks per half
- * @returns { timeline } - Timeline for one half of the numerosity task
+ * @description Creates a timeline for one half of the numerosity task experiment. Each half consists of a series of blocks where images representing different numerosities (5, 6, 7, 8) are displayed in a random order. This ensures that no identical images are shown within the same experiment.
+ *
+ * The timeline includes:
+ * - A black screen before stimuli presentation, with a customizable jitter duration.
+ * - A crosshair displayed for 500ms before each image.
+ * - A stimulus image shown for 250ms.
+ * - A black screen following the image display.
+ * - A survey asking participants to estimate the number of countable items (either people or objects) they observed.
+ *
+ * @param {JsPsych} jsPsych - The jsPsych instance used to manage the experiment timeline.
+ * @param {'people' | 'objects'} cntable - The type of countable items (either 'people' or 'objects') to be used in the experiment.
+ * @param {number} nbBlocks - The number of blocks to be included in one half of the experiment.
+ * @param {{ device: SerialPort | USBDevice | null, sendTriggerFunction: (device: SerialPort & USBDevice | null, trigger: string) => Promise<void> }} deviceInfo - An object containing the connected device (either `SerialPort` or `USBDevice`, or `null`) and a function to send triggers to the device.
+ * @param {((device: SerialPort | null, trigger: string) => Promise<void>) | ((device: USBDevice | null, trigger: string) => Promise<void>)} sendTriggerFunction - A function that sends a trigger to the connected device, applicable to either `SerialPort` or `USBDevice`.
+ *
+ * @returns {timeline} - The timeline configuration object for one half of the numerosity task experiment.
  */
 const partofexp: (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
-  nb_blocks: number,
-  devices_out: { usb_device: USBDevice | null },
+  nbBlocks: number,
+  deviceInfo: {
+    device: (SerialPort & USBDevice) | null;
+    sendTriggerFunction: (
+      device: (SerialPort & USBDevice) | null,
+      trigger: string,
+    ) => Promise<void>;
+  },
 ) => timeline = (
   jsPsych: JsPsych,
   cntable: 'people' | 'objects',
-  nb_blocks: number,
-  devices_out: { usb_device: USBDevice | null },
+  nbBlocks: number,
+  deviceInfo: {
+    device: (SerialPort & USBDevice) | null;
+    sendTriggerFunction: (
+      device: (SerialPort & USBDevice) | null,
+      trigger: string,
+    ) => Promise<void>;
+  },
 ): timeline => ({
   timeline: [
     // Blackscreen before stimuli
@@ -85,9 +114,9 @@ const partofexp: (
       stimulus: '',
       choices: 'NO_KEYS',
       trial_duration: (): number =>
-        1500 + jsPsych.evaluateTimelineVariable('bs_jitter'),
+        1500 + jsPsych.evaluateTimelineVariable('blackscreenJitter'),
       on_start: (): void => {
-        sendTriggerToUSB(devices_out.usb_device, '0');
+        deviceInfo.sendTriggerFunction(deviceInfo.device, '0');
         document.body.style.cursor = 'none';
       },
     },
@@ -99,7 +128,7 @@ const partofexp: (
       choices: 'NO_KEYS',
       trial_duration: 500,
       on_start: (): void => {
-        sendTriggerToUSB(devices_out.usb_device, '1');
+        deviceInfo.sendTriggerFunction(deviceInfo.device, '1');
         document.body.style.cursor = 'none';
       },
     },
@@ -108,12 +137,12 @@ const partofexp: (
     {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: function () {
-        return `<img src='./assets/num-task-imgs/${cntable}/num-${jsPsych.evaluateTimelineVariable('num')}-${jsPsych.evaluateTimelineVariable('id')}.png' alt='task image'>`;
+        return `<img class="task-img" src='./assets/num-task-imgs/${cntable}/num-${jsPsych.evaluateTimelineVariable('num')}-${jsPsych.evaluateTimelineVariable('id')}.png' alt='task image'>`;
       },
       choices: 'NO_KEYS',
       trial_duration: 250,
       on_start: (): void => {
-        sendTriggerToUSB(devices_out.usb_device, '2');
+        deviceInfo.sendTriggerFunction(deviceInfo.device, '2');
         document.body.style.cursor = 'none';
       },
     },
@@ -125,7 +154,7 @@ const partofexp: (
       choices: 'NO_KEYS',
       trial_duration: 1000,
       on_start: (): void => {
-        sendTriggerToUSB(devices_out.usb_device, '3');
+        deviceInfo.sendTriggerFunction(deviceInfo.device, '3');
         document.body.style.cursor = 'none';
       },
       on_finish: (): void => {
@@ -139,14 +168,8 @@ const partofexp: (
       preamble: `How many ${cntable} were in the virtual room?`,
       html: `<input type="number" label="numerosity input" name="num-input" id="task-input" required min="0" step="1" placeholder="${i18next.t('inputPlaceholder')}"><br>`,
       autofocus: 'task-input',
-      button_label: i18next.t('estimateSubmitBtn'),
+      buttonLabel: i18next.t('estimateSubmitBtn'),
       on_load: (): void => {
-        document
-          .getElementById('jspsych-survey-html-form')!
-          .addEventListener(
-            'submit',
-            (): Promise<void> => sendTriggerToUSB(devices_out.usb_device, '5'),
-          );
         const input: HTMLInputElement = document.getElementById(
           'task-input',
         ) as HTMLInputElement;
@@ -163,28 +186,28 @@ const partofexp: (
         });
       },
       on_start: (): void => {
-        sendTriggerToUSB(devices_out.usb_device, '4');
+        deviceInfo.sendTriggerFunction(deviceInfo.device, '4');
       },
       on_finish: function (): void {
         jsPsych.progressBar!.progress =
           Math.round(
-            (jsPsych.progressBar!.progress + 1 / (8 * nb_blocks)) * 1000000,
+            (jsPsych.progressBar!.progress + 1 / (8 * nbBlocks)) * 1000000,
           ) / 1000000;
       },
     },
   ],
 
   // Generate random timeline variables (pick random images for each numerosity).
-  timeline_variables: generateTimelineVars(jsPsych, nb_blocks),
+  timeline_variables: generateTimelineVars(jsPsych, nbBlocks),
   sample: {
     type: 'custom',
 
     // Custom sampling function to produce semi-random pattern described in function description.
-    fn: function (t: number[]): number[] {
-      const blocks: number = t.length / 4;
+    fn: function (timelines: number[]): number[] {
+      const blocks: number = timelines.length / 4;
       let template: number[] = [];
       let intermediate: number[] = [];
-      let new_t: number[] = [];
+      let newTimelines: number[] = [];
 
       // Shuffle all indices for timeline variables with same numerosity
       for (let nums: number = 0; nums < 4; nums++) {
@@ -207,18 +230,25 @@ const partofexp: (
         );
 
         // Shuffle order of numerosity in a block and append.
-        new_t = new_t.concat(jsPsych.randomization.shuffle(block));
+        newTimelines = newTimelines.concat(
+          jsPsych.randomization.shuffle(block),
+        );
       }
-      return new_t;
+      return newTimelines;
     },
   },
 });
 
 /**
  * @function run
- * @description This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment.
- * Initializes jsPsych, sets up the timeline, and runs the experiment.
- * @returns { Promise<JsPsych> } - Promise resolving to the jsPsych instance
+ * @description Initializes and runs the jsPsych experiment. This function sets up the experiment, including asset preloading, device configuration, resizing, and running the numerosity task. It handles experiment setup based on user-defined parameters, such as asset paths and connection types.
+ * @param {Object} params - The parameters for the experiment.
+ * @param {Object} params.assetPaths - Paths to the assets required for the experiment (images, audio, video).
+ * @param {any} params.input - Additional input parameters for the experiment.
+ * @param {string} params.environment - The environment in which the experiment is run.
+ * @param {string} params.title - The title of the experiment.
+ * @param {string} params.version - The version of the experiment.
+ * @returns {Promise<JsPsych>} - A promise that resolves to the initialized jsPsych instance.
  */
 export async function run({
   assetPaths,
@@ -233,92 +263,73 @@ export async function run({
   title: string;
   version: string;
 }): Promise<JsPsych> {
-  let devices: { usb_device: USBDevice | null } = { usb_device: null };
+  //Parameters:
+  const blocksPerHalf: number = 5;
+  const connectType: 'Serial Port' | 'USB' | null = 'Serial Port';
 
-  const blocks_per_half: number = 5;
+  //Pseudo state variable
+  let deviceInfo: {
+    device: (SerialPort & USBDevice) | null;
+    sendTriggerFunction: (
+      device: (SerialPort & USBDevice) | null,
+      trigger: string,
+    ) => Promise<void>;
+  } = {
+    device: null,
+    sendTriggerFunction: async (
+      device: (SerialPort & USBDevice) | null,
+      trigger: string,
+    ) => {},
+  };
 
+  //initialize jspsych
   const jsPsych: JsPsych = initJsPsych({
     show_progress_bar: true,
     auto_update_progress_bar: false,
     message_progress_bar: i18next.t('progressBar'),
     on_finish: (): void => {
-      jsPsych.data.get().localSave('csv', 'experiment-data.csv');
+      jsPsych.data.get().localSave('json', 'experiment-data.json');
     },
   });
 
+  // Randomize order of countables
+  let expPartsCountables: ('people' | 'objects')[] = ['people', 'objects'];
+  expPartsCountables = jsPsych.randomization.shuffle(expPartsCountables);
+
+  //initiate timeline
   const timeline: timeline = [];
 
+  //push trials to timeline
   jsPsych;
   // Preload assets
   timeline.push({
     type: PreloadPlugin,
     images: generatePreloadStrings(),
-    info: {
-      name: 'PreloadPlugin',
-      version: '8.0.1',
-      data: {},
-    },
   });
 
-  // Switch to fullscreen
-  timeline.push({
-    type: FullscreenPlugin,
-    fullscreen_mode: true,
-    message:
-      '<button class="jspsych-btn" id="init-btn">initiate USB</button><br><br>',
-    button_label: i18next.t('fullscreen'),
-    info: {
-      name: 'FullscreenPlugin',
-      version: '8.0.1',
-      data: {},
-    },
-    on_load: function (): void {
-      const quit_btn: HTMLButtonElement = document.createElement('button');
-      quit_btn.setAttribute('type', 'button');
-      quit_btn.setAttribute(
-        'style',
-        'color: #fff; border-radius: 4px; background-color: #1d2124; border-color: #171a1d; position: absolute; right: 1%; top: 50%; transform: translateY(-50%)',
-      );
-
-      quit_btn.addEventListener('click', () => quitBtnAction(jsPsych));
-
-      quit_btn.appendChild(document.createTextNode(i18next.t('quitBtn')));
-
-      document
-        .getElementById('jspsych-progressbar-container')!
-        .appendChild(quit_btn);
-
-      document
-        .getElementById('init-btn')!
-        .addEventListener('click', async () => {
-          devices.usb_device = await connectToUSB();
-        });
-
-      resize();
-    },
-  });
-
-  // Randomize order of countables
-  let exp_parts_cntables: ('people' | 'objects')[] = ['people', 'objects'];
-  exp_parts_cntables = jsPsych.randomization.shuffle(exp_parts_cntables);
+  if (connectType) {
+    timeline.push(DeviceConnectPages(jsPsych, deviceInfo, connectType));
+  }
 
   // Run numerosity task
   timeline.push(
-    groupInstructions(jsPsych, exp_parts_cntables[0]),
+    fullScreenPlugin(jsPsych),
+    resize(jsPsych),
+    groupInstructions(jsPsych, expPartsCountables[0]),
     tipScreen(),
     createButtonPage(
       i18next.t('experimentStart'),
       i18next.t('experimentStartBtn'),
     ),
-    partofexp(jsPsych, exp_parts_cntables[0], blocks_per_half, devices),
+    partofexp(jsPsych, expPartsCountables[0], blocksPerHalf, deviceInfo),
     createButtonPage(i18next.t('firstHalfEnd'), i18next.t('resizeBtn')),
-    groupInstructions(jsPsych, exp_parts_cntables[1]),
+    groupInstructions(jsPsych, expPartsCountables[1]),
     tipScreen(),
     createButtonPage(
       i18next.t('experimentStart'),
       i18next.t('experimentStartBtn'),
     ),
-    partofexp(jsPsych, exp_parts_cntables[1], blocks_per_half, devices),
+    partofexp(jsPsych, expPartsCountables[1], blocksPerHalf, deviceInfo),
   );
 
   await jsPsych.run(timeline);
@@ -327,7 +338,7 @@ export async function run({
     .getElementsByClassName('jspsych-content-wrapper')[0]
     .setAttribute('style', 'overflow-x: hidden;');
 
-  if (jsPsych.data.get().last(2).values()[0].trial_type === 'quit-survey') {
+  if (jsPsych.data.get().last(2).values()[0].trialType === 'quit-survey') {
     showEndScreen(i18next.t('abortedMessage'));
   } else {
     showEndScreen(i18next.t('endMessage'));

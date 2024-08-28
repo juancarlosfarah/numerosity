@@ -5,14 +5,13 @@ import { activateMQCunderline } from './utils';
 /**
  * @function generateQuitSurvey
  * @description Generates the HTML for the quit survey with options and a form.
- * @param {quit_survey_text} texts - The text object containing survey details.
  * @returns {string} - The HTML string for the quit survey.
  */
 function generateQuitSurvey() {
     return `
     <div class="quit-survey-content">
       <div style="position: relative;">
-        <h2 style="vertical-align: middle;"><b>${i18next.t('quitSurveyPreamble')}</b></h2>
+        <h2 style="vertical-align: middle; display: inline-block; width: 80%;"><b>${i18next.t('quitSurveyPreamble')}</b></h2>
         <button id="quit-close-btn" class="jspsych-btn">${i18next.t('quitSurveyBtnClose')}</button>
       </div>
       <br>
@@ -38,7 +37,7 @@ function generateQuitSurvey() {
 export function quitBtnAction(jsPsych) {
     jsPsych.pauseExperiment();
     const panel = document.createElement('div');
-    panel.setAttribute('id', 'quit-overlay');
+    panel.id = 'quit-overlay';
     panel.classList.add('custom-overlay');
     panel.innerHTML = generateQuitSurvey();
     document.body.appendChild(panel);
@@ -59,15 +58,15 @@ export function quitBtnAction(jsPsych) {
         event.preventDefault(); // Prevent the default form submission behavior
     });
     document.getElementById('quit-end-btn').addEventListener('click', () => {
-        const selected_option = document.querySelector('input[name="quit-option"]:checked');
-        if (selected_option) {
+        const selectedOption = document.querySelector('input[name="quit-option"]:checked');
+        if (selectedOption) {
             options.forEach((option) => {
                 option.setCustomValidity('');
             });
             // Save the selected value to jsPsych data
             jsPsych.data.get().push({
-                trial_type: 'quit-survey',
-                quit_reason: selected_option.value,
+                trialType: 'quit-survey',
+                quitReason: selectedOption.value,
             });
             document.body.removeChild(panel);
             // End the experiment
